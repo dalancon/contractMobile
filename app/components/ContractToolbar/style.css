@@ -1,0 +1,10 @@
+.shortcut-label{
+  padding-left:15px;
+  padding-top: 5px;
+  float: left;
+}
+.shortcut-nav{
+  border: 1px solid #428bca;
+  margin-left: 0px;
+  padding: 5px;
+}

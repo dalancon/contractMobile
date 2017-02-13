@@ -1,0 +1,15 @@
+.payment-table-footer{
+  line-height: 24px;
+  margin-top: 10px;
+  border-top:1px solid #ddd; 
+}
+
+@media (min-width: 992px) { 
+  .payment-table-footer{
+    text-align: center;
+  }
+}
+
+.invoice-costs {
+  color: #f40;
+}

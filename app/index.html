@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- The first thing in any HTML file should be the charset -->
+    <meta charset="utf-8">
+    <!-- Make the page mobile compatible -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Allow installing the app to the homescreen -->
+    <link rel="manifest" href="manifest.json">
+    <link href="/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/bootstrap-select/dist/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css">
+    <link rel="stylesheet" href="/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css">
+    <link rel="stylesheet" href="/blueimp-file-upload/css/jquery.fileupload.css">
+    <link rel="stylesheet" href="/blueimp-file-upload/css/jquery.fileupload-ui.css">
+    <link rel="stylesheet" href="/bootstrap-sweetalert/dist/sweetalert.css">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>信息中心合同支付</title>
+  </head>
+  <body>
+    <!-- Display a message if JS has been disabled on the browser. -->
+    <noscript>If you're seeing this message, that means <strong>JavaScript has been disabled on your browser</strong>, please <strong>enable JS</strong> to make this app work.</noscript>
+
+    <!-- The app hooks into this div -->
+    <div id="app"></div>
+    <!-- A lot of magic happens in this file. HtmlWebpackPlugin automatically includes all assets (e.g. bundle.js, main.css) with the correct HTML tags, which is why they are missing in this HTML file. Don't add any assets here! (Check out webpackconfig.js if you want to know more) -->
+    <script src="/jquery/dist/jquery.min.js"></script>
+    <script src="/jquery.media.js"></script>
+    <script src="/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script>
+    <script src="/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+    <script src="/bootstrap-datepicker/dist/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+    <script src="/typeahead.js/dist/typeahead.bundle.min.js"></script>
+    <script src="/blueimp-file-upload/js/vendor/jquery.ui.widget.js"></script>
+    <script src="/blueimp-file-upload/js/jquery.iframe-transport.js"></script>
+    <script src="/blueimp-file-upload/js/jquery.fileupload.js"></script>
+    <script src="/blueimp-file-upload/js/jquery.fileupload-process.js"></script>
+    <script src="/blueimp-file-upload/js/jquery.fileupload-validate.js"></script>
+    <script src="/bootstrap-select/dist/js/bootstrap-select.js"></script>
+    <script src="/bootstrap-sweetalert/dist/sweetalert.min.js"></script>
+  </body>
+</html>

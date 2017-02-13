@@ -1,0 +1,45 @@
+.payment-detail-from{
+  .payment-table-footer{
+    line-height: 24px;
+    margin-top: 10px;
+    border-top:1px solid #ddd; 
+  }
+
+  @media (min-width: 992px) { 
+    .payment-table-footer{
+      text-align: center;
+    }
+  }
+
+  .invoice-costs {
+    color: #f40;
+  }
+
+   input.form-control{
+    display:inline-block;
+    width:200px;
+  }
+
+  .remark-show-button{
+    font-size: 12px;
+    margin-left: 4px;
+    margin-bottom: 10px;
+    padding: 4px 2px;
+    border: 1px solid;
+  }
+
+  .remark-container{
+    margin-left: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: #f5f5f5;
+    border: 1px solid #e3e3e3;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+
+    .form-control{
+      width:100%;
+    }
+  }
+}
