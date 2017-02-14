@@ -1,59 +1,40 @@
-/**
- * Create the store with asynchronously loaded reducers
- */
+'use strict';
 
-import { createStore, applyMiddleware, compose } from 'redux';
-import { fromJS } from 'immutable';
-import { routerMiddleware } from 'react-router-redux';
+
+import {applyMiddleware, createStore} from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import createReducer from './reducers';
+import {persistStore, autoRehydrate} from 'redux-persist';
+import {AsyncStorage} from 'react-native';
+import reducers from './reducers';
+
 
 const sagaMiddleware = createSagaMiddleware();
 
-export default function configureStore(initialState = {}, history) {
-  // Create the store with two middlewares
-  // 1. sagaMiddleware: Makes redux-sagas work
-  // 2. routerMiddleware: Syncs the location/URL path to the state
-  const middlewares = [
-    sagaMiddleware,
-    routerMiddleware(history),
-  ];
+const logger = store => next => action => {
+  if(typeof action === 'function') console.log('dispatching a function');
+  else console.log('dispatching', action);
+  let result = next(action);
+  console.log('next state', store.getState());
+  return result;
+}
 
-  const enhancers = [
-    applyMiddleware(...middlewares),
-  ];
+let middlewares = [
+  logger,
+  sagaMiddleware,
+];
 
-  // If Redux DevTools Extension is installed use it, otherwise use Redux compose
-  /* eslint-disable no-underscore-dangle */
-  const composeEnhancers =
-    process.env.NODE_ENV !== 'production' &&
-    typeof window === 'object' &&
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
-      window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : compose;
-  /* eslint-enable */
+let createAppStore = applyMiddleware(...middlewares)(createStore);
 
-  const store = createStore(
-    createReducer(),
-    fromJS(initialState),
-    composeEnhancers(...enhancers)
-  );
 
-  // Extensions
-  store.runSaga = sagaMiddleware.run;
-  store.asyncReducers = {}; // Async reducer registry
-
-  // Make reducers hot reloadable, see http://mxs.is/googmo
-  /* istanbul ignore next */
-  if (module.hot) {
-    module.hot.accept('./reducers', () => {
-      import('./reducers').then((reducerModule) => {
-        const createReducers = reducerModule.default;
-        const nextReducers = createReducers(store.asyncReducers);
-
-        store.replaceReducer(nextReducers);
-      });
-    });
-  }
-
+export default function configureStore(onComplete: ()=>void){
+  const store = autoRehydrate()(createAppStore)(reducers);
+  let opt = {
+    storage: AsyncStorage,
+    transform: [],
+    //whitelist: ['userStore'],
+  };
+  persistStore(store, opt, onComplete);
   return store;
 }
+
+
