@@ -1,7 +1,12 @@
-'use strict';
 
-// for user
-export const LOGGED_IN 	= 'LOGGED_IN';
-export const LOGGED_OUT = 'LOGGED_OUT';
-export const LOGGED_ERROR = 'LOGGED_ERROR';
-export const LOGGED_DOING = 'LOGGED_DOING';
+export const DEFAULT_ACTION = 'app/LoginPage/DEFAULT_ACTION';
+export const SETSUBMIT_ACTION = 'app/LoginPage/SETSUBMIT_ACTION';
+
+export const LOGIN_ACTION = 'app/LoginPage/LOGIN_ACTION';
+export const LOGOUT_ACTION = 'app/LoginPage/LOGOUT_ACTION';
+
+export const LOGINSUCCESS_ACTION = 'app/LoginPage/LOGINSUCCESS_ACTION';
+export const LOGINFAILD_ACTION = 'app/LoginPage/LOGINFAILD_ACTION';
+
+export const LOGINOUTSUCCESS_ACTION = 'app/LoginPage/LOGINOUTSUCCESS_ACTION';
+export const LOGINOUTFAILED_ACTION = 'app/LoginPage/LOGINOUTFAILED_ACTION';

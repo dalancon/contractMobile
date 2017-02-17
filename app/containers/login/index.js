@@ -1,6 +1,11 @@
 'use strict';
-import React, { Component } from 'react';
-import { Card, WingBlank, WhiteSpace } from 'antd-mobile';
+import React, { PropTypes, Component } from 'react';
+import { createStructuredSelector } from 'reselect';
+import makeSelectLoginPage from './selectors';
+import { Button } from 'antd-mobile';
+// import Button from 'antd-mobile/lib/button';
+// import { Card, WingBlank, WhiteSpace } from 'antd-mobile';
+import InputItem from 'antd-mobile/lib/input-item';
 
 import {
   Text,
@@ -21,16 +26,30 @@ import { logIn, skipLogin } from './actions';
 import commonStyle from '../styles';
 import loginStyle from './styles';
 
-
 class LoginPage extends Component{
-  constructor(props){
-      super(props);
-      this.state = {
-          username: 'sup1',
-          password: '123456',
-          btnFlag: true,
-      };
+  // constructor(props){
+  //   super(props);
+  //   this.state = {
+  //     username: 'sup1',
+  //     password: '123456',
+  //     btnFlag: true,
+  //   };
+  // }
+
+  componentWillReceiveProps(nextProps) {
+    console.log("LoginPage-componentWillReceiveProps:", nextProps);
+    if(nextProps.success === true && this.props.success !== true){
+      this.toMain();
+      return false;
+    }
   }
+
+  toMain() {
+    let {router} = this.props;
+    console.log('toMain');
+    router.toMain();
+  }
+
 
   shouldComponentUpdate(nextProps, nextState){
     if(nextProps.isLoggedIn != this.props.isLoggedIn && nextProps.isLoggedIn === true){
@@ -58,18 +77,8 @@ class LoginPage extends Component{
     router.toMain();
   }
 
-  handleLogin(){
-    if(!this.state.username || !this.state.password){
-        AlertIOS.alert(
-             'username, password?'
-        );
-        return;
-    }
-    let opt = {
-        'name': this.state.username,
-        'password': this.state.password,
-    };
-    this.props.dispatch(logIn(opt));
+  handleLogin = ()=>{
+    this.props.dispatch(logIn());
   }
 
   handleRegister(){
@@ -85,68 +94,8 @@ class LoginPage extends Component{
     this.setState({'password': text});
   }
 
-        //   <Image source={require('../../public/imgs/icons/bg.png')} resizeMode={Image.resizeMode.stretch}>
-        //   <View style={loginStyle.loginMain}>
-        //     <View style={loginStyle.loginMainCon}>
-        //       <View style={loginStyle.comCulture}>
-        //         <Text style={[commonStyle.textCenter,{color:'#ccc'}]}>Welcome</Text>
-        //         <Text style={[commonStyle.textCenter,{color:'#ccc'}]}>You are the best.</Text>
-        //       </View>
-        //       <View style={loginStyle.formStyle}>
-        //         <View style={[loginStyle.formInput,loginStyle.formInputSplit]}>
-        //           <Image source={require('../../public/imgs/icons/user.png')} style={{width:25,height:25,resizeMode: 'contain'}}/>
-        //           <TextInput 
-        //             ref="login_name" 
-        //             placeholder='username' 
-        //             style={loginStyle.loginInput} 
-        //             onChangeText={this.onChangeName.bind(this)} />
-        //         </View>
-        //         <View style={loginStyle.formInput}>
-        //           <Image source={require('../../public/imgs/icons/passicon.png')} style={{width:25,height:25,resizeMode: 'contain'}}/>
-        //           <TextInput 
-        //             ref="login_psw"  
-        //             style={loginStyle.loginInput} 
-        //             secureTextEntry={true}
-        //             placeholder='password' 
-        //             onChangeText={this.onChangePswd.bind(this)} />
-        //         </View>
-        //         <View style={{alignItems: 'flex-end'}}>
-        //           <View style={loginStyle.forget}>
-        //           <View>
-        //             <Image source={require('../../public/imgs/icons/prompt.png')} style={{width:15,height:15,resizeMode: 'contain',marginRight:10}}/>
-        //           </View>
-        //           <View >
-        //             <Text style={{color:'#62a2e0', backgroundColor: 'white'}}>forget password?</Text>
-        //           </View>
-        //           </View>
-        //         </View>
-        //       </View>
-        //       <View style={loginStyle.btn}>
-        //         <View style={loginStyle.btnWrap}>
-        //           <Text style={loginStyle.loginBtn1} onPress={this.handleLogin.bind(this)}>Log in</Text>
-        //         </View>
-        //         <View style={loginStyle.btnWrap}>
-        //           <Text style={loginStyle.loginBtn2} onPress={this.handleRegister.bind(this)}>Skip</Text>
-        //         </View>
-        //       </View>
-        //     </View>
-        //   </View>
-        // </Image>
-
-        // <ModalBox style={[commonStyle.modal,commonStyle.justAlign]} 
-        //   ref={"modal"} backdropPressToClose={false} 
-        //   animationDuration={10}
-        //   backdrop={true}
-        //   backdropOpacity={0}
-        // >
-        //   <Spinner style={commonStyle.spinner} 
-        //       isVisible={true} 
-        //       size={50} type="Arc" color="#FFFFFF"/>
-        // </ModalBox>
-
   render(){
     console.log('login:', this.props);
-    console.log('commonStyle:', commonStyle);
     return (
       <View style={[commonStyle.wrapper, loginStyle.loginWrap]}>
         <View style={{
@@ -158,27 +107,21 @@ class LoginPage extends Component{
           <Image source={require('../../public/imgs/sxlogo.png')}></Image>
         </View>
         <View style={{ backgroundColor:'#FFF' , flex:1 }}>
-         <WingBlank size="lg">
-    <WhiteSpace size="lg" />
-    <Card>
-      <Card.Header
-        title="这是 title"
-        thumb="https://cloud.githubusercontent.com/assets/1698185/18039916/f025c090-6dd9-11e6-9d86-a4d48a1bf049.png"
-        extra={<span>this is extra</span>}
-      />
-      <Card.Body>
-        <div>这是卡片内容</div>
-      </Card.Body>
-      <Card.Footer content="这是卡尾" extra={<div>这是尾部介绍</div>} />
-    </Card>
-    <WhiteSpace size="lg" />
-  </WingBlank>
+          <InputItem
+            clear
+            placeholder="输入OA账号"
+          ></InputItem>
+          <InputItem
+            clear
+            placeholder="密码"
+          ></InputItem>
         </View>
-        <View style={{ backgroundColor:'#FFF' , flex:1 }}>
-          <Text>3</Text>
+        <View style={{ margin: 10 }}>
+           <Button className="btn" type="primary" onClick={this.handleLogin}>登陆</Button>
         </View>
-        <View style={{ backgroundColor:'#FFF' , flex:3 }}>
-          <Text>4</Text>
+        <View style={{ margin: 10, flex:3, flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text>忘记密码</Text>
+          <Text>新用户申请</Text>
         </View>
       </View>
     );
@@ -186,16 +129,16 @@ class LoginPage extends Component{
 }
 
 
+LoginPage.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+};
 
-function select(store){
+const mapStateToProps = makeSelectLoginPage();
+
+function mapDispatchToProps(dispatch) {
   return {
-    isLoggedIn: store.userStore.isLoggedIn,
-    user: store.userStore.user,
-    status: store.userStore.status,
-  }
+    dispatch,
+  };
 }
 
-
-export default connect(select)(LoginPage);
-
-
+export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);

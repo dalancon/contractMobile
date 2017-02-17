@@ -15,12 +15,12 @@ let initialRoute = {
 class Root extends Component {
   constructor(props){
       super(props);
-      if(props.isLoggedIn){
-          initialRoute = {
-              name: 'main-page',
-              page: MainPage
-          }
-      }
+     // if(props.isLoggedIn){
+          // initialRoute = {
+          //     name: 'main-page',
+          //     page: MainPage
+          // }
+     // }
   }
 
   renderScene({page, name, id, index, props}, navigator){
@@ -56,11 +56,11 @@ class Root extends Component {
 }
 
 
-function select(store){
-  return {
-    isLoggedIn: store.userStore.isLoggedIn
-  }
-}
+// function select(store){
+//   return {
+//     isLoggedIn: store.userStore.isLoggedIn
+//   }
+// }
 
 
-export default connect(select)(Root);
+export default Root;

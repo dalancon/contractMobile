@@ -7,6 +7,8 @@ import {persistStore, autoRehydrate} from 'redux-persist';
 import {AsyncStorage} from 'react-native';
 import reducers from './reducers';
 
+import loginSagas from './containers/login/sagas';
+
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -26,14 +28,16 @@ let middlewares = [
 let createAppStore = applyMiddleware(...middlewares)(createStore);
 
 
-export default function configureStore(onComplete: ()=>void){
+
+export default function configureStore(onComplete: (sagaMiddleware)=>void){
   const store = autoRehydrate()(createAppStore)(reducers);
-  let opt = {
-    storage: AsyncStorage,
-    transform: [],
-    //whitelist: ['userStore'],
-  };
-  persistStore(store, opt, onComplete);
+  // let opt = {
+  //   storage: AsyncStorage,
+  //   transform: [],
+  //   //whitelist: ['userStore'],
+  // };
+ // persistStore(store, opt, onComplete);
+  sagaMiddleware.run(...loginSagas);
   return store;
 }
 
