@@ -11,17 +11,19 @@ import {
   Navigator, } from 'react-native';
 import {connect} from 'react-redux';
 import NavigatorBar from 'react-native-navbar';
-import Icon from 'react-native-vector-icons/Ionicons';
+// import Icon from 'react-native-vector-icons/Ionicons';
 
-
-import { TabBar } from 'antd-mobile'; 
+import { TabBar, Icon, SearchBar }from 'antd-mobile'; 
 
 // import { TabBarItem } from 'antd-mobile/lib/tab-bar/TabBarItem';
-
+import TodoPage from '../todo';
+import LoginPage from '../login';
 import makeSelectMainPage from './selectors';
 import commonStyle from '../styles';
 
 import { setTab } from './actions';
+
+
 
 
 class MainPage extends Component {
@@ -33,62 +35,27 @@ class MainPage extends Component {
     }
   }
 
-  // shouldComponentUpdate(nextProps, nextState){
-  //     if(nextProps.isLoggedIn != this.props.isLoggedIn && nextProps.isLoggedIn === false){
-  //         //logout, need to redirect login page
-  //         this.toLogin();
-  //         return false;
-  //     }
-  //     return true;
-  // }
-
   toLogin(){
-      let {router} = this.props;
-      router.resetToLogin();
+    let {router} = this.props;
+    router.resetToLogin();
   }
 
-  renderContent(pageText) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', backgroundColor: 'white' }}>
-        <Text style={{ margin: 50 }}>{pageText}</Text>
-        <Icon name="ios-person" size={30} color="#900" />
-      </View>
-    );
-  }
-
-  // renderContent(pageText) {
-  //   return (
-  //     <View style={{ backgroundColor: 'white', height: '100%', textAlign: 'center' }}>
-  //       <View style={{ paddingTop: 60 }}>你已点击“{pageText}” tab， 当前展示“{pageText}”信息</View>
-  //       <a style={{ display: 'block', marginTop: 40 }} onClick={(e) => {
-  //         e.preventDefault();
-  //         this.setState({
-  //           hidden: !this.state.hidden,
-  //         });
-  //       }}
-  //       >
-  //         点击切换 tab-bar 显示/隐藏
-  //       </a>
-  //     </View>
-  //   );
-  // },
-
-  // _renderNavBar(){
-  //     let {router, user, dispatch} = this.props;
-  //     var leftButtonConfig = {
-  //         title: 'Logout',
-  //         handler: ()=>{
-  //             // dispatch(logOut());
-  //         }
-  //     };
-
-  //     var titleConfig = {
-  //         title:  '',
-  //     };
-  //     return <NavigatorBar style={commonStyles.navbar}
-  //                 title={titleConfig}
-  //                 leftButton={leftButtonConfig}  />;
+  // renderScene() {
+  //   return (<View><Text>123</Text></View>)
   // }
+
+
+  renderScene = (route, nav) => {
+    switch (route.id) {
+      case 'todo':
+        return <TodoPage navigator={nav} />;
+      default:
+        return (
+          <View><Text>123</Text></View>
+        );
+    }
+  }
+
 
   render() {
     let {user} = this.props;
@@ -102,6 +69,7 @@ class MainPage extends Component {
           justifyContent: 'center',
           alignItems: 'center',
         }} >
+
           <TabBar
             unselectedTintColor="#949494"
             tintColor="#33A3F4"
@@ -111,54 +79,61 @@ class MainPage extends Component {
             <TabBar.Item
               title="待办"
               key="待办"
-              icon={<Icon name="ios-alarm" size={30} color="#900" />}
-              selectedIcon={<Icon name="ios-alarm" size={30} color="#900" />}
+              icon={require('../../public/imgs/ios7-calendar-outline.png')}
+              selectedIcon={require('../../public/imgs/ios7-calendar.png')}
               selected={this.props.current === 'todo'}
               onPress={() => {
                 this.props.dispatch(setTab('todo'));
               }}
               data-seed="logId"
             >
-              {this.renderContent('生活1 Tab')}
+              <Navigator
+                ref='navigator'
+                initialRoute={{
+                  name:'todo',
+                  component: TodoPage
+                }}
+                configureScene={(route) => {
+                  return Navigator.SceneConfigs.FloatFromRight
+                }}
+                renderScene={this.renderScene}
+              />
             </TabBar.Item>
             <TabBar.Item
               title="合同"
               key="合同"
-              icon={require('../../public/imgs/search.png')}
-              selectedIcon={require('../../public/imgs/search.png')}
+              icon={require('../../public/imgs/ios7-paper-outline.png')}
+              selectedIcon={require('../../public/imgs/ios7-paper.png')}
               selected={this.props.current === 'contract'}
               onPress={() => {
                 this.props.dispatch(setTab('contract'));
               }}
               data-seed="logId"
             >
-              {this.renderContent('生活2 Tab')}
             </TabBar.Item>
             <TabBar.Item
               title="关注"
               key="关注"
-              icon={require('../../public/imgs/sxlogo.png')}
-              selectedIcon={require('../../public/imgs/sxlogo.png')}
+              icon={require('../../public/imgs/ios7-eye-outline.png')}
+              selectedIcon={require('../../public/imgs/eye.png')}
               selected={this.props.current === 'concern'}
               onPress={() => {
                 this.props.dispatch(setTab('concern'));
               }}
               data-seed="logId"
             >
-              {this.renderContent('生活3 Tab')}
             </TabBar.Item>
             <TabBar.Item
               title="我的"
               key="我的"
-              icon={require('../../public/imgs/sxlogo.png')}
-              selectedIcon={require('../../public/imgs/sxlogo.png')}
+              icon={require('../../public/imgs/ios7-person-outline.png')}
+              selectedIcon={require('../../public/imgs/ios7-person.png')}
               selected={this.props.current === 'my'}
               onPress={() => {
                 this.props.dispatch(setTab('my'));
               }}
               data-seed="logId"
             >
-              {this.renderContent('生活4 Tab')}
             </TabBar.Item>
           </TabBar>
         </View>

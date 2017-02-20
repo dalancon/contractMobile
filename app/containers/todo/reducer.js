@@ -1,6 +1,6 @@
 /*
  *
- * Main reducer
+ * TodoPage reducer
  *
  */
 
@@ -14,7 +14,7 @@ const initialState = fromJS({
   current: 'todo',		//当前显示的Tab
 });
 
-function MainReducer(state = initialState, action) {
+function TodoPageReducer(state = initialState, action) {
   // console.log(action);
   switch (action.type) {
     case DEFAULT_ACTION:
@@ -26,6 +26,6 @@ function MainReducer(state = initialState, action) {
   }
 }
 
-export default MainReducer;
+export default TodoPageReducer;
 
 
