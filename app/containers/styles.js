@@ -13,6 +13,17 @@ import {
 } from 'react-native';
 var cell_w = Dimensions.get('window').width;
 var styles = StyleSheet.create({
+    header: {
+      backgroundColor:'#108ee9',
+      paddingBottom:12,
+      paddingTop:12,
+    },
+    headerTitle: {
+      color: '#FFF',
+      fontSize: 18,
+      textAlign: 'center',
+      fontWeight: '600',
+    },
     wrapper: {
         flex: 1,
     },

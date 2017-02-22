@@ -1,3 +1,3 @@
 
-export const DEFAULT_ACTION = 'app/MainPage/DEFAULT_ACTION';
-export const SETTAB_ACTION = 'app/MainPage/SETTAB_ACTION';
+export const DEFAULT_ACTION = 'app/TodoPage/DEFAULT_ACTION';
+export const SETTAB_ACTION = 'app/TodoPage/SETTAB_ACTION';
