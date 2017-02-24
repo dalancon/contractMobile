@@ -336,11 +336,9 @@ class ExamineContract extends Component {
                       let fontSize = 16;
                       let minus = parseInt(x.taskName.length/8);
                       fontSize = fontSize - minus;
-                      console.log(fontSize);
-
                       return (<Step key={i} 
                               title={<Text style={{fontSize: fontSize}}>{x.taskName}</Text>} 
-                              description={<Text>{x.comment}</Text>} />)
+                              description={<Text><Text>{x.comment}</Text><Text>{'\n'}{x.assignee}</Text><Text>{'\n'}{x.endTime !== null ? formatter.formatDate(x.endTime) : ''}</Text></Text>} />)
                     })
                   }
                 </Steps>

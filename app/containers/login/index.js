@@ -74,7 +74,7 @@ class LoginPage extends Component{
 
   toMain(){
     const {router} = this.props;
-    router.toExamine();
+    router.toMain();
   }
 
   handleLogin = ()=>{
