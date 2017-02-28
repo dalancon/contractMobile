@@ -25,7 +25,10 @@ import commonStyle from '../styles';
 import { setTab } from './actions';
 
 import TodoPage from '../todo';
-import ExamineContract from '../examineContract';
+import ExaminePayment from '../examinePayment';
+import ViewContract from '../viewContract';
+import Concern from '../concern';
+import My from '../my';
 
 class MainPage extends Component {
   constructor(props){
@@ -41,29 +44,27 @@ class MainPage extends Component {
     router.resetToLogin();
   }
 
-  renderScene = (route, nav) => {
-    console.log(route);
-    switch (route.title) {
+  renderScene = (title) => {
+
+    switch (title) {
       case 'Todo Scence':
-        return <TodoPage navigator={nav} router={this.props.router}/>;
+        return <TodoPage router={this.props.router} />;
+      case 'Contract Scence':
+        return <ViewContract router={this.props.router} />;
+      case 'Concern Scence':
+        return <Concern router={this.props.router} />;
       default:
         return (
-          <View><Text>123</Text></View>
+          <View style={{ backgroundColor: 'white', flex: 1 }}><Text>123</Text></View>
         );
     }
   }
 
+
+
+
   render() {
     let {user} = this.props;
-    const routes = [
-      {title: 'Todo Scence', index:0},
-      {title: 'Contract Scence', index:1},
-      {title: 'Concern Scence', index:2},
-      {title: 'My Scence', index:3},
-      {title: 'ExamineContract Scence', index:4},
-    ];
-    console.log('mainPage:', this.props);
-
     return (
       <View style={[commonStyle.wrapper]}>
         <View  style={{
@@ -85,21 +86,13 @@ class MainPage extends Component {
               icon={require('../../public/imgs/ios7-calendar-outline.png')}
               selectedIcon={require('../../public/imgs/ios7-calendar.png')}
               selected={this.props.current === 'todo'}
+              badge={2}
               onPress={() => {
                 this.props.dispatch(setTab('todo'));
-                this.refs.nav.push(routes[0]);
               }}
               data-seed="logId"
             >
-              <Navigator
-                ref='nav'
-                initialRouteStack={routes}
-                initialRoute={routes[0]}
-                configureScene={(route) => {
-                  return Navigator.SceneConfigs.FloatFromRight
-                }}
-                renderScene={this.renderScene}
-              />
+              <TodoPage router={this.props.router} />
             </TabBar.Item>
             <TabBar.Item
               title="合同"
@@ -109,10 +102,10 @@ class MainPage extends Component {
               selected={this.props.current === 'contract'}
               onPress={() => {
                 this.props.dispatch(setTab('contract'));
-                this.refs.nav.push(routes[1]);
               }}
               data-seed="logId"
             >
+              <ViewContract router={this.props.router} />
             </TabBar.Item>
             <TabBar.Item
               title="关注"
@@ -122,10 +115,10 @@ class MainPage extends Component {
               selected={this.props.current === 'concern'}
               onPress={() => {
                 this.props.dispatch(setTab('concern'));
-                this.refs.nav.push(routes[2]);
               }}
               data-seed="logId"
             >
+              <Concern router={this.props.router} />
             </TabBar.Item>
             <TabBar.Item
               title="我的"
@@ -135,10 +128,10 @@ class MainPage extends Component {
               selected={this.props.current === 'my'}
               onPress={() => {
                 this.props.dispatch(setTab('my'));
-                this.refs.nav.push(routes[3]);
               }}
               data-seed="logId"
             >
+              <My router={this.props.router} />
             </TabBar.Item>
           </TabBar>
         </View>

@@ -11,12 +11,25 @@ import {
   Navigator,
 } from 'react-native';
 
-import { List, TabBar, Tabs, Checkbox, Radio,  Picker, TextareaItem, Button, WhiteSpace, Steps, WingBlank, } from 'antd-mobile';
+import { 
+  List, 
+  TabBar,
+  Tabs,
+  Checkbox,
+  Radio,
+  Picker,
+  TextareaItem,
+  Button,
+  WhiteSpace,
+  Steps,
+  WingBlank,
+  PickerView,
+  Popup, } from 'antd-mobile';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import {connect} from 'react-redux';
 import NavigatorBar from 'react-native-navbar';
-import makeSelectExamineContract from './selectors';
+import makeSelectExaminePayment from './selectors';
 import formatter from '../../utils/formatter';
 
 import commonStyle from '../styles';
@@ -25,7 +38,7 @@ const CheckboxItem = Checkbox.CheckboxItem;
 const RadioItem = Radio.RadioItem;
 const Step = Steps.Step;
 
-class ExamineContract extends Component {
+class ExaminePayment extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -214,25 +227,7 @@ class ExamineContract extends Component {
     </View>);
   }
 
-  render() {
-    let { user } = this.props;
-
-    const routes = [
-      {title: 'Todo Scence', index:0},
-      {title: 'Contract Scence', index:1},
-      {title: 'Concern Scence', index:2},
-      {title: 'My Scence', index:3},
-      {title: 'ExamineContract Scence', index:4},
-    ];
-
-    console.log('mainPage:', this.props);
-
-    const { outGoingValue } = this.state;
-
-    const data = this.state.outGoing.map((x) => { return {value: x.id, label: x.name}; });
-
-    const users = this.state.outGoing[0].users.map((u) => { return {value:u.id, label:u.userName}; });
-
+  onPressComment = () => {
     const seasons = [
       [
         {
@@ -256,20 +251,63 @@ class ExamineContract extends Component {
       ],
     ];
 
+    const data = this.state.outGoing.map((x) => { return {value: x.id, label: x.name}; });
+
+    const { outGoingValue } = this.state;
+
+    Popup.show(
+      (
+        <List renderHeader={() => (
+          <View style={{ backgroundColor:'#eee'}}>
+            <WhiteSpace/>
+              <WingBlank  style={{ flexDirection:'row', justifyContent: 'space-between' }}>
+                <View><Text >常用意见</Text></View>
+                <View><TouchableOpacity onPress={() => Popup.hide()}><Icon size={24} name="ios-close" /></TouchableOpacity></View>
+              </WingBlank>
+            <WhiteSpace/>
+          </View>)}
+        >
+          {data.map(i => (
+            <RadioItem key={i.value} checked={outGoingValue === i.value} onChange={() => this.onChange(i.value)}>
+              {i.label}
+            </RadioItem>
+          ))}
+        </List>
+       ), { animationType: 'slide-up', maskClosable: true });
+  }
+
+  render() {
+    let { user } = this.props;
+
+    const routes = [
+      {title: 'Todo Scence', index:0},
+      {title: 'Contract Scence', index:1},
+      {title: 'Concern Scence', index:2},
+      {title: 'My Scence', index:3},
+      {title: 'ExaminePayment Scence', index:4},
+    ];
+
+    console.log('mainPage:', this.props);
+
+    const { outGoingValue } = this.state;
+
+    const data = this.state.outGoing.map((x) => { return {value: x.id, label: x.name}; });
+
+    const users = this.state.outGoing[0].users.map((u) => { return {value:u.id, label:u.userName}; });
+
     console.log(users);
 
 /// <Icon name="ios-arrow-back" color='white' size={16}><Text style={{ color:'white', fontSize: 14 }}>待办</Text></Icon>
     return (
       <View style={[commonStyle.wrapper]}>
-
         <View style={[commonStyle.header]}>
           <TouchableOpacity style={{ zIndex:1, position:'absolute', left:12, top:16, flexDirection: 'row', alignItems:'center' }} onPress={this._back}>
-            <Icon name="ios-arrow-back" color='white' size={16}><Text style={{ color:'white', fontSize: 14 }}>待办</Text></Icon>
+            <Icon name="ios-arrow-back" color='white' size={16}><Text style={{ color:'white', fontSize: 14 }}>返回</Text></Icon>
           </TouchableOpacity>
           <Text style={[commonStyle.headerTitle]} numberOfLines={1}>审批支付单</Text>
         </View>
         <View style={{ flex: 1, backgroundColor: 'white' }}>
-          <Tabs tabBarPosition="bottom" defaultActiveKey="2" activeKey={this.state.current}
+          <Tabs tabBarPosition="bottom" defaultActiveKey="1" activeKey={this.state.current}
             onChange={(key)=>{this.setState({current:key})}}>
             <Tabs.TabPane tab="支付单" key="1">
               <ScrollView
@@ -315,8 +353,21 @@ class ExamineContract extends Component {
                   <List.Item arrow="horizontal">流程关注人</List.Item>
                 </Picker>
               </List>
-              <List renderHeader={() => '处理意见'}>
+              <List renderHeader={() => (
+                <View >
+                  <WhiteSpace/>
+                    <WingBlank  style={{ flexDirection:'row', justifyContent: 'space-between' }}>
+                      <View><Text >处理意见</Text></View>
+                      <TouchableOpacity onPress={this.onPressComment}>
+                        <View style={{ borderColor:'#CCC', borderWidth:1, borderRadius:3 }}>
+                          <Text>常用意见<Icon name="ios-arrow-down"></Icon></Text>
+                        </View>
+                      </TouchableOpacity>
+                    </WingBlank>
+                  <WhiteSpace/>
+                </View>)}>
                 <TextareaItem
+                  clear
                   rows={3}
                   count={100}
                 />
@@ -325,20 +376,19 @@ class ExamineContract extends Component {
               <List.Item>
                 <Button type="primary" inline>提交申请单</Button>
               </List.Item>
+
             </Tabs.TabPane>
             <Tabs.TabPane tab="流转历史" key="3">
-              <WhiteSpace size="sm" />
               <WingBlank>
                 <Steps size="small" current={this.state.history.length-2}>
                   { 
                     this.state.history.map(function (x, i) {
-                      // console.log(x.taskName.length);
                       let fontSize = 16;
                       let minus = parseInt(x.taskName.length/8);
                       fontSize = fontSize - minus;
                       return (<Step key={i} 
-                              title={<Text style={{fontSize: fontSize}}>{x.taskName}</Text>} 
-                              description={<Text><Text>{x.comment}</Text><Text>{'\n'}{x.assignee}</Text><Text>{'\n'}{x.endTime !== null ? formatter.formatDate(x.endTime) : ''}</Text></Text>} />)
+                        title={<Text style={{fontSize: fontSize}}>{x.taskName}</Text>} 
+                        description={<Text><Text>{x.comment}</Text><Text>{'\n'}{x.assignee}</Text><Text>{'\n'}{x.endTime !== null ? formatter.formatDate(x.endTime) : ''}</Text></Text>} />)
                     })
                   }
                 </Steps>
@@ -351,11 +401,11 @@ class ExamineContract extends Component {
   }
 }
 
-ExamineContract.propTypes = {
+ExaminePayment.propTypes = {
   dispatch: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = makeSelectExamineContract();
+const mapStateToProps = makeSelectExaminePayment();
 
 function mapDispatchToProps(dispatch) {
   return {
@@ -363,4 +413,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ExamineContract);
+export default connect(mapStateToProps, mapDispatchToProps)(ExaminePayment);

@@ -5,10 +5,11 @@ import {
   Text,
   View,
   ListView,
+  ScrollView,
   TouchableHighlight,
   Image,
   Navigator, } from 'react-native';
-import { TabBar, Icon, SearchBar }from 'antd-mobile';
+import { TabBar, Icon, SearchBar, Tabs }from 'antd-mobile';
 
 import {connect} from 'react-redux';
 import NavigatorBar from 'react-native-navbar';
@@ -17,11 +18,14 @@ import formatter from '../../utils/formatter';
 
 import commonStyle from '../styles';
 
+const TabPane = TabBar.TabPane;
+
 class TodoPage extends Component {
   constructor(props){
     super(props);
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
+      current: "1",
       dataSource: ds.cloneWithRows([{
         "subject": "信息中心合同质保金—ICP201503122",
         "businessKey": "YC_TGPMS||ICP201503122||201607200857490147||e6571378f7964fbab303cc88b30facf1||GUARANTEE",
@@ -86,6 +90,17 @@ class TodoPage extends Component {
     const param = rowData.businessKey.split('||');
     const poNo = param[2];
 
+    /*  <Navigator
+                ref='nav'
+                initialRouteStack={routes}
+                initialRoute={routes[0]}
+                configureScene={(route) => {
+                  return Navigator.SceneConfigs.FloatFromRight
+                }}
+                renderScene={this.renderScene}
+              />  */
+
+
     return (
       <TouchableHighlight onPress={() => { this.showDetails(rowData)}}>
         <View style={{ flex:1, flexDirection:'row', marginTop:5, marginBottom:5, marginLeft:5, borderBottomWidth:1, borderBottomColor: '#DDD' }}>
@@ -117,10 +132,31 @@ class TodoPage extends Component {
           <Text style={[commonStyle.headerTitle]}>待办事项</Text>
         </View>
         <SearchBar placeholder="搜索" />
-        <ListView 
-          dataSource={this.state.dataSource}
-          renderRow={this.renderRow}
-        />
+        <Tabs activeKey={this.state.current}
+            onChange={(key)=>{
+              console.log('click', key);
+              this.setState({current:key})}}>
+          <Tabs.TabPane tab="全部" key="1">
+            <ScrollView
+              ref={(scrollView) => { _scrollView = scrollView; }}
+              automaticallyAdjustContentInsets={false}
+              >
+              <ListView 
+                dataSource={this.state.dataSource}
+                renderRow={this.renderRow}
+              />
+            </ScrollView>
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="最近七天" key="2">
+
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="本月" key="3">
+
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="最近三个月" key="4">
+
+          </Tabs.TabPane>
+        </Tabs>
       </View>);
   }
 }

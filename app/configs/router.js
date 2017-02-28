@@ -3,7 +3,8 @@ import React, { Navigator } from 'react-native';
 // Pages
 import LoginPage from '../containers/login';
 import MainPage from '../containers/main';
-import ExamineContract from '../containers/examineContract';
+import ExaminePayment from '../containers/examinePayment';
+import ContractDetails from '../containers/contractDetails';
 
 // Config
 const sceneConfig = require('./sceneConfig')
@@ -26,12 +27,20 @@ class Router {
 
 
     pop() {
-        this.navigator.pop()
+      this.navigator.pop()
+    }
+
+    toContractDetails(props) {
+      this.push(props, {
+        page: ContractDetails,
+        name: 'contractDetails-page',
+        sceneConfig: customFloatFromRight,
+      })
     }
 
     toExamine(props) {
       this.push(props, {
-        page: ExamineContract,
+        page: ExaminePayment,
         name: 'examineContract-page',
         sceneConfig: customFloatFromRight
       })

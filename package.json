@@ -7,7 +7,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "antd-mobile": "^1.0.0",
+    "antd-mobile": "^1.0.1",
     "babel-plugin-import": "^1.1.0",
     "immutable": "^3.8.1",
     "moment": "^2.17.1",
