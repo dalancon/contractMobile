@@ -12,7 +12,7 @@ import {
   Navigator,
 } from 'react-native';
 
-import { List, SearchBar, Tabs, Badge, Button, } from 'antd-mobile';
+import { List, SearchBar, Tabs, Badge, Button, Tag } from 'antd-mobile';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import {connect} from 'react-redux';
@@ -38,7 +38,8 @@ class PoItem extends Component {
         "incurredQtyTotal": 1,
         "unitOfMeasure": "LOT",
         "ptdCommitmentFrate": 17412210689.73,
-        "currency": "RMB"
+        "currency": "RMB",
+        isAdd:true,
       }, {
         "poItem": "1302",
         "incurredFcostsTotal": 79519036,
@@ -71,7 +72,8 @@ class PoItem extends Component {
         "incurredQtyTotal": 1,
         "unitOfMeasure": "LOT",
         "ptdCommitmentFrate": 472431.15,
-        "currency": "RMB"
+        "currency": "RMB",
+        isAdd:true,
       }, {
         "poItem": "1402",
         "incurredFcostsTotal": 246963,
@@ -188,13 +190,17 @@ class PoItem extends Component {
               <Text>已支付:{rowData.incurredQtyTotal}</Text>      
             </View>
             <View> 
-              <Button type="primary" size="small" inline>添加</Button>
+              <Tag selected={rowData.isAdd} small >添加</Tag>
             </View>
           </View>
         </View>
       </View>
     );
   }
+
+  /*<TouchableOpacity style={{ zIndex:1, position:'absolute', right:12, top:16, flexDirection: 'row', alignItems:'center' }} onPress={this.showActionSheet}>
+              <Text style={{ color:'white', fontSize: 14 }}>确定</Text>
+            </TouchableOpacity> */
 
   render() {
     return (
@@ -205,9 +211,7 @@ class PoItem extends Component {
               <Icon name="ios-arrow-back" color='white' size={16}><Text style={{ color:'white', fontSize: 14 }}>返回</Text></Icon>
             </TouchableOpacity>
             <Text style={[commonStyle.headerTitle]} numberOfLines={1}>合同细项</Text>
-            <TouchableOpacity style={{ zIndex:1, position:'absolute', right:12, top:16, flexDirection: 'row', alignItems:'center' }} onPress={this.showActionSheet}>
-              <Text style={{ color:'white', fontSize: 14 }}>确定</Text>
-            </TouchableOpacity>
+
           </View>
           <View style={{ flex: 1, backgroundColor: 'white' }}>
             <SearchBar placeholder="搜索" />

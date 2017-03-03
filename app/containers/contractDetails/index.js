@@ -345,7 +345,7 @@ class ContractDetails extends Component {
 
     ActionSheet.showActionSheetWithOptions({
       options: BUTTONS,
-      message: '操作',
+      title: '操作',
       maskClosable: true,
       'data-seed': 'logId',
       wrapProps,

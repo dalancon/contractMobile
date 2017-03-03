@@ -46,6 +46,8 @@ class HandleTask extends Component {
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       outGoingValue: '',
+      user: null,
+      participantUser: null,
       outGoing: [{
         "id": "flow22",
         "users": [{
@@ -56,6 +58,16 @@ class HandleTask extends Component {
           "insertUser": null,
           "modifyDate": null,
           "userName": "陈楚华",
+          "mobile": null,
+          "email": null
+        },{
+          "id": "xiao_yunqing",
+          "insertDate": null,
+          "modifyUser": null,
+          "userCode": null,
+          "insertUser": null,
+          "modifyDate": null,
+          "userName": "肖云晴",
           "mobile": null,
           "email": null
         }],
@@ -182,10 +194,14 @@ class HandleTask extends Component {
                 ))}
               </List>
               <List renderHeader={() => '人员'}>
-                <Picker data={users}  cols={1}>
+                <Picker data={users} cols={1} value={this.state.user} onChange={(val) => {
+                    this.setState({ user: val });
+                  }}>
                   <List.Item arrow="horizontal">处理人</List.Item>
                 </Picker>
-                <Picker data={users} cols={1}>
+                <Picker data={users} cols={1} value={this.state.participantUser} onChange={(val) => {
+                    this.setState({ participantUser: val });
+                  }}>
                   <List.Item arrow="horizontal">流程关注人</List.Item>
                 </Picker>
               </List>
