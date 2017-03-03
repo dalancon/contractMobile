@@ -26,7 +26,8 @@ import {
   Checkbox,
   TextareaItem,
   Toast,
-  Button,} from 'antd-mobile';
+  Button,
+  Modal, } from 'antd-mobile';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import {connect} from 'react-redux';
@@ -162,15 +163,17 @@ class HandleTask extends Component {
   }
 
   loadingToast = () => {
-    Toast.loading('正在提交...', 1, () => {
-      this.props.router.toMain();
-    });
+    
   }
 
   render() {
     const data = this.state.outGoing.map((x) => { return {value: x.id, label: x.name}; });
 
     const users = this.state.outGoing[0].users.map((u) => { return {value:u.id, label:u.userName}; });
+
+    const alert = Modal.alert;
+
+    const loadingToast = { this };
 
     return (
       <View style={{ flex: 1, backgroundColor: 'white' }}>
@@ -230,7 +233,12 @@ class HandleTask extends Component {
               </List>
               <WhiteSpace size="sm" />
               <List.Item>
-                <Button type="primary" inline onClick={this.loadingToast}>提交申请单</Button>
+                <Button type="primary" inline onClick={() => alert('提交', '确定提交么?', [
+                  { text: '取消', onPress: () => console.log('cancel') },
+                  { text: '确定', onPress: () => { Toast.loading('正在提交...', 1, () => {
+                    this.props.router.toMain();
+                  }); }, style: { fontWeight: 'bold' } },
+                ])}>提交申请单</Button>
               </List.Item>
             </ScrollView>
           </View>
