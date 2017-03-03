@@ -1303,8 +1303,13 @@ class ViewContract extends Component {
       <TouchableHighlight onPress={() => { this.showDetails(rowData)}}>
         <View style={{ flex:1, flexDirection:'row', marginTop:5, marginBottom:5, marginLeft:5, borderBottomWidth:1, borderBottomColor: '#DDD' }}>
           <View style={{ flex:1, paddingLeft:5, paddingRight:5 }}>
-            <View >
-              <Text>合同名称:{rowData.description}</Text>
+            <View style={{ flex:1, flexDirection:'row', justifyContent: 'space-between' }}>
+              <View>
+                <Text>合同名称:{rowData.description}</Text>
+              </View>
+              <View>
+                <Icon name="ios-arrow-forward"></Icon>
+              </View>
             </View>
             <View >
               <Text>合同编号:{rowData.poNo}</Text>

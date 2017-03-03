@@ -4,7 +4,10 @@ import React, { Navigator } from 'react-native';
 import LoginPage from '../containers/login';
 import MainPage from '../containers/main';
 import ExaminePayment from '../containers/examinePayment';
+import ApplyPayment from '../containers/applyPayment';
+import PoItem from '../containers/poItem';
 import ContractDetails from '../containers/contractDetails';
+import HanleTask from '../containers/handleTask';
 
 // Config
 const sceneConfig = require('./sceneConfig')
@@ -24,7 +27,6 @@ class Router {
         route.index = nextIndex
         this.navigator.push(route)
     }
-
 
     pop() {
       this.navigator.pop()
@@ -46,6 +48,22 @@ class Router {
       })
     }
 
+    toApply(props) {
+      this.push(props, {
+        page: ApplyPayment,
+        name: 'applyContract-page',
+        sceneConfig: customFloatFromRight
+      })
+    }
+
+    toPoItem(props) {
+      this.push(props, {
+        page: PoItem,
+        name: 'poItem-page',
+        sceneConfig: customFloatFromRight
+      })
+    }
+
     toLogin(props){
       this.push(props, {
         page: LoginPage,
@@ -60,6 +78,23 @@ class Router {
         name: 'main-page',
         sceneConfig: customFloatFromRight
       })
+    }
+
+    toScence(scenceName, props) {
+      switch(scenceName) {
+        case 'examinePayment':
+          return this.toExamine(props);
+        default:
+          return;
+      }
+    }
+
+    toHandleTask(props) {
+      this.push(props, {
+        page: HanleTask,
+        name: 'handleTask-page',
+        sceneConfig: customFloatFromRight,
+      });
     }
 
     replaceWithHome() {

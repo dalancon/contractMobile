@@ -1,6 +1,6 @@
 /*
  *
- * Concern reducer
+ * Task reducer
  *
  */
 
@@ -14,7 +14,7 @@ const initialState = fromJS({
   current: 'todo',		//当前显示的Tab
 });
 
-function ConcernReducer(state = initialState, action) {
+function HandleTaskReducer(state = initialState, action) {
   // console.log(action);
   switch (action.type) {
     case DEFAULT_ACTION:
@@ -26,4 +26,4 @@ function ConcernReducer(state = initialState, action) {
   }
 }
 
-export default ConcernReducer;
+export default HandleTaskReducer;

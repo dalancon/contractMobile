@@ -15,16 +15,10 @@ import {
   List, 
   TabBar,
   Tabs,
-  Checkbox,
-  Radio,
-  Picker,
-  TextareaItem,
-  Button,
   WhiteSpace,
   Steps,
   WingBlank,
-  PickerView,
-  Popup, } from 'antd-mobile';
+ } from 'antd-mobile';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import {connect} from 'react-redux';
@@ -34,8 +28,7 @@ import formatter from '../../utils/formatter';
 
 import commonStyle from '../styles';
 
-const CheckboxItem = Checkbox.CheckboxItem;
-const RadioItem = Radio.RadioItem;
+
 const Step = Steps.Step;
 
 class ExaminePayment extends Component {
@@ -135,38 +128,6 @@ class ExaminePayment extends Component {
           "fileLevel": null,
           "fileShowSize": "13.54KB"
       }],
-      outGoing: [{
-        "id": "flow22",
-        "users": [{
-          "id": "chenchuhua",
-          "insertDate": null,
-          "modifyUser": null,
-          "userCode": null,
-          "insertUser": null,
-          "modifyDate": null,
-          "userName": "陈楚华",
-          "mobile": null,
-          "email": null
-        }],
-        "name": "审批通过",
-        "assignee": ["chenchuhua"]
-      }, {
-        "id": "flow13",
-        "users": [{
-          "id": "xiao_yunqing",
-          "insertDate": null,
-          "modifyUser": null,
-          "userCode": null,
-          "insertUser": null,
-          "modifyDate": null,
-          "userName": "肖云晴",
-          "mobile": null,
-          "email": null
-        }],
-        "name": "退回预算管理员",
-        "assignee": null
-      }],
-      outGoingValue: '',
       current: '1',
       history: [{
         "taskName": "信息中心处室/分中心项目负责人发起/修改申请",
@@ -212,92 +173,22 @@ class ExaminePayment extends Component {
     this.props.router.pop();
   }
 
-  onChange(value) {
-    console.log('checkbox');
-    this.setState({
-      outGoingValue: value,
-    });
+  _handle = () => {
+    this.props.router.toHandleTask({ outGoing: this.state.outGoing });
   }
 
   // 附件预览
   renderAssociateFiles() {
     const associateFile = this.state.associateFile;
-    return (<View>
-      {this.state.associateFile.map((file, index) => <Text key={index}>{file.fileShowName}</Text>)}
-    </View>);
-  }
-
-  onPressComment = () => {
-    const seasons = [
-      [
-        {
-          label: '2013',
-          value: '2013',
-        },
-        {
-          label: '2014',
-          value: '2014',
-        },
-      ],
-      [
-        {
-          label: '春',
-          value: '春',
-        },
-        {
-          label: '夏',
-          value: '夏',
-        },
-      ],
-    ];
-
-    const data = this.state.outGoing.map((x) => { return {value: x.id, label: x.name}; });
-
-    const { outGoingValue } = this.state;
-
-    Popup.show(
-      (
-        <List renderHeader={() => (
-          <View style={{ backgroundColor:'#eee'}}>
-            <WhiteSpace/>
-              <WingBlank  style={{ flexDirection:'row', justifyContent: 'space-between' }}>
-                <View><Text >常用意见</Text></View>
-                <View><TouchableOpacity onPress={() => Popup.hide()}><Icon size={24} name="ios-close" /></TouchableOpacity></View>
-              </WingBlank>
-            <WhiteSpace/>
-          </View>)}
-        >
-          {data.map(i => (
-            <RadioItem key={i.value} checked={outGoingValue === i.value} onChange={() => this.onChange(i.value)}>
-              {i.label}
-            </RadioItem>
-          ))}
-        </List>
-       ), { animationType: 'slide-up', maskClosable: true });
+    return (
+      <View>
+        {this.state.associateFile.map((file, index) => (<List.Item key={index}>{file.fileShowName}</List.Item>))}
+      </View>
+    );
   }
 
   render() {
     let { user } = this.props;
-
-    const routes = [
-      {title: 'Todo Scence', index:0},
-      {title: 'Contract Scence', index:1},
-      {title: 'Concern Scence', index:2},
-      {title: 'My Scence', index:3},
-      {title: 'ExaminePayment Scence', index:4},
-    ];
-
-    console.log('mainPage:', this.props);
-
-    const { outGoingValue } = this.state;
-
-    const data = this.state.outGoing.map((x) => { return {value: x.id, label: x.name}; });
-
-    const users = this.state.outGoing[0].users.map((u) => { return {value:u.id, label:u.userName}; });
-
-    console.log(users);
-
-/// <Icon name="ios-arrow-back" color='white' size={16}><Text style={{ color:'white', fontSize: 14 }}>待办</Text></Icon>
     return (
       <View style={[commonStyle.wrapper]}>
         <View style={[commonStyle.header]}>
@@ -305,6 +196,9 @@ class ExaminePayment extends Component {
             <Icon name="ios-arrow-back" color='white' size={16}><Text style={{ color:'white', fontSize: 14 }}>返回</Text></Icon>
           </TouchableOpacity>
           <Text style={[commonStyle.headerTitle]} numberOfLines={1}>审批支付单</Text>
+          <TouchableOpacity style={{ zIndex:1, position:'absolute', right:12, top:12, flexDirection: 'row', alignItems:'center' }} onPress={this._handle}>
+            <Icon name="ios-create-outline" color='white' size={24}></Icon>
+          </TouchableOpacity>
         </View>
         <View style={{ flex: 1, backgroundColor: 'white' }}>
           <Tabs tabBarPosition="bottom" defaultActiveKey="1" activeKey={this.state.current}
@@ -333,52 +227,16 @@ class ExaminePayment extends Component {
                   <List.Item wrap={true} extra={this.state.invoice.bankName}>收款单位开户银行</List.Item>
                   <List.Item wrap={true} extra={this.state.invoice.bankAccountNo}>收款单位账号</List.Item>
                   <List.Item extra={this.state.invoice.remark}>备注</List.Item>
-                  <List.Item wrap={true} extra={this.renderAssociateFiles()}>附件</List.Item>
+                </List>
+                <List renderHeader={() => '相关附件'}>
+                  {
+                    this.renderAssociateFiles()
+                  }
                 </List>
               </ScrollView>
             </Tabs.TabPane>
-            <Tabs.TabPane tab="处理" key="2">
-              <List renderHeader={() => '下一环节'}>
-                {data.map(i => (
-                  <RadioItem key={i.value} checked={outGoingValue === i.value} onChange={() => this.onChange(i.value)}>
-                    {i.label}
-                  </RadioItem>
-                ))}
-              </List>
-              <List renderHeader={() => '人员'}>
-                <Picker data={users}  cols={1}>
-                  <List.Item arrow="horizontal">处理人</List.Item>
-                </Picker>
-                <Picker data={users} cols={1}>
-                  <List.Item arrow="horizontal">流程关注人</List.Item>
-                </Picker>
-              </List>
-              <List renderHeader={() => (
-                <View >
-                  <WhiteSpace/>
-                    <WingBlank  style={{ flexDirection:'row', justifyContent: 'space-between' }}>
-                      <View><Text >处理意见</Text></View>
-                      <TouchableOpacity onPress={this.onPressComment}>
-                        <View style={{ borderColor:'#CCC', borderWidth:1, borderRadius:3 }}>
-                          <Text>常用意见<Icon name="ios-arrow-down"></Icon></Text>
-                        </View>
-                      </TouchableOpacity>
-                    </WingBlank>
-                  <WhiteSpace/>
-                </View>)}>
-                <TextareaItem
-                  clear
-                  rows={3}
-                  count={100}
-                />
-              </List>
-              <WhiteSpace size="sm" />
-              <List.Item>
-                <Button type="primary" inline>提交申请单</Button>
-              </List.Item>
-
-            </Tabs.TabPane>
-            <Tabs.TabPane tab="流转历史" key="3">
+            <Tabs.TabPane tab="流转历史" key="2">
+              <WhiteSpace/>
               <WingBlank>
                 <Steps size="small" current={this.state.history.length-2}>
                   { 

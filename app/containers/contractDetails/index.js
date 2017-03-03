@@ -12,9 +12,12 @@ import {
   Navigator,
 } from 'react-native';
 
-import { List, SearchBar, Tabs } from 'antd-mobile';
+import { List, SearchBar, Tabs, ActionSheet } from 'antd-mobile';
 
 import Icon from 'react-native-vector-icons/Ionicons';
+
+import Icon2 from 'react-native-vector-icons/FontAwesome';
+
 import {connect} from 'react-redux';
 import NavigatorBar from 'react-native-navbar';
 import makeSelectContractDetails from './selectors';
@@ -295,17 +298,10 @@ class ContractDetails extends Component {
     this.props.router.pop();
   }
 
-  // "poItem": "1505",
-  //       "incurredFcostsTotal": 142960,
-  //       "ptdCommitmentQty": 1,
-  //       "description": "集团公司企业信息内网与外网隔离建设",
-  //       "unitDescription": "项",
-  //       "incurredPrice": 214440,
-  //       "incurredQtyTotal": 1,
-  //       "unitOfMeasure": "LOT",
-  //       "ptdCommitmentFrate": 214440,
-  //       "currency": "RMB"
-  
+  _toApply = () => {
+    this.props.router.toApply({contract: this.state.contractInfo});
+  }
+
   renderRow = (rowData) => {
     return (
       <TouchableHighlight>
@@ -317,7 +313,7 @@ class ContractDetails extends Component {
             <View >
               <Text>报价单描述:{rowData.description}</Text>
             </View>
-            <View style={{ flex:1, flexDirection:'row', justifyContent: 'space-between' }}>
+            <View>
               <View>
                 <Text>合同数量:{rowData.ptdCommitmentQty}</Text>
               </View>
@@ -339,8 +335,29 @@ class ContractDetails extends Component {
     );
   }
 
+  showActionSheet = () => {
+    const BUTTONS = ['申请支付单','申请质保金', '取消'];
+
+    let wrapProps = {
+      onTouchStart: e => e.preventDefault(),
+    };
+    
+
+    ActionSheet.showActionSheetWithOptions({
+      options: BUTTONS,
+      message: '操作',
+      maskClosable: true,
+      'data-seed': 'logId',
+      wrapProps,
+    },
+    (buttonIndex) => {
+      if(buttonIndex == 0) {
+        this.props.router.toApply();
+      }
+    });
+  }
+
   render() {
-/// <Icon name="ios-arrow-back" color='white' size={16}><Text style={{ color:'white', fontSize: 14 }}>待办</Text></Icon>
     return (
       <View style={{ flex: 1, backgroundColor: 'white' }}>
         <View style={[commonStyle.wrapper]}>
@@ -349,6 +366,9 @@ class ContractDetails extends Component {
               <Icon name="ios-arrow-back" color='white' size={16}><Text style={{ color:'white', fontSize: 14 }}>返回</Text></Icon>
             </TouchableOpacity>
             <Text style={[commonStyle.headerTitle]} numberOfLines={1}>合同明细</Text>
+            <TouchableOpacity style={{ zIndex:1, position:'absolute', right:12, top:16, flexDirection: 'row', alignItems:'center' }} onPress={this.showActionSheet}>
+              <Icon2 name="pencil" color='white' size={16}></Icon2>
+            </TouchableOpacity>
           </View>
           <View style={{ flex: 1, backgroundColor: 'white' }}>
             <Tabs tabBarPosition="bottom" defaultActiveKey="1" activeKey={this.state.current}

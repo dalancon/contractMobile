@@ -27,7 +27,7 @@ import { setTab } from './actions';
 import TodoPage from '../todo';
 import ExaminePayment from '../examinePayment';
 import ViewContract from '../viewContract';
-import Concern from '../concern';
+import Task from '../task';
 import My from '../my';
 
 class MainPage extends Component {
@@ -51,8 +51,8 @@ class MainPage extends Component {
         return <TodoPage router={this.props.router} />;
       case 'Contract Scence':
         return <ViewContract router={this.props.router} />;
-      case 'Concern Scence':
-        return <Concern router={this.props.router} />;
+      case 'Task Scence':
+        return <Task router={this.props.router} />;
       default:
         return (
           <View style={{ backgroundColor: 'white', flex: 1 }}><Text>123</Text></View>
@@ -106,19 +106,6 @@ class MainPage extends Component {
               data-seed="logId"
             >
               <ViewContract router={this.props.router} />
-            </TabBar.Item>
-            <TabBar.Item
-              title="关注"
-              key="concern"
-              icon={require('../../public/imgs/ios7-eye-outline.png')}
-              selectedIcon={require('../../public/imgs/eye.png')}
-              selected={this.props.current === 'concern'}
-              onPress={() => {
-                this.props.dispatch(setTab('concern'));
-              }}
-              data-seed="logId"
-            >
-              <Concern router={this.props.router} />
             </TabBar.Item>
             <TabBar.Item
               title="我的"
