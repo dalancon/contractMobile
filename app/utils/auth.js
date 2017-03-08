@@ -22,8 +22,9 @@ function login (url) {
   return promise
 }
 
+
 module.exports = {
-  login,
+  login ,
   getToken: function () {
     return sessionStorage.token
   },

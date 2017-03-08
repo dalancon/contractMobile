@@ -228,14 +228,14 @@ class ExaminePayment extends Component {
                   <List.Item wrap={true} extra={this.state.invoice.bankAccountNo}>收款单位账号</List.Item>
                   <List.Item extra={this.state.invoice.remark}>备注</List.Item>
                 </List>
-                <List renderHeader={() => '相关附件'}>
-                  {
-                    this.renderAssociateFiles()
-                  }
-                </List>
               </ScrollView>
             </Tabs.TabPane>
-            <Tabs.TabPane tab="流转历史" key="2">
+            <Tabs.TabPane tab="附件" key="2">
+              {
+                this.renderAssociateFiles()
+              }
+            </Tabs.TabPane>
+            <Tabs.TabPane tab="流转历史" key="3">
               <WhiteSpace/>
               <WingBlank>
                 <Steps size="small" current={this.state.history.length-2}>

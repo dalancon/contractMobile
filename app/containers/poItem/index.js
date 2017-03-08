@@ -179,7 +179,7 @@ class PoItem extends Component {
               <Text>BOQ:{rowData.poItem}</Text>
             </View>
             <View>
-              <Text style={{ fontSize:12 }}>{rowData.description}</Text>
+              <Text style={{ fontSize:14 }}>{rowData.description}</Text>
             </View>
           </View>
           <View style={{ flex:1, flexDirection:'row', justifyContent: 'space-between' }}>
@@ -190,7 +190,7 @@ class PoItem extends Component {
               <Text>已支付:{rowData.incurredQtyTotal}</Text>      
             </View>
             <View> 
-              <Tag selected={rowData.isAdd} small >添加</Tag>
+              <Tag selected={rowData.isAdd} small>添加</Tag>
             </View>
           </View>
         </View>

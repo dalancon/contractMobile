@@ -1,6 +1,7 @@
+import config from '../constants.js';
 
 export function userInfo() {
-  return fetch(`/qdp/qdp/login/user?${new Date().getTime()}`,
+  return fetch(`${config.baseUrl}/qdp/qdp/login/user`,
     {
       method: 'GET',
       headers: {
@@ -12,7 +13,8 @@ export function userInfo() {
 }
 
 export function login(url) {
-  return fetch(url,
+
+  return fetch(`${config.baseUrl}${url}`,
     {
       method: 'POST',
       headers: {

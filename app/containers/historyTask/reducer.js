@@ -1,6 +1,6 @@
 /*
  *
- * TodoPage reducer
+ * HistoryTask reducer
  *
  */
 
@@ -11,10 +11,10 @@ import {
 } from './constants';
 
 const initialState = fromJS({
-  current: 'todo',		//当前显示的Tab
+  current: 'history',		//当前显示的Tab
 });
 
-function TodoPageReducer(state = initialState, action) {
+function HistoryTaskReducer(state = initialState, action) {
   // console.log(action);
   switch (action.type) {
     case DEFAULT_ACTION:
@@ -26,6 +26,6 @@ function TodoPageReducer(state = initialState, action) {
   }
 }
 
-export default TodoPageReducer;
+export default HistoryTaskReducer;
 
 

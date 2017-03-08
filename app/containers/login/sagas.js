@@ -5,15 +5,33 @@ import {
   LOGINSUCCESS_ACTION,
 } from './constants';
 
+import { loginSuccess, loginFailed } from './actions';
+
+import { login } from '../../apis/login';
+
 // Individual exports for testing
 export function* loginSaga() {
   yield* takeEvery(LOGIN_ACTION, _login);
 }
 
-function* _login() {
-  yield put({ type: LOGINSUCCESS_ACTION });
-}
+function* _login(action) {
+  try {
+    let result = yield Promise.all([
+      login(action.url),
+    ]);
 
+    result = yield result.map((x) => x.json())[0];
+
+    if (result) {
+      yield put(loginSuccess());
+    } else {
+      yield put(loginFailed('登陆失败'));
+    }
+
+  } catch (err) {
+    yield put(loginFailed());
+  }
+}
 
 // All sagas to be loaded
 export default [

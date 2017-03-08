@@ -31,6 +31,22 @@ class My extends Component {
     }
   }
 
+  _toScence = (index) => {
+    switch(index) {
+      case 0:
+        this.props.router.toPassTask();
+        return;
+      case 1:
+        this.props.router.toHistoryTask();
+        return;
+      case 2:
+        this.props.router.toParticipantTask();
+        return;
+      default:
+        return;
+    }
+  }
+
   render() {
 
     const data = [{
@@ -45,6 +61,9 @@ class My extends Component {
     }, {
       icon: 'ios-basket-outline',
       text: '草稿箱',
+    },{
+      icon: 'ios-exit-outline',
+      text: '退出'
     }]
 
     return (
@@ -57,8 +76,12 @@ class My extends Component {
             <Grid hasLine={true} data={data} columnNum={3} renderItem={(el , index) => {
               return (
                 <View style={{ flex:1, flexDirection:'column', justifyContent:'center', alignItems: 'center' }}>
-                  <Icon name={el.icon} size={24}></Icon>
-                  <Text>{el.text}</Text>
+                  <TouchableHighlight onPress={ () => this._toScence(index)}>
+                    <View style={{ alignItems: 'center' }}>
+                      <Icon name={el.icon} size={24}></Icon>
+                      <Text>{el.text}</Text>
+                    </View>
+                  </TouchableHighlight>
                 </View>
               );
             }}/>

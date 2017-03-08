@@ -7,6 +7,7 @@ import {
   ListView,
   ScrollView,
   TouchableHighlight,
+  TouchableOpacity,
   Image,
   Navigator, } from 'react-native';
 import { TabBar, SearchBar, Tabs, Badge, WhiteSpace, Tag, Flex }from 'antd-mobile';
@@ -14,14 +15,14 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import {connect} from 'react-redux';
 import NavigatorBar from 'react-native-navbar';
-import makeSelectTodoPage from './selectors';
+import makeSelectParticipantTask from './selectors';
 import formatter from '../../utils/formatter';
 
 import commonStyle from '../styles';
 
 const TabPane = TabBar.TabPane;
 
-class TodoPage extends Component {
+class ParticipantTask extends Component {
   constructor(props){
     super(props);
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -140,11 +141,18 @@ class TodoPage extends Component {
     );
   }
 
+  _back = () => {
+    this.props.router.pop();
+  }
+
   render() {
     return (
       <View style={{ flex: 1, backgroundColor: 'white' }}>
         <View style={[commonStyle.header]}>
-          <Text style={[commonStyle.headerTitle]}>待办事项</Text>
+          <Text style={[commonStyle.headerTitle]}>关注事项</Text>
+          <TouchableOpacity style={{ zIndex:1, position:'absolute', left:12, top:16, flexDirection: 'row', alignItems:'center' }} onPress={this._back}>
+            <Icon name="ios-arrow-back" color='white' size={16}><Text style={{ color:'white', fontSize: 14 }}>返回</Text></Icon>
+          </TouchableOpacity>
         </View>
         <SearchBar placeholder="搜索" />
         <Tabs activeKey={this.state.current}
@@ -176,11 +184,11 @@ class TodoPage extends Component {
   }
 }
 
-TodoPage.propTypes = {
+ParticipantTask.propTypes = {
   dispatch: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = makeSelectTodoPage();
+const mapStateToProps = makeSelectParticipantTask();
 
 function mapDispatchToProps(dispatch) {
   return {
@@ -188,4 +196,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TodoPage);
+export default connect(mapStateToProps, mapDispatchToProps)(ParticipantTask);

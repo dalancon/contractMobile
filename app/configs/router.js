@@ -8,108 +8,141 @@ import ApplyPayment from '../containers/applyPayment';
 import PoItem from '../containers/poItem';
 import ContractDetails from '../containers/contractDetails';
 import HanleTask from '../containers/handleTask';
+import ParticipantTask from '../containers/participantTask';
+import PassTask from '../containers/passTask';
+import HistoryTask from '../containers/historyTask';
+import TodoTask from '../containers/todoTask';
 
 // Config
 const sceneConfig = require('./sceneConfig')
 
 const customFloatFromRight = sceneConfig.customFloatFromRight;
 
-
 class Router {
-    constructor(navigator) {
-        this.navigator = navigator
+  constructor(navigator) {
+      this.navigator = navigator
+  }
+
+  push(props, route) {
+      let routesList = this.navigator.getCurrentRoutes()
+      let nextIndex = routesList[routesList.length - 1].index + 1
+      route.props = props
+      route.index = nextIndex
+      this.navigator.push(route)
+  }
+
+  pop() {
+    this.navigator.pop()
+  }
+
+  toPassTask(props) {
+    this.push(props, {
+      page: PassTask,
+      name: 'contractDetails-page',
+      sceneConfig: customFloatFromRight,
+    })
+  }
+
+  toParticipantTask(props) {
+    this.push(props, {
+      page: ParticipantTask,
+      name: 'contractDetails-page',
+      sceneConfig: customFloatFromRight,
+    })
+  }
+
+  toHistoryTask(props) {
+    this.push(props, {
+      page: HistoryTask,
+      name: 'contractDetails-page',
+      sceneConfig: customFloatFromRight,
+    })
+  }
+
+  toTodoTask(props) {
+    this.push(props, {
+      page: TodoTask,
+      name: 'contractDetails-page',
+      sceneConfig: customFloatFromRight,
+    })
+  }
+
+  toContractDetails(props) {
+    this.push(props, {
+      page: ContractDetails,
+      name: 'contractDetails-page',
+      sceneConfig: customFloatFromRight,
+    })
+  }
+
+  toExamine(props) {
+    this.push(props, {
+      page: ExaminePayment,
+      name: 'examineContract-page',
+      sceneConfig: customFloatFromRight
+    })
+  }
+
+  toApply(props) {
+    this.push(props, {
+      page: ApplyPayment,
+      name: 'applyContract-page',
+      sceneConfig: customFloatFromRight
+    })
+  }
+
+  toPoItem(props) {
+    this.push(props, {
+      page: PoItem,
+      name: 'poItem-page',
+      sceneConfig: customFloatFromRight
+    })
+  }
+
+  toLogin(props){
+    this.push(props, {
+      page: LoginPage,
+      name: 'login-page',
+      sceneConfig: customFloatFromRight
+    })
+  }
+
+  toMain(props){
+    this.push(props, {
+      page: MainPage,
+      name: 'main-page',
+      sceneConfig: customFloatFromRight
+    })
+  }
+
+  toScence(scenceName, props) {
+    switch(scenceName) {
+      case 'examinePayment':
+        return this.toExamine(props);
+      default:
+        return;
     }
+  }
 
-    push(props, route) {
-        let routesList = this.navigator.getCurrentRoutes()
-        let nextIndex = routesList[routesList.length - 1].index + 1
-        route.props = props
-        route.index = nextIndex
-        this.navigator.push(route)
-    }
+  toHandleTask(props) {
+    this.push(props, {
+      page: HanleTask,
+      name: 'handleTask-page',
+      sceneConfig: customFloatFromRight,
+    });
+  }
 
-    pop() {
-      this.navigator.pop()
-    }
+  replaceWithHome() {
+    this.navigator.popToTop()
+  }
 
-    toContractDetails(props) {
-      this.push(props, {
-        page: ContractDetails,
-        name: 'contractDetails-page',
-        sceneConfig: customFloatFromRight,
-      })
-    }
-
-    toExamine(props) {
-      this.push(props, {
-        page: ExaminePayment,
-        name: 'examineContract-page',
-        sceneConfig: customFloatFromRight
-      })
-    }
-
-    toApply(props) {
-      this.push(props, {
-        page: ApplyPayment,
-        name: 'applyContract-page',
-        sceneConfig: customFloatFromRight
-      })
-    }
-
-    toPoItem(props) {
-      this.push(props, {
-        page: PoItem,
-        name: 'poItem-page',
-        sceneConfig: customFloatFromRight
-      })
-    }
-
-    toLogin(props){
-      this.push(props, {
-        page: LoginPage,
-        name: 'login-page',
-        sceneConfig: customFloatFromRight
-      })
-    }
-
-    toMain(props){
-      this.push(props, {
-        page: MainPage,
-        name: 'main-page',
-        sceneConfig: customFloatFromRight
-      })
-    }
-
-    toScence(scenceName, props) {
-      switch(scenceName) {
-        case 'examinePayment':
-          return this.toExamine(props);
-        default:
-          return;
-      }
-    }
-
-    toHandleTask(props) {
-      this.push(props, {
-        page: HanleTask,
-        name: 'handleTask-page',
-        sceneConfig: customFloatFromRight,
-      });
-    }
-
-    replaceWithHome() {
-        this.navigator.popToTop()
-    }
-
-    resetToLogin(){
-        this.navigator.resetTo({
-            name: 'login-page',
-            page: LoginPage,
-            //sceneConfig: customFloatFromRight,
-        })
-    }
-
-
+  resetToLogin(){
+    this.navigator.resetTo({
+      name: 'login-page',
+      page: LoginPage,
+      sceneConfig: customFloatFromRight,
+    })
+  }
 }
 
 module.exports = Router

@@ -2,10 +2,9 @@
 import React, { PropTypes, Component } from 'react';
 import { createStructuredSelector } from 'reselect';
 import makeSelectLoginPage from './selectors';
-import { Button } from 'antd-mobile';
-// import Button from 'antd-mobile/lib/button';
-// import { Card, WingBlank, WhiteSpace } from 'antd-mobile';
-import InputItem from 'antd-mobile/lib/input-item';
+import { Button, InputItem, Toast } from 'antd-mobile';
+import { createForm } from 'rc-form';
+import md5Hex from 'md5-hex';
 
 import {
   Text,
@@ -21,20 +20,12 @@ import {connect} from 'react-redux';
 import ModalBox from 'react-native-modalbox';
 import Spinner from 'react-native-spinkit';
 
-import { logIn, skipLogin } from './actions';
+import { loginAction, skipLogin } from './actions';
 
 import commonStyle from '../styles';
 import loginStyle from './styles';
 
 class LoginPage extends Component{
-  // constructor(props){
-  //   super(props);
-  //   this.state = {
-  //     username: 'sup1',
-  //     password: '123456',
-  //     btnFlag: true,
-  //   };
-  // }
 
   componentWillReceiveProps(nextProps) {
     console.log("LoginPage-componentWillReceiveProps:", nextProps);
@@ -42,62 +33,61 @@ class LoginPage extends Component{
       this.toMain();
       return false;
     }
+    if(nextProps.message && this.props.message !== nextProps.message) {
+      Toast.fail(nextProps.message, 1);
+    }
   }
 
   toMain() {
     let {router} = this.props;
-    console.log('toMain');
     router.toMain();
   }
 
-
   shouldComponentUpdate(nextProps, nextState){
     if(nextProps.isLoggedIn != this.props.isLoggedIn && nextProps.isLoggedIn === true){
-        //will redirect
-        
         this.refs.modal.close();
         this.toMain();
         return false;
     }
-    if(nextProps.status == 'doing'){
-        //loggining
-        this.refs.modal.open();
-        return false;
-    }
-    if(nextProps.status == 'error' || nextProps.status == 'done'){
-        this.refs.modal.close();
-        return false;
-    }
-
     return true;
   }
 
-  toMain(){
-    const {router} = this.props;
-    router.toMain();
+  genertateOaSsoUrl(oaAccount) {
+    const uid = oaAccount;
+    // 获取当前日期 yyyyMMdd
+    let today = new Date();
+    const year = today.getFullYear();
+    let month = today.getMonth() + 1;
+    if (month < 10) {
+      month = '0' + month;
+    }
+    let date = today.getDate();
+    if (date < 10) {
+      date = '0' + date;
+    }
+    today = '' + year + month + date;
+    const prefix = 'oa123qwe!';
+    const suffix = '###';
+    let pid = prefix + today + uid + suffix;
+    pid = md5Hex(pid);
+    let ruid = 'todo';
+    ruid = md5Hex(ruid);
+    const url = '/qdp/qdp/login/sso/oa?uid=' + uid + '&pid=' + pid + '&ruid=' + ruid;
+    return url;
   }
 
-  handleLogin = ()=>{
-    this.props.dispatch(logIn());
-  }
-
-  handleRegister(){
-    const {dispatch} = this.props;
-    dispatch(skipLogin());
-  }
-
-  onChangeName(text){
-    this.setState({'username': text});
-  }
-
-  onChangePswd(text){
-    this.setState({'password': text});
+  handleLogin = () => {
+    Toast.loading('登录中...', 1, () => {
+      const url = this.genertateOaSsoUrl(this.props.form.getFieldsValue().uid);
+      this.props.dispatch(loginAction(url));
+    });
   }
 
   render(){
-    console.log('login:', this.props);
+    const { getFieldProps } = this.props.form;
+
     return (
-      <View style={[commonStyle.wrapper, loginStyle.loginWrap]}>
+      <View style={{ flex:1}}>
         <View style={{
           flex:1,
           flexDirection: 'row',
@@ -108,12 +98,14 @@ class LoginPage extends Component{
         </View>
         <View style={{ backgroundColor:'#FFF' , flex:1 }}>
           <InputItem
+            {...getFieldProps('uid')}
             clear
             placeholder="输入OA账号"
           ></InputItem>
           <InputItem
             clear
             placeholder="密码"
+            type="password"
           ></InputItem>
         </View>
         <View style={{ margin: 10 }}>
@@ -141,4 +133,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);
+export default connect(mapStateToProps, mapDispatchToProps)(createForm()(LoginPage));

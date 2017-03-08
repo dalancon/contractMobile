@@ -1,8 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- */
-
 import React, { PropTypes, Component } from 'react';
 import {   
   StyleSheet,
@@ -12,31 +7,24 @@ import {
   Navigator, } from 'react-native';
 import {connect} from 'react-redux';
 import NavigatorBar from 'react-native-navbar';
-// import Icon from 'react-native-vector-icons/Ionicons';
-
 import { TabBar, Icon, SearchBar }from 'antd-mobile'; 
-
-// import { TabBarItem } from 'antd-mobile/lib/tab-bar/TabBarItem';
 
 import LoginPage from '../login';
 import makeSelectMainPage from './selectors';
 import commonStyle from '../styles';
 
-import { setTab } from './actions';
+import { setTab, fetchUser, } from './actions';
 
-import TodoPage from '../todo';
+import TodoTask from '../todoTask';
 import ExaminePayment from '../examinePayment';
 import ViewContract from '../viewContract';
 import Task from '../task';
 import My from '../my';
 
 class MainPage extends Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      selectedTab: 'redTab',
-      hidden: false,
-    }
+
+  componentDidMount() {
+    this.props.dispatch(fetchUser());  
   }
 
   toLogin(){
@@ -45,10 +33,9 @@ class MainPage extends Component {
   }
 
   renderScene = (title) => {
-
     switch (title) {
       case 'Todo Scence':
-        return <TodoPage router={this.props.router} />;
+        return <TodoTask router={this.props.router} />;
       case 'Contract Scence':
         return <ViewContract router={this.props.router} />;
       case 'Task Scence':
@@ -60,70 +47,56 @@ class MainPage extends Component {
     }
   }
 
-
-
-
   render() {
     let {user} = this.props;
-    return (
-      <View style={[commonStyle.wrapper]}>
-        <View  style={{
-          flex:1,
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }} >
+    console.log('main', this.props);
 
-          <TabBar
-            unselectedTintColor="#949494"
-            tintColor="#33A3F4"
-            barTintColor="white"
-            hidden={false}
+    return (
+
+        <TabBar
+          unselectedTintColor="#949494"
+          tintColor="#33A3F4"
+          barTintColor="white"
+          hidden={false}
+        >
+          <TabBar.Item
+            title="待办"
+            key="todo"
+            icon={require('../../public/imgs/ios7-calendar-outline.png')}
+            selectedIcon={require('../../public/imgs/ios7-calendar.png')}
+            selected={this.props.current === 'todo'}
+            badge={2}
+            onPress={() => {
+              this.props.dispatch(setTab('todo'));
+            }}
           >
-            <TabBar.Item
-              title="待办"
-              key="todo"
-              icon={require('../../public/imgs/ios7-calendar-outline.png')}
-              selectedIcon={require('../../public/imgs/ios7-calendar.png')}
-              selected={this.props.current === 'todo'}
-              badge={2}
-              onPress={() => {
-                this.props.dispatch(setTab('todo'));
-              }}
-              data-seed="logId"
-            >
-              <TodoPage router={this.props.router} />
-            </TabBar.Item>
-            <TabBar.Item
-              title="合同"
-              key="contract"
-              icon={require('../../public/imgs/ios7-paper-outline.png')}
-              selectedIcon={require('../../public/imgs/ios7-paper.png')}
-              selected={this.props.current === 'contract'}
-              onPress={() => {
-                this.props.dispatch(setTab('contract'));
-              }}
-              data-seed="logId"
-            >
-              <ViewContract router={this.props.router} />
-            </TabBar.Item>
-            <TabBar.Item
-              title="我的"
-              key="my"
-              icon={require('../../public/imgs/ios7-person-outline.png')}
-              selectedIcon={require('../../public/imgs/ios7-person.png')}
-              selected={this.props.current === 'my'}
-              onPress={() => {
-                this.props.dispatch(setTab('my'));
-              }}
-              data-seed="logId"
-            >
-              <My router={this.props.router} />
-            </TabBar.Item>
-          </TabBar>
-        </View>
-      </View>
-      );
+            <TodoTask router={this.props.router} />
+          </TabBar.Item>
+          <TabBar.Item
+            title="合同"
+            key="contract"
+            icon={require('../../public/imgs/ios7-paper-outline.png')}
+            selectedIcon={require('../../public/imgs/ios7-paper.png')}
+            selected={this.props.current === 'contract'}
+            onPress={() => {
+              this.props.dispatch(setTab('contract'));
+            }}
+          >
+            <ViewContract router={this.props.router} />
+          </TabBar.Item>
+          <TabBar.Item
+            title="我的"
+            key="my"
+            icon={require('../../public/imgs/ios7-person-outline.png')}
+            selectedIcon={require('../../public/imgs/ios7-person.png')}
+            selected={this.props.current === 'my'}
+            onPress={() => {
+              this.props.dispatch(setTab('my'));
+            }}
+          >
+            <My router={this.props.router} />
+          </TabBar.Item>
+        </TabBar>    );
 
   }
 

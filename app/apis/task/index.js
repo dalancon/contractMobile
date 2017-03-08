@@ -1,4 +1,5 @@
-import { encodeQueryString } from 'utils/formUtils';
+import { encodeQueryString } from '../../utils/formUtils';
+import config from '../constants.js';
 
 // 获取待办事项的数目
 export function fetchTodoTaskCount() {
@@ -15,7 +16,7 @@ export function fetchTodoTaskCount() {
 
 // 查询任务
 export function fetchTask(taskType, queryParams) {
-  return fetch(`/qdp/qdp/payment/bpm/task/query/${taskType}Task?${encodeQueryString(queryParams)}`,
+  return fetch(`${config.baseUrl}/qdp/qdp/payment/bpm/task/query/${taskType}Task?${encodeQueryString(queryParams)}`,
     {
       method: 'GET',
       headers: {
