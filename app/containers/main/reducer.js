@@ -9,11 +9,13 @@ import {
   DEFAULT_ACTION,
   SETTAB_ACTION,
   SETUSER_ACTION,
+  SETHIDDEN_ACTION,
 } from './constants';
 
 const initialState = fromJS({
   current: 'todo',		//当前显示的Tab
   loginUser: null,
+  hidden: false,  // 是否隐藏TABBAR
 });
 
 function MainReducer(state = initialState, action) {
@@ -24,6 +26,8 @@ function MainReducer(state = initialState, action) {
       return state.set('current', action.current);
     case SETUSER_ACTION:
       return state.set('loginUser', action.user);
+    case SETHIDDEN_ACTION:
+      return state.set('hidden', action.hidden);
     default:
       return state;
   }

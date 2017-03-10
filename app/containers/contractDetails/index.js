@@ -362,12 +362,12 @@ class ContractDetails extends Component {
       <View style={{ flex: 1, backgroundColor: 'white' }}>
         <View style={[commonStyle.wrapper]}>
           <View style={[commonStyle.header]}>
-            <TouchableOpacity style={{ zIndex:1, position:'absolute', left:12, top:16, flexDirection: 'row', alignItems:'center' }} onPress={this._back}>
-              <Icon name="ios-arrow-back" color='white' size={16}><Text style={{ color:'white', fontSize: 14 }}>返回</Text></Icon>
+            <TouchableOpacity style={[ commonStyle.headerLeftIcon ]} onPress={this._back}>
+              <Icon name="ios-arrow-back" color='white' size={18}><Text style={{ color:'white', fontSize: 18 }}>返回</Text></Icon>
             </TouchableOpacity>
             <Text style={[commonStyle.headerTitle]} numberOfLines={1}>合同明细</Text>
-            <TouchableOpacity style={{ zIndex:1, position:'absolute', right:12, top:16, flexDirection: 'row', alignItems:'center' }} onPress={this.showActionSheet}>
-              <Icon2 name="pencil" color='white' size={16}></Icon2>
+            <TouchableOpacity style={[ commonStyle.headerRightIcon ]} onPress={this.showActionSheet}>
+              <Icon2 name="pencil" color='white' size={20}></Icon2>
             </TouchableOpacity>
           </View>
           <View style={{ flex: 1, backgroundColor: 'white' }}>

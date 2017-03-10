@@ -198,20 +198,15 @@ class PoItem extends Component {
     );
   }
 
-  /*<TouchableOpacity style={{ zIndex:1, position:'absolute', right:12, top:16, flexDirection: 'row', alignItems:'center' }} onPress={this.showActionSheet}>
-              <Text style={{ color:'white', fontSize: 14 }}>确定</Text>
-            </TouchableOpacity> */
-
   render() {
     return (
       <View style={{ flex: 1, backgroundColor: 'white' }}>
         <View style={[commonStyle.wrapper]}>
           <View style={[commonStyle.header]}>
-            <TouchableOpacity style={{ zIndex:1, position:'absolute', left:12, top:16, flexDirection: 'row', alignItems:'center' }} onPress={this._back}>
-              <Icon name="ios-arrow-back" color='white' size={16}><Text style={{ color:'white', fontSize: 14 }}>返回</Text></Icon>
+            <TouchableOpacity style={[ commonStyle.headerLeftIcon ]} onPress={this._back}>
+              <Icon name="ios-arrow-back" color='white' size={18}><Text style={{ color:'white', fontSize: 18 }}>返回</Text></Icon>
             </TouchableOpacity>
             <Text style={[commonStyle.headerTitle]} numberOfLines={1}>合同细项</Text>
-
           </View>
           <View style={{ flex: 1, backgroundColor: 'white' }}>
             <SearchBar placeholder="搜索" />

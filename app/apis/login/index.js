@@ -13,7 +13,6 @@ export function userInfo() {
 }
 
 export function login(url) {
-
   return fetch(`${config.baseUrl}${url}`,
     {
       method: 'POST',

@@ -10,8 +10,23 @@ import {
   TouchableOpacity,
   Image,
   Navigator,
-  Dimensions, } from 'react-native';
-import { TabBar, SearchBar, Tabs, Badge, Tag, Flex, List, Drawer, Button, WhiteSpace, WingBlank, Grid }from 'antd-mobile';
+  Dimensions,
+  StatusBar,
+} from 'react-native';
+import { 
+  TabBar, 
+  SearchBar, 
+  Tabs, 
+  Badge, 
+  Tag, 
+  Flex,
+  List, 
+  Drawer, 
+  Button,
+  WhiteSpace,
+  WingBlank,
+  Grid, 
+}from 'antd-mobile';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import {connect} from 'react-redux';
@@ -22,6 +37,7 @@ import formatter from '../../utils/formatter';
 import commonStyle from '../styles';
 
 import { fetchTask, toggleOpen } from './actions';
+import { setHidden } from '../main/actions';
 
 const TabPane = TabBar.TabPane;
 
@@ -73,9 +89,15 @@ class TodoTask extends Component {
 
     switch(key) {
       case '信息中心合同支付':
-        return (<Text small style={{ backgroundColor:'#1DA57A', fontSize:12, borderRadius:3, marginRight:5 }}>合同支付</Text>);
+        return (
+          <View style={[commonStyle.taskTag , { backgroundColor:'#1DA57A' }]}>
+            <Text small style={[ commonStyle.taskSubHeader ]} >合同支付</Text>
+          </View>);
       case '信息中心合同质保金':
-        return (<Text small style={{ backgroundColor:'#ff5b05', fontSize:12, borderRadius:3, marginRight:5 }}>质保金</Text>);
+        return (
+          <View style={[commonStyle.taskTag , { backgroundColor:'#ff5b05' }]}>
+            <Text small style={[ commonStyle.taskSubHeader ]} >质保金</Text>
+          </View>);
       default:
         return;
     }
@@ -87,25 +109,25 @@ class TodoTask extends Component {
 
     return (
       <TouchableHighlight onPress={() => { this.showDetails(rowData)}}>
-        <View style={{ flex:1, flexDirection:'row',  marginLeft:5, paddingTop:5, paddingBottom:5, borderBottomWidth:1, borderBottomColor: '#DDD' }}>
+        <View style={[ commonStyle.taskContainer ]}>
           <View style={{ flex:1, paddingLeft:5, paddingRight:5 }}>
             <View style={{ flex:1, flexDirection:'row', justifyContent: 'space-between' }}>
               <View>
                 {  
                   rowData.new ?
                   (<Badge dot>
-                    <Text style={{ fontWeight:'700', fontSize:18 }}>{poNo}</Text>
-                  </Badge>) : (<Text style={{ fontWeight:'700', fontSize:18 }}>{poNo}</Text>)
+                    <Text style={[commonStyle.taskHeader]}>{poNo}</Text>
+                  </Badge>) : (<Text style={[commonStyle.taskHeader]}>{poNo}</Text>)
                 }
               </View>
               <View>
-                <Text style={{ fontSize:12 }}>{formatter.formatTime(rowData.createTime)} <Icon name="ios-arrow-forward"></Icon></Text>
+                <Text style={[ commonStyle.taskSubHeader ]}>{formatter.formatTime(rowData.createTime)} <Icon name="ios-arrow-forward"></Icon></Text>
               </View>
             </View>
             <View>
-              <View style={{ flex:1, flexDirection: 'row' }}>        
+              <View style={{ flexDirection: 'row', marginTop:10 }}>        
                 {this.renderBadge(rowData)}
-                <Text style={{ fontSize: 12 }}>拟稿人:{rowData.startUserName}</Text>
+                <View style={{ paddingTop: 3, paddingBottom:3 }}><Text style={[ commonStyle.taskSubHeader ]}>拟稿人:{rowData.startUserName}</Text></View>
               </View>
             </View>
           </View>
@@ -114,9 +136,18 @@ class TodoTask extends Component {
     );
   }
 
-
   showDrawer = () => {
     this.refs.drawer.drawer.openDrawer();
+  }
+
+  onOpenChange = (open) => {
+    if(open) {
+      this.props.dispatch(setHidden(true));
+      StatusBar.setBarStyle('dark-content');
+    }else{  
+      this.props.dispatch(setHidden(false));    
+      StatusBar.setBarStyle('light-content');
+    }
   }
 
   render() {
@@ -132,12 +163,17 @@ class TodoTask extends Component {
 
     const data = [{text:'全部'}, {text:'最近一周'}, {text:'最近一个月'}, {text: '最近7天'}, {text: '最近8天'}]
 
-    const condition = (<View style={{ flex: 1, 
+    const condition = (<View style={{ 
+                          flex: 1, 
                           backgroundColor: 'white',
                           flexDirection: 'column',
-                          justifyContent: 'space-between',}}>
+                          justifyContent: 'space-between',
+                          marginBottom: 50}}>
                           <View style={{ flex:1 }}>
-                            
+                            <WhiteSpace />
+                            <WhiteSpace />
+                            <WhiteSpace />
+                            <Text>接收时间：</Text>
                             <View style={{ flexDirection: 'row', alignItems:'center', flexWrap:'wrap' }}>
                               {
                                 data.map(function (el, index) {
@@ -146,11 +182,12 @@ class TodoTask extends Component {
                               }
                             </View>
                           </View>
-                          <View style={{  
-                            backgroundColor: 'white',
+                          <View style={{ 
+                            height:50,
                             flexDirection: 'row',
                             justifyContent: 'space-around',
-                            paddingBottom: 5 }}>
+                            paddingBottom: 5,
+                          }}>
                             <Button size='md' style={{ flex:1 , marginLeft:3 , marginRight:3 }}>重置</Button>
                             <Button size='md' type='primary' style={{ flex:1, marginLeft:3 , marginRight:3 }}>确定</Button>
                           </View>
@@ -159,7 +196,6 @@ class TodoTask extends Component {
     return (
       <View style={{ flex: 1, backgroundColor: 'white' }}>
         <Drawer ref='drawer'
-          style={{ left:0, top:0 }}
           sidebar={condition}
           drawerBackgroundColor='#FFF'
           position='right'
@@ -167,10 +203,11 @@ class TodoTask extends Component {
         >
         <View style={[commonStyle.header]}>
           <Text style={[commonStyle.headerTitle]}>待办事项</Text>
-          <TouchableOpacity style={{ zIndex:1, position:'absolute', right:12, top:16, flexDirection: 'row', alignItems:'center' }} onPress={this.showDrawer}>
-            <Icon name="ios-funnel" color='white' size={16}></Icon>
+          <TouchableOpacity style={[ commonStyle.headerRightIcon ]} onPress={this.showDrawer}>
+            <Icon name="ios-funnel" color='white' size={20}></Icon>
           </TouchableOpacity>
         </View>
+        
         <SearchBar placeholder="搜索" />
         <ScrollView
           ref={(scrollView) => { _scrollView = scrollView; }}

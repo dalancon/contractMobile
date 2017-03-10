@@ -1332,8 +1332,6 @@ class ViewContract extends Component {
   }
 
   render() {
-
-/// <Icon name="ios-arrow-back" color='white' size={16}><Text style={{ color:'white', fontSize: 14 }}>待办</Text></Icon>
     return (
       <View style={{ flex: 1, backgroundColor: 'white' }}>
         <View style={[commonStyle.wrapper]}>

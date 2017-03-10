@@ -179,8 +179,8 @@ class HandleTask extends Component {
       <View style={{ flex: 1, backgroundColor: 'white' }}>
         <View style={[commonStyle.wrapper]}>
           <View style={[commonStyle.header]}>
-            <TouchableOpacity style={{ zIndex:1, position:'absolute', left:12, top:16, flexDirection: 'row', alignItems:'center' }} onPress={this._back}>
-              <Icon name="ios-arrow-back" color='white' size={16}><Text style={{ color:'white', fontSize: 14 }}>返回</Text></Icon>
+            <TouchableOpacity style={[ commonStyle.headerLeftIcon ]} onPress={this._back}>
+              <Icon name="ios-arrow-back" color='white' size={18}><Text style={{ color:'white', fontSize: 18 }}>返回</Text></Icon>
             </TouchableOpacity>
             <Text style={[commonStyle.headerTitle]} numberOfLines={1}>处理</Text>
           </View>

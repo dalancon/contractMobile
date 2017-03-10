@@ -150,8 +150,8 @@ class PassTask extends Component {
       <View style={{ flex: 1, backgroundColor: 'white' }}>
         <View style={[commonStyle.header]}>
           <Text style={[commonStyle.headerTitle]}>经办事项</Text>
-          <TouchableOpacity style={{ zIndex:1, position:'absolute', left:12, top:16, flexDirection: 'row', alignItems:'center' }} onPress={this._back}>
-            <Icon name="ios-arrow-back" color='white' size={16}><Text style={{ color:'white', fontSize: 14 }}>返回</Text></Icon>
+          <TouchableOpacity style={[ commonStyle.headerLeftIcon ]} onPress={this._back}>
+            <Icon name="ios-arrow-back" color='white' size={18}><Text style={{ color:'white', fontSize: 18 }}>返回</Text></Icon>
           </TouchableOpacity>
         </View>
         <SearchBar placeholder="搜索" />

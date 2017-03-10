@@ -22,6 +22,8 @@ function* _login(action) {
 
     result = yield result.map((x) => x.json())[0];
 
+    console.log(result);
+
     if (result) {
       yield put(loginSuccess());
     } else {

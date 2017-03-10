@@ -1,5 +1,5 @@
 import {
-  SETTAB_ACTION, FETCHUSER_ACTION, SETUSER_ACTION,		
+  SETTAB_ACTION, FETCHUSER_ACTION, SETUSER_ACTION, SETHIDDEN_ACTION,
 } from './constants';
 
 
@@ -23,4 +23,11 @@ export function setUser(user) {
     type: SETUSER_ACTION,
     user,
   };
+}
+
+export function setHidden(hidden) {
+  return {
+    type: SETHIDDEN_ACTION,
+    hidden,
+  }
 }
