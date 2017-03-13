@@ -10,6 +10,7 @@ import reducers from './reducers';
 import loginSagas from './containers/login/sagas';
 import mainSagas from './containers/main/sagas';
 import todoSagas from './containers/todoTask/sagas';
+import examineSagas from './containers/examinePayment/sagas';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -43,6 +44,7 @@ export default function configureStore(onComplete: (sagaMiddleware)=>void){
   sagaMiddleware.run(...loginSagas);
   sagaMiddleware.run(...mainSagas);
   sagaMiddleware.run(...todoSagas);
+  sagaMiddleware.run(...examineSagas);
 
   return store;
 }

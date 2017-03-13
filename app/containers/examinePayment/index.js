@@ -28,7 +28,6 @@ import formatter from '../../utils/formatter';
 
 import commonStyle from '../styles';
 
-
 const Step = Steps.Step;
 
 class ExaminePayment extends Component {  

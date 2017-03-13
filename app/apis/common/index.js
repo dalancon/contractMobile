@@ -1,6 +1,8 @@
+import config from '../constants.js';
+
 // 获取合同的查询条件
 export function fetchQueryCondition(conditionType) {
-  return fetch(`/qdp/qdp/payment/common/commonQuery/${conditionType}?${new Date().getTime()}`,
+  return fetch(`${config.baseUrl}/qdp/qdp/payment/common/commonQuery/${conditionType}?${new Date().getTime()}`,
     {
       method: 'GET',
       headers: {
@@ -14,7 +16,7 @@ export function fetchQueryCondition(conditionType) {
 
 // 获取合同的查询条件
 export function fetchAssociateFile(businessId) {
-  return fetch(`/qdp/qdp/payment/file/associate?businessId=${businessId}`,
+  return fetch(`${config.baseUrl}/qdp/qdp/payment/file/associate?businessId=${businessId}`,
     {
       method: 'GET',
       headers: {
@@ -26,7 +28,7 @@ export function fetchAssociateFile(businessId) {
 }
 
 export function queryUser(q) {
-  return  fetch(`/qdp/qdp/qdp/userGroup/query.do`,
+  return  fetch(`${config.baseUrl}/qdp/qdp/qdp/userGroup/query.do`,
     {
       method: 'POST',
       headers: {

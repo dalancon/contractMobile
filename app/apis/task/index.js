@@ -3,7 +3,7 @@ import config from '../constants.js';
 
 // 获取待办事项的数目
 export function fetchTodoTaskCount() {
-  return fetch(`/qdp/qdp/payment/bpm/task/count/todoTask?${new Date().getTime()}`,
+  return fetch(`${config.baseUrl}/qdp/qdp/payment/bpm/task/count/todoTask?${new Date().getTime()}`,
     {
       method: 'GET',
       headers: {
@@ -28,7 +28,7 @@ export function fetchTask(taskType, queryParams) {
 }
 
 export function applyUsers(appName) {
-  return fetch(`/qdp/qdp/payment/bpm/task/applyUsers?appName=${appName}`,
+  return fetch(`${config.baseUrl}/qdp/qdp/payment/bpm/task/applyUsers?appName=${appName}`,
     {
       method: 'GET',
       headers: {
@@ -40,7 +40,7 @@ export function applyUsers(appName) {
 }
 
 export function canWithdraw(taskId, processDefinitionId, activityId) {
-  return fetch(`/qdp/qdp/payment/bpm/task/canWithdraw?taskId=${taskId}&processDefinitionId=${processDefinitionId}&activityId=${activityId}`,
+  return fetch(`${config.baseUrl}/qdp/qdp/payment/bpm/task/canWithdraw?taskId=${taskId}&processDefinitionId=${processDefinitionId}&activityId=${activityId}`,
     {
       method: 'GET',
       headers: {
@@ -54,7 +54,7 @@ export function canWithdraw(taskId, processDefinitionId, activityId) {
 export function fetchHistory(businessId, taskId) {
   taskId = taskId == undefined ? '' : taskId;
 
-  return fetch(`/qdp/qdp/payment/bpm/task/history?taskId=${taskId}&businessId=${businessId}`,
+  return fetch(`${config.baseUrl}/qdp/qdp/payment/bpm/task/history?taskId=${taskId}&businessId=${businessId}`,
     {
       method: 'GET',
       headers: {
@@ -66,7 +66,7 @@ export function fetchHistory(businessId, taskId) {
 }
 
 export function fetchOutUsers(businessId, taskId, activityId, processInstanceId, processDefinitionId) {
-  return fetch(`/qdp/qdp/payment/bpm/task/outUsers?taskId=${taskId}&businessId=${businessId}&activityId=${activityId}&processInstanceId=${processInstanceId}&processDefinitionId=${processDefinitionId}`,
+  return fetch(`${config.baseUrl}/qdp/qdp/payment/bpm/task/outUsers?taskId=${taskId}&businessId=${businessId}&activityId=${activityId}&processInstanceId=${processInstanceId}&processDefinitionId=${processDefinitionId}`,
     {
       method: 'GET',
       headers: {
