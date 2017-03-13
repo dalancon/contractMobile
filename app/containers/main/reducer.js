@@ -16,6 +16,7 @@ const initialState = fromJS({
   current: 'todo',		//当前显示的Tab
   loginUser: null,
   hidden: false,  // 是否隐藏TABBAR
+  history:[],
 });
 
 function MainReducer(state = initialState, action) {

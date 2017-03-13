@@ -11,7 +11,10 @@ import {
 } from './constants';
 
 const initialState = fromJS({
-  current: 'todo',		//当前显示的Tab
+  current: '1',		//当前显示的Tab
+  invoice: {},
+  associateFile: [],
+  outGoing:[],
 });
 
 function ExamineReducer(state = initialState, action) {
