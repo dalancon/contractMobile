@@ -1,9 +1,8 @@
 import { take, call, put, select, takeEvery, cancel } from 'redux-saga/effects';
 import { FETCHTASKCOND_ACTION, FETCHTASK_ACTION } from './constants';
 
-import { setTask } from './actions';
+import { setTask, setRefreshing } from './actions';
 import { fetchTask } from '../../apis/task';
-
 
 export function* fetchTaskSaga() {
   yield takeEvery(FETCHTASK_ACTION, _fetchTask);
@@ -11,6 +10,8 @@ export function* fetchTaskSaga() {
 
 function* _fetchTask(action) {
   try {
+    yield put(setRefreshing(true));
+
     let result = yield Promise.all([
       fetchTask('todo', action.queryParams),
     ]);
@@ -21,7 +22,10 @@ function* _fetchTask(action) {
 
     console.log(result);
 
-    yield put(setTask(result.rows, result.total, result.pageNo));
+    yield [
+      put(setTask(result.rows, result.total, result.pageNo)),
+      put(setRefreshing(false)),
+    ]
   } catch (err) {
     alert('fetchTaskSaga:error!');
   }

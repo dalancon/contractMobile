@@ -37,117 +37,38 @@ import formatter from '../../utils/formatter';
 
 import commonStyle from '../styles';
 
+import {
+  fetchOutgoing,
+  fetchOpinions,
+  setForm,
+} from './actions';
 
 const CheckboxItem = Checkbox.CheckboxItem;
 const RadioItem = Radio.RadioItem;
 
 class HandleTask extends Component {
-  constructor(props){
-    super(props);
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    this.state = {
-      outGoingValue: '',
-      user: null,
-      participantUser: null,
-      outGoing: [{
-        "id": "flow22",
-        "users": [{
-          "id": "chenchuhua",
-          "insertDate": null,
-          "modifyUser": null,
-          "userCode": null,
-          "insertUser": null,
-          "modifyDate": null,
-          "userName": "陈楚华",
-          "mobile": null,
-          "email": null
-        },{
-          "id": "xiao_yunqing",
-          "insertDate": null,
-          "modifyUser": null,
-          "userCode": null,
-          "insertUser": null,
-          "modifyDate": null,
-          "userName": "肖云晴",
-          "mobile": null,
-          "email": null
-        }],
-        "name": "审批通过",
-        "assignee": ["chenchuhua"]
-      }, {
-        "id": "flow13",
-        "users": [{
-          "id": "xiao_yunqing",
-          "insertDate": null,
-          "modifyUser": null,
-          "userCode": null,
-          "insertUser": null,
-          "modifyDate": null,
-          "userName": "肖云晴",
-          "mobile": null,
-          "email": null
-        }],
-        "name": "退回预算管理员",
-        "assignee": null
-      }],
-      opinions: [{
-        "id": "19528ce6-8e36-42fc-b3e2-90541d7a1b59",
-        "title": "同意",
-        "content": "同意",
-        "type": "2"
-      }, {
-        "id": "d288c058-3358-461b-9ea5-d4b52525a2e5",
-        "title": "不同意",
-        "content": "不同意",
-        "type": "1"
-      }, {
-        "id": "e56e34b5-6aaa-4271-af53-859ebaf974ac",
-        "title": "延期",
-        "content": "延期",
-        "type": "2"
-      }]
-    };
-  }
-
   _back = () => {
     this.props.router.pop();
   }
 
-  showTask = (handleTaskType) => {
-    return (
-      <ListView 
-        dataSource={this.state.handleTask}
-        renderRow={this.renderRow}
-      />
-    );
-  }
-  
-  renderTask = (index) => {
-    let handleTaskType = '';
-    switch(index) {
-      case 0:
-        return this.showTask('passTask');
-      case 1:
-        return this.showTask('historyTask');
-      case 2:
-        return this.showTask('participantTask');
-      default:
-        return ;
-    }
+  componentDidMount() {
+    const { businessId , taskId, activityId, processInstanceId, processDefinitionId } = this.props;
+
+    this.props.dispatch(fetchOutgoing(businessId, taskId, activityId, processInstanceId, processDefinitionId));
+    this.props.dispatch(fetchOpinions());
   }
 
   onPressComment = () => {
-    const data = this.state.opinions.map((x) => { return {value: x.id, label: x.title}; });
+    const data = this.props.opinions.map((x) => { return {value: x.id, label: x.title}; });
 
-    const { comment } = this.state;
+    const { comment } = this.props;
 
     Popup.show(
-      (
         <List renderHeader={() => (
           <View style={{ backgroundColor:'#eee'}}>
             <WhiteSpace/>
               <WingBlank style={{ flexDirection:'row', justifyContent: 'space-between' }}>
-                <View><Text >常用意见</Text></View>
+                <View><Text style={{ fontSize:14 }}>常用意见</Text></View>
                 <View><TouchableOpacity onPress={() => Popup.hide()}><Icon size={24} name="ios-close" /></TouchableOpacity></View>
               </WingBlank>
             <WhiteSpace/>
@@ -158,8 +79,7 @@ class HandleTask extends Component {
               {i.label}
             </RadioItem>
           ))}
-        </List>
-       ), { animationType: 'slide-up', maskClosable: true });
+        </List>, { animationType: 'slide-up' , maskClosable: true });
   }
 
   loadingToast = () => {
@@ -167,9 +87,11 @@ class HandleTask extends Component {
   }
 
   render() {
-    const data = this.state.outGoing.map((x) => { return {value: x.id, label: x.name}; });
+    console.log('HandleTask:', this.props);
 
-    const users = this.state.outGoing[0].users.map((u) => { return {value:u.id, label:u.userName}; });
+    const data = this.props.outgoing.map((x) => { return {value: x.id, label: x.name}; });
+
+    const users = this.props.outgoing[0]?this.props.outgoing[0].users.map((u) => { return {value:u.id, label:u.userName}; }):[];
 
     const alert = Modal.alert;
 
@@ -191,20 +113,16 @@ class HandleTask extends Component {
             >
               <List renderHeader={() => '下一环节'}>
                 {data.map(i => (
-                  <RadioItem key={i.value} checked={this.state.outGoingValue === i.label} onChange={() => this.setState({ outGoingValue: i.label })}>
+                  <RadioItem key={i.value} checked={this.props.form.outgoingValue === i.label} onChange={() => this.props.dispatch(setForm({ outgoingValue: i.label }))}>
                     {i.label}
                   </RadioItem>
                 ))}
               </List>
               <List renderHeader={() => '人员'}>
-                <Picker data={users} cols={1} value={this.state.user} onChange={(val) => {
-                    this.setState({ user: val });
-                  }}>
+                <Picker data={users} cols={1} value={this.props.form.user} onChange={(val) => this.props.dispatch(setForm({ user: val })) }>
                   <List.Item arrow="horizontal">处理人</List.Item>
                 </Picker>
-                <Picker data={users} cols={1} value={this.state.participantUser} onChange={(val) => {
-                    this.setState({ participantUser: val });
-                  }}>
+                <Picker data={users} cols={1} value={this.props.form.participantUser} onChange={(val) => this.props.dispatch(setForm({ participantUser: val })) }>
                   <List.Item arrow="horizontal">流程关注人</List.Item>
                 </Picker>
               </List>
@@ -225,7 +143,7 @@ class HandleTask extends Component {
                   clear
                   rows={3}
                   count={100}
-                  value={this.state.comment}
+                  value={this.props.comment}
                   onChange={
                     (val) => this.setState({ comment: val})
                   }

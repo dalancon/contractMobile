@@ -12,6 +12,7 @@ import ParticipantTask from '../containers/participantTask';
 import PassTask from '../containers/passTask';
 import HistoryTask from '../containers/historyTask';
 import TodoTask from '../containers/todoTask';
+import Preview from '../containers/preview';
 
 // Config
 const sceneConfig = require('./sceneConfig')
@@ -71,6 +72,14 @@ class Router {
     this.push(props, {
       page: ContractDetails,
       name: 'contractDetails-page',
+      sceneConfig: customFloatFromRight,
+    })
+  }
+
+  toPreview(props) {
+    this.push(props, {
+      page: Preview,
+      name: 'preview-page',
       sceneConfig: customFloatFromRight,
     })
   }

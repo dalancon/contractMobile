@@ -7,20 +7,25 @@
 import {
   DEFAULT_ACTION,
   FETCHINVOICEINFO_ACTION,
-  FETCHTASKOPINION_ACTION,
   FETCHTASKHISTORY_ACTION,
-  FETCHACCOCIATEFILE_ACTION,
-  FETCHOUTGOING_ACTION,
+  FETCHASSOCIATEFILE_ACTION,
+  SETTAB_ACTION,
   SETINVOICEINFO_ACTION,
   SETTASKOPINION_ACTION,
   SETTASKHISTORY_ACTION,
-  SETACCOCIATEFILE_ACTION,
-  SETOUTGOING_ACTION,
+  SETASSOCIATEFILE_ACTION,
 } from './constants';
 
 export function defaultAction() {
   return {
     type: DEFAULT_ACTION,
+  };
+}
+
+export function setTab(current) {
+  return {
+    type: SETTAB_ACTION,
+    current,
   };
 }
 
@@ -48,23 +53,6 @@ export function setInvoiceInfo(info) {
   };
 }
 
-
-// 获取意见
-export function fetchTaskOpinion(businessId, processDefinitionId) {
-  return {
-    type: FETCHTASKOPINION_ACTION,
-    businessId,
-    processDefinitionId,
-  };
-}
-
-export function setTaskOpinion(opinions) {
-  return {
-    type: SETTASKOPINION_ACTION,
-    opinions,
-  };
-}
-
 // 获取流转历史数据
 export function fetchTaskHistory(businessId, taskId) {
   return {
@@ -84,35 +72,17 @@ export function setTaskHistory(history) {
 // 获取关联文件
 export function fetchAssociateFile(businessId) {
   return {
-    type: FETCHACCOCIATEFILE_ACTION,
+    type: FETCHASSOCIATEFILE_ACTION,
     businessId,
   };
 }
 
 export function setAssociateFile(associateFile) {
   return {
-    type: SETACCOCIATEFILE_ACTION,
+    type: SETASSOCIATEFILE_ACTION,
     associateFile,
   };
 }
 
-// 获取某个公司的合同细项
-export function fetchOutgoing(businessId, taskId, activityId, processInstanceId, processDefinitionId) {
-  return {
-    type: FETCHOUTGOING_ACTION,
-    businessId,
-    taskId,
-    activityId,
-    processInstanceId,
-    processDefinitionId,
-  };
-}
-
-export function setOutgoing(outGoing) {
-  return {
-    type: SETOUTGOING_ACTION,
-    outGoing,
-  };
-}
 
 

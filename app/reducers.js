@@ -13,6 +13,7 @@ import TaskReducer from './containers/task/reducer';
 import MyReducer from './containers/my/reducer';
 import HandleTaskReducer from './containers/handleTask/reducer';
 import PoItemReducer from './containers/poItem/reducer';
+import PreviewReducer  from './containers/preview/reducer';
 
 export default combineReducers({
 	loginPage: LoginReducer,
@@ -29,4 +30,5 @@ export default combineReducers({
 	my: MyReducer,
 	handleTask: HandleTaskReducer,
 	poItem: PoItemReducer,
+	preview: PreviewReducer,
 });

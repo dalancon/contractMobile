@@ -12,6 +12,8 @@ import {
   Navigator,
   Dimensions,
   StatusBar,
+  ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import { 
   TabBar, 
@@ -36,7 +38,7 @@ import formatter from '../../utils/formatter';
 
 import commonStyle from '../styles';
 
-import { fetchTask, toggleOpen } from './actions';
+import { fetchTask, toggleOpen, setPageNo, setLoadingTail, setRefreshing } from './actions';
 import { setHidden } from '../main/actions';
 
 const TabPane = TabBar.TabPane;
@@ -56,8 +58,16 @@ class TodoTask extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.page.current !== nextProps.page.current) {
+    if(this.props.page.current !== nextProps.page.current) {
       this.props.dispatch(fetchTask(this.queryParams(nextProps.propSelected, nextProps.page.current, nextProps.search, nextProps.timeRange)));
+    }
+
+    if(this.props.task !== nextProps.task || this.props.page.total !== nextProps.page.total) {
+      if(nextProps.task.length < nextProps.page.total){
+        this.props.dispatch(setLoadingTail(false));
+      }else{
+        this.props.dispatch(setLoadingTail(true));
+      }
     }
   }
 
@@ -79,6 +89,7 @@ class TodoTask extends Component {
     let url = rowData.url;
     let params = url.split('/');
     const page = params[2].split('?')[0];
+    console.log('rowData:', rowData);
     this.props.router.toScence(page, rowData);
   }
 
@@ -150,7 +161,55 @@ class TodoTask extends Component {
     }
   }
 
+  hasMore() {
+    console.log('page:' , this.props.page);
+
+    if(this.props.page.total && this.props.page.current * this.props.page.limit <= this.props.page.total) {
+      
+      return true;
+    } else {
+
+      return false;
+    }
+  }
+
+  fetchMoreData = () => {
+    console.log('fetchMoreData: ');
+
+    if(!this.hasMore() || this.props.isLoadingTail) {
+      return;
+    } else {
+      this.props.dispatch(setPageNo(this.props.page.current+1));
+    }
+  }
+
+  renderFooter = () => {
+    if(!this.hasMore()) {
+      return (
+        <View style={{ flex:1, justifyContent:'center', alignItems:'center', paddingTop:5 }}>
+          <Text style={{color:'grey'}}>没有更多了</Text>
+        </View>
+      )
+    } else {
+      return (<ActivityIndicator size="small"></ActivityIndicator>)
+    }
+  }
+
+  _onRrefresh = () => {
+    if(this.props.refreshing) {
+      return;
+    } else {
+      if(this.props.page.current == 1) {
+        this.props.dispatch(fetchTask(this.queryParams(this.props.propSelected, this.props.page.current, this.props.search, this.props.timeRange)));
+      }else{
+        this.props.dispatch(setPageNo(1));
+      } 
+    }
+  }
+
   render() {
+    console.log('props:', this.props);
+
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
     const drawerProps = {
@@ -207,18 +266,25 @@ class TodoTask extends Component {
             <Icon name="ios-funnel" color='white' size={20}></Icon>
           </TouchableOpacity>
         </View>
-        
         <SearchBar placeholder="搜索" />
-        <ScrollView
-          ref={(scrollView) => { _scrollView = scrollView; }}
-          automaticallyAdjustContentInsets={false}
-          >
-          <ListView 
+          <ListView
+            automaticallyAdjustContentInsets={false}
             dataSource={ds.cloneWithRows(this.props.task)}
             renderRow={this.renderRow}
+            onEndReached={this.fetchMoreData}
+            onEndReachedThreshold={20}
             enableEmptySections={true}
+            renderFooter={this.renderFooter}
+            showVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                refreshing={false}
+                onRefresh={this._onRrefresh}
+                tintColor="#ff6600"
+                title="加载中..."
+              ></RefreshControl>
+            }
           />
-        </ScrollView>
         </Drawer>
       </View>);
   }

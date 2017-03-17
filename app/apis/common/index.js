@@ -13,8 +13,7 @@ export function fetchQueryCondition(conditionType) {
   );
 }
 
-
-// 获取合同的查询条件
+// 获取关联文件
 export function fetchAssociateFile(businessId) {
   return fetch(`${config.baseUrl}/qdp/qdp/payment/file/associate?businessId=${businessId}`,
     {
@@ -22,6 +21,20 @@ export function fetchAssociateFile(businessId) {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
+      credentials: 'same-origin',
+    }
+  );
+}
+
+//预览文件
+export function preview(filePath) {
+  return fetch(`${config.baseUrl}/qdp/qdp/payment/file/preview`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `filePath=${filePath}`,
       credentials: 'same-origin',
     }
   );
@@ -40,8 +53,11 @@ export function queryUser(q) {
   );
 }
 
+
+
 export default {
   fetchQueryCondition,
   fetchAssociateFile,
   queryUser,
+  preview,
 };

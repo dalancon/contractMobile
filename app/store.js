@@ -7,10 +7,7 @@ import {persistStore, autoRehydrate} from 'redux-persist';
 import {AsyncStorage} from 'react-native';
 import reducers from './reducers';
 
-import loginSagas from './containers/login/sagas';
-import mainSagas from './containers/main/sagas';
-import todoSagas from './containers/todoTask/sagas';
-import examineSagas from './containers/examinePayment/sagas';
+import rootSaga from './configs/sagas';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -29,7 +26,7 @@ let middlewares = [
 
 let createAppStore = applyMiddleware(...middlewares)(createStore);
 
-let sagas = new Array(...loginSagas, ...mainSagas);
+
 
 export default function configureStore(onComplete: (sagaMiddleware)=>void){
   const store = autoRehydrate()(createAppStore)(reducers);
@@ -41,10 +38,7 @@ export default function configureStore(onComplete: (sagaMiddleware)=>void){
  // persistStore(store, opt, onComplete);
 
   //加入
-  sagaMiddleware.run(...loginSagas);
-  sagaMiddleware.run(...mainSagas);
-  sagaMiddleware.run(...todoSagas);
-  sagaMiddleware.run(...examineSagas);
+  sagaMiddleware.run(rootSaga);
 
   return store;
 }

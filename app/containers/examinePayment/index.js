@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Image,
   Navigator,
+  WebView,
 } from 'react-native';
 
 import { 
@@ -27,26 +28,72 @@ import makeSelectExaminePayment from './selectors';
 import formatter from '../../utils/formatter';
 
 import commonStyle from '../styles';
+import { defaultAction, fetchInvoiceInfo, setTab, fetchAssociateFile, fetchTaskHistory } from './actions';
+
 
 const Step = Steps.Step;
 
-class ExaminePayment extends Component {  
+class ExaminePayment extends Component {
+
+  componentDidMount() {
+
+    const { businessKey, url }= this.props;
+    const params = businessKey.split('||');
+    const systemCode = params[0];
+    const poNo = params[1];
+    const invoiceNo = params[2];
+
+
+    const taskId = /taskId=(\w+)/i.exec(url)[1];
+
+    this.props.dispatch(fetchInvoiceInfo(systemCode, poNo, invoiceNo));
+    this.props.dispatch(fetchAssociateFile(businessKey));
+    this.props.dispatch(fetchTaskHistory(businessKey, taskId));
+  }
+
   _back = () => {
+    this.props.dispatch(defaultAction());
     this.props.router.pop();
   }
 
   _handle = () => {
-    this.props.router.toHandleTask({ outGoing: this.props.outGoing });
+    const { businessKey, url }= this.props;
+    const taskId = /taskId=(\w+)/i.exec(url)[1];
+    const processDefinitionId = this.props.processDefinitionId;
+    const processInstanceId = this.props.processInstanceId;
+    const activityId = /activityId=(\w+)/i.exec(url)[1];
+
+    console.log('_handle:', this.props, processInstanceId);
+
+    this.props.router.toHandleTask({
+      businessId: businessKey,
+      taskId,
+      processInstanceId,
+      processDefinitionId,
+      activityId,
+    });
+  }
+
+  _toPreview = (file) => {
+    this.props.router.toPreview({ file: file });
   }
 
   // 附件预览
-  renderAssociateFiles() {
-    const associateFile = this.props.associateFile;
-    return (
-      <View>
-        {this.props.associateFile.map((file, index) => (<List.Item key={index}>{file.fileShowName}</List.Item>))}
-      </View>
-    );
+  renderAssociateFiles = () => {
+    const { associateFile } = this.props;
+    if(associateFile &&  associateFile.length > 0) {
+      return (<View>
+          {
+            this.props.associateFile.map((file, index) => (<List.Item key={index} arrow="horizontal" wrap={true} onClick={() => this._toPreview(file)}>{file.fileShowName}</List.Item>))
+          }
+         </View>);
+    } else {
+      return (
+        <View>
+          <Text>空</Text>
+        </View>
+      );
+    }
   }
 
   render() {
@@ -64,7 +111,7 @@ class ExaminePayment extends Component {
         </View>
         <View style={{ flex: 1, backgroundColor: 'white' }}>
           <Tabs tabBarPosition="bottom" defaultActiveKey="1" activeKey={this.props.current}
-            onChange={(key)=>{this.setState({current:key})}}>
+            onChange={ (key) => { this.props.dispatch(setTab(key))}}>
             <Tabs.TabPane tab="支付单" key="1">
               <ScrollView
                 ref={(scrollView) => { _scrollView = scrollView; }}
