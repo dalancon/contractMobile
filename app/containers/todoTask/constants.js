@@ -1,6 +1,5 @@
 
 export const DEFAULT_ACTION = 'app/TodoTask/DEFAULT_ACTION';
-export const SETTAB_ACTION = 'app/TodoTask/SETTAB_ACTION';
 
 export const FETCHTASK_ACTION = 'app/TodoTask/FETCHTASK_ACTION';
 export const SETTASK_ACTION = 'app/TodoTask/SETTASK_ACTION';
@@ -10,3 +9,11 @@ export const SETCURRENT_ACTION = 'app/TodoTask/SETCURRENT_ACTION';
 
 export const SETLOADINGTAIL_ACTION = 'app/TodoTask/SETLOADINGTAIL_ACTION';
 export const SETREFRESHING_ACTION = 'app/TodoTask/SETREFRESHING_ACTION';
+
+export const FETCHCOND_ACTION = 'app/TodoTask/FETCHCOND_ACTION';
+export const SETCOND_ACTION = 'app/TodoTask/SETCOND_ACTION';
+
+export const SETSELECTINDEX_ACTION = 'app/TodoTask/SETSELECTINDEX_ACTION';
+export const SETTIMERANGE_ACTION = 'app/TodoTask/SETTIMERANGE_ACTION';
+
+export const SETSEARCH_ACTION = 'app/TodoTask/SETSEARCH_ACTION';

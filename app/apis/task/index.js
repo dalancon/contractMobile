@@ -1,4 +1,4 @@
-import { encodeQueryString } from '../../utils/formUtils';
+import { encodeQueryString, convert } from '../../utils/formUtils';
 import config from '../constants.js';
 
 // 获取待办事项的数目
@@ -77,11 +77,25 @@ export function fetchOutUsers(businessId, taskId, activityId, processInstanceId,
   );
 }
 
+export function completeTask(form) {
+  return fetch(`${config.baseUrl}/qdp/qdp/payment/bpm/task/complete`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: convert(form),
+      credentials: 'same-origin',
+    }
+  );
+}
+
 export default {
+  applyUsers,
+  canWithdraw,
+  completeTask,
   fetchTodoTaskCount,
   fetchTask,
   fetchOutUsers,
-  applyUsers,
-  canWithdraw,
   fetchHistory,
 };

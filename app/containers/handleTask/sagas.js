@@ -1,15 +1,19 @@
 import { take, call, put, fork } from 'redux-saga/effects';
 import { takeEvery } from 'redux-saga';
-import { fetchOutUsers } from '../../apis/task';
+import { completeTask, fetchOutUsers } from '../../apis/task';
 import { fetchTaskOpioions } from '../../apis/opinion';
 import {
   FETCHOUTGOING_ACTION,
   FETCHOPINIONS_ACTION,
+  HANDLETASK_ACTION,
 } from './constants';
 
 import { 
 	setOutgoing,
   setOpinions,
+  setSubmit,
+  setComplete,
+  setResult
 } from './actions';
 
 export function* fetchOutgoingSaga() {
@@ -18,6 +22,29 @@ export function* fetchOutgoingSaga() {
 
 export function* fetchOpinionsSaga() {
   yield takeEvery(FETCHOPINIONS_ACTION, _fetchOpinions);
+}
+
+export function* handleTaskSaga() {
+  yield takeEvery(HANDLETASK_ACTION, _handleTask);
+}
+
+function* _handleTask(action) {
+  try{
+
+    let result = yield Promise.all([
+      completeTask(action.form)
+    ]);
+
+    result = yield result.map((x) => x.json())[0];
+    
+    yield [
+      put(setComplete(true)),
+      put(setResult(result)),
+    ]
+
+  } catch(err) {
+    alert('_handleTask:err');
+  }
 }
 
 function* _fetchOpinions(action) {
@@ -39,12 +66,9 @@ function* _fetchOpinions(action) {
 
 function* _fetchOutgoing(action) {
   try {
-    // console.log('action:', action);
-
     let result = yield Promise.all([
       fetchOutUsers(action.businessId, action.taskId, action.activityId, action.processInstanceId, action.processDefinitionId),
     ]);
-    // console.log(result);
 
     result = yield result.map((x) => x.json())[0];
     console.log(result);
@@ -58,4 +82,5 @@ function* _fetchOutgoing(action) {
 export default [
   fetchOutgoingSaga,
   fetchOpinionsSaga,
+  handleTaskSaga,
 ];

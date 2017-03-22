@@ -35,7 +35,7 @@ function* _fetchTask(action) {
     yield put(setRefreshing(true));
 
     let result = yield Promise.all([
-      fetchTask('todo', action.queryParams),
+      fetchTask('pass', action.queryParams),
     ]);
 
     console.log('_fetchTask', result);
@@ -49,7 +49,7 @@ function* _fetchTask(action) {
       put(setRefreshing(false)),
     ]
   } catch (err) {
-    alert('_fetchTask:error!');
+    alert('fetchTaskSaga:error!');
   }
 }
 

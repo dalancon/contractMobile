@@ -9,8 +9,25 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   Image,
-  Navigator, } from 'react-native';
-import { TabBar, SearchBar, Tabs, Badge, WhiteSpace, Tag, Flex }from 'antd-mobile';
+  Navigator,
+  Dimensions,
+  StatusBar,
+  ActivityIndicator,
+  RefreshControl,
+} from 'react-native';
+
+import {
+  SearchBar,
+  Badge,
+  Tag,
+  Flex,
+  Drawer, 
+  Button,
+  WhiteSpace,
+  WingBlank,
+  Grid,
+  ActivityIndicator as ActivityIndicator_ANTD,
+} from 'antd-mobile';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import {connect} from 'react-redux';
@@ -20,70 +37,52 @@ import formatter from '../../utils/formatter';
 
 import commonStyle from '../styles';
 
-const TabPane = TabBar.TabPane;
+import { 
+  fetchTask,
+  fetchCondition,
+  toggleOpen,
+  setPageNo,
+  setLoadingTail,
+  setRefreshing,
+  setSelectIndex,
+  setTimeRange,
+  setSearch, } from './actions';
+import { setHidden } from '../main/actions';
 
 class PassTask extends Component {
-  constructor(props){
-    super(props);
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    this.state = {
-      current: "1",
-      dataSource: ds.cloneWithRows([{
-        "new":true,
-        "subject": "信息中心合同质保金—ICP201503122",
-        "businessKey": "YC_TGPMS||ICP201503122||201607200857490147||e6571378f7964fbab303cc88b30facf1||GUARANTEE",
-        "processDefinitionId": "guaranteeProcess:2:160037",
-        "processDefinitionName": "信息中心合同质保金支付流程",
-        "url": "/payment2/examineGuarantee?businessId=YC_TGPMS||ICP201503122||201607200857490147||e6571378f7964fbab303cc88b30facf1||GUARANTEE&taskId=224879&activityId=task6&processInstanceId=224844&processDefinitionId=guaranteeProcess:2:160037",
-        "processInstanceId": "224844",
-        "createTime": 1469006259273,
-        "param": {
-          "reportType": "guarantee"
-        },
-        "taskName": "信息中心领导审批",
-        "startUserName": "罗惠恒"
-      }, {
-        "new":true,
-        "subject": "信息中心合同支付—ICP20150908—2016047078",
-        "businessKey": "YC_TGPMS||ICP20150908||2016047078||e6571378f7964fbab303cc88b30facf1",
-        "processDefinitionId": "newPayment:1:160033",
-        "processDefinitionName": "新合同支付流程",
-        "url": "/payment2/examinePayment?businessId=YC_TGPMS||ICP20150908||2016047078||e6571378f7964fbab303cc88b30facf1&taskId=215935&activityId=task8&processInstanceId=182971&processDefinitionId=newPayment:1:160033",
-        "processInstanceId": "182971",
-        "createTime": 1465540355376,
-        "param": {
-          "reportType": "payment"
-        },
-        "taskName": "信息中心领导审批",
-        "startUserName": "陈楚华"
-      }, {
-        "subject": "信息中心合同支付—LB010106—2016061024",
-        "businessKey": "YC_TGPMS||LB010106||2016061024||e6571378f7964fbab303cc88b30facf1",
-        "processDefinitionId": "newPayment:1:160033",
-        "processDefinitionName": "新合同支付流程",
-        "url": "/payment2/fillPayment?businessId=YC_TGPMS||LB010106||2016061024||e6571378f7964fbab303cc88b30facf1&taskId=215636&activityId=task1&processInstanceId=215614&processDefinitionId=newPayment:1:160033",
-        "processInstanceId": "215614",
-        "createTime": 1465390437563,
-        "param": {
-          "reportType": "payment"
-        },
-        "taskName": "信息中心处室/分中心项目负责人发起/修改申请",
-        "startUserName": "金和平"
-      }, {
-        "subject": "信息中心合同支付—XN208—2016067133",
-        "businessKey": "YC_TGPMS||XN208||2016067133||e6571378f7964fbab303cc88b30facf1",
-        "processDefinitionId": "newPayment:1:160033",
-        "processDefinitionName": "新合同支付流程",
-        "url": "/payment2/fillPayment?businessId=YC_TGPMS||XN208||2016067133||e6571378f7964fbab303cc88b30facf1&taskId=215723&activityId=task1&processInstanceId=215701&processDefinitionId=newPayment:1:160033",
-        "processInstanceId": "215701",
-        "createTime": 1465372562695,
-        "param": {
-          "reportType": "payment"
-        },
-        "taskName": "信息中心处室/分中心项目负责人发起/修改申请",
-        "startUserName": "金和平"
-      }]),
+  componentDidMount() {
+    this.props.dispatch(fetchCondition());
+    this.props.dispatch(fetchTask(this.queryParams(this.props.propSelected, this.props.page.current, this.props.search, this.props.timeRange)));
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if(this.props.page.current !== nextProps.page.current ||
+       this.props.timeRange !== nextProps.timeRange ||
+       this.props.search !== nextProps.search) {
+      this.props.dispatch(fetchTask(this.queryParams(nextProps.propSelected, nextProps.page.current, nextProps.search, nextProps.timeRange)));
+    }
+
+    if(this.props.task !== nextProps.task || this.props.page.total !== nextProps.page.total) {
+      if(nextProps.task.length < nextProps.page.total){
+        this.props.dispatch(setLoadingTail(false));
+      }else{
+        this.props.dispatch(setLoadingTail(true));
+      }
+    }
+  }
+
+  queryParams = (propSelected, current, search, timeRange) => {
+    const query = {
+      offset: (current - 1) * this.props.page.limit,
+      limit: this.props.page.limit,
+      search,
     };
+
+    if(timeRange !== null && timeRange !== '') {
+      query.timeRange = timeRange;
+    }
+
+    return query;
   }
 
   showDetails = (rowData) => {
@@ -104,9 +103,15 @@ class PassTask extends Component {
 
     switch(key) {
       case '信息中心合同支付':
-        return (<Text small style={{ backgroundColor:'#1DA57A', fontSize:12, borderRadius:3, marginRight:5 }}>合同支付</Text>);
+        return (
+          <View style={[commonStyle.taskTag , { backgroundColor:'#1DA57A' }]}>
+            <Text small style={[ commonStyle.taskSubHeader ]} >合同支付</Text>
+          </View>);
       case '信息中心合同质保金':
-        return (<Text small style={{ backgroundColor:'#ff5b05', fontSize:12, borderRadius:3, marginRight:5 }}>质保金</Text>);
+        return (
+          <View style={[commonStyle.taskTag , { backgroundColor:'#ff5b05' }]}>
+            <Text small style={[ commonStyle.taskSubHeader ]} >质保金</Text>
+          </View>);
       default:
         return;
     }
@@ -118,25 +123,25 @@ class PassTask extends Component {
 
     return (
       <TouchableHighlight onPress={() => { this.showDetails(rowData)}}>
-        <View style={{ flex:1, flexDirection:'row',  marginLeft:5, paddingTop:5, paddingBottom:5, borderBottomWidth:1, borderBottomColor: '#DDD' }}>
+        <View style={[ commonStyle.taskContainer ]}>
           <View style={{ flex:1, paddingLeft:5, paddingRight:5 }}>
             <View style={{ flex:1, flexDirection:'row', justifyContent: 'space-between' }}>
               <View>
                 {  
                   rowData.new ?
                   (<Badge dot>
-                    <Text style={{ fontWeight:'700', fontSize:18 }}>{poNo}</Text>
-                  </Badge>) : (<Text style={{ fontWeight:'700', fontSize:18 }}>{poNo}</Text>)
+                    <Text style={[commonStyle.taskHeader]}>{poNo}</Text>
+                  </Badge>) : (<Text style={[commonStyle.taskHeader]}>{poNo}</Text>)
                 }
               </View>
               <View>
-                <Text style={{ fontSize:12 }}>{formatter.formatTime(rowData.createTime)} <Icon name="ios-arrow-forward"></Icon></Text>
+                <Text style={[ commonStyle.taskSubHeader ]}>{formatter.formatTime(rowData.createTime)} <Icon name="ios-arrow-forward"></Icon></Text>
               </View>
             </View>
             <View>
-              <View style={{ flex:1, flexDirection: 'row' }}>        
+              <View style={{ flexDirection: 'row', marginTop:10 }}>        
                 {this.renderBadge(rowData)}
-                <Text style={{ fontSize: 12 }}>拟稿人:{rowData.startUserName}</Text>
+                <View style={{ paddingTop: 3, paddingBottom:3 }}><Text style={[ commonStyle.taskSubHeader ]}>拟稿人:{rowData.startUserName}</Text></View>
               </View>
             </View>
           </View>
@@ -145,41 +150,166 @@ class PassTask extends Component {
     );
   }
 
+  showDrawer = () => {
+    this.props.dispatch(setSelectIndex(this.props.timeRange));
+    this.refs.drawer.drawer.openDrawer();
+  }
+
+  closeDrawer = () => {
+    this.refs.drawer.drawer.closeDrawer();
+  }
+
+  onOpenChange = (open) => {
+    if(open) {
+      this.props.dispatch(setHidden(true));
+      StatusBar.setBarStyle('dark-content');
+    }else{  
+      this.props.dispatch(setHidden(false));    
+      StatusBar.setBarStyle('light-content');
+    }
+  }
+
+  hasMore() {
+    if(this.props.page.total && this.props.page.current * this.props.page.limit <= this.props.page.total) {
+      
+      return true;
+    } else {
+
+      return false;
+    }
+  }
+
+  fetchMoreData = () => {
+    if(!this.hasMore() || this.props.isLoadingTail) {
+      return;
+    } else {
+      this.props.dispatch(setPageNo(this.props.page.current+1));
+    }
+  }
+
+  renderFooter = () => {
+    if(!this.hasMore()) {
+      return (
+        <View style={{ flex:1, justifyContent:'center', alignItems:'center', paddingTop:5 }}>
+          <Text style={{color:'grey'}}>没有更多了</Text>
+        </View>
+      )
+    } else {
+      return (<ActivityIndicator size="small"></ActivityIndicator>)
+    }
+  }
+
+  _onRrefresh = () => {
+    if(this.props.refreshing) {
+      return;
+    } else {
+      if(this.props.page.current == 1) {
+        this.props.dispatch(fetchTask(this.queryParams(this.props.propSelected, this.props.page.current, this.props.search, this.props.timeRange)));
+      }else{
+        this.props.dispatch(setPageNo(1));
+      } 
+    }
+  }
+
   render() {
+    console.log('props:', this.props);
+
+    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+
+    const drawerProps = {
+      open: true,
+      position: 'left',
+      onOpenChange: this.onOpenChange,
+    };
+
+    var { height, width } = Dimensions.get('window');
+
+    let component = this;
+
+    let common = this.props.condition.common.length && this.props.condition.common[0] ? this.props.condition.common[0] : null;
+
+    const condition = common ? (<View style={{ 
+                          flex: 1, 
+                          backgroundColor: 'white',
+                          flexDirection: 'column',
+                          justifyContent: 'space-between', }}>
+                          <View style={{ flex:1 }}>
+                            <WhiteSpace />
+                            <WhiteSpace />
+                            <WhiteSpace />
+                            <WingBlank>
+                              <Text>{common.text}:</Text>
+                              <View style={{ flexDirection: 'row', alignItems:'center', flexWrap:'wrap' }}>
+                                {
+                                  common.sub.map(function (el, index) {
+                                    return (<Tag key={index} style={{ marginRight: 5 }} selected={component.props.selectIndex === index} onChange={(bool) => {
+                                        if(bool) {
+                                          component.props.dispatch(setSelectIndex(index))
+                                        } else {
+                                          component.props.dispatch(setSelectIndex(null))
+                                        }
+                                      }}>{el.text}</Tag>)
+                                  })
+                                }
+                              </View>
+                            </WingBlank>
+                          </View>
+                          <View style={{ 
+                            height:50,
+                            flexDirection: 'row',
+                            justifyContent: 'space-around',
+                            paddingBottom: 5,
+                          }}>
+                            <Button onClick={() => {
+                              this.props.dispatch(setSelectIndex(null))
+                            }} size='md' style={{ flex:1 , marginLeft:10 , marginRight:5 }}>重置</Button>
+                            <Button onClick={() => {
+                              this.props.dispatch(setTimeRange(this.props.selectIndex));
+                              this.closeDrawer();
+                            }} size='md' type='primary' style={{ flex:1, marginLeft:5 , marginRight:10 }}>确定</Button>
+                          </View>
+                       </View>) : null;
+
     return (
       <View style={{ flex: 1, backgroundColor: 'white' }}>
+        <Drawer ref='drawer'
+          sidebar={condition}
+          drawerBackgroundColor='#FFF'
+          position='right'
+          onOpenChange={this.onOpenChange}
+        >
         <View style={[commonStyle.header]}>
           <Text style={[commonStyle.headerTitle]}>经办事项</Text>
           <TouchableOpacity style={[ commonStyle.headerLeftIcon ]} onPress={this._back}>
             <Icon name="ios-arrow-back" color='white' size={18}><Text style={{ color:'white', fontSize: 18 }}>返回</Text></Icon>
           </TouchableOpacity>
+          <TouchableOpacity style={[ commonStyle.headerRightIcon ]} onPress={this.showDrawer}>
+            <Icon name="ios-funnel" color='white' size={20}></Icon>
+          </TouchableOpacity>
         </View>
-        <SearchBar placeholder="搜索" />
-        <Tabs activeKey={this.state.current}
-            onChange={(key)=>{
-              console.log('click', key);
-              this.setState({current:key})}}>
-          <Tabs.TabPane tab="全部" key="1">
-            <ScrollView
-              ref={(scrollView) => { _scrollView = scrollView; }}
+        <SearchBar placeholder="搜索" onSubmit={(val) => {
+          this.props.dispatch(setSearch(val))
+        }}/>
+        {
+          this.props.refreshing && this.props.page.current === 1 ? (<ActivityIndicator_ANTD text="正在加载中..." size="large"></ActivityIndicator_ANTD>) : (<ListView
               automaticallyAdjustContentInsets={false}
-              >
-              <ListView 
-                dataSource={this.state.dataSource}
-                renderRow={this.renderRow}
-              />
-            </ScrollView>
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="最近七天" key="2">
-
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="本月" key="3">
-
-          </Tabs.TabPane>
-          <Tabs.TabPane tab="最近三个月" key="4">
-
-          </Tabs.TabPane>
-        </Tabs>
+              dataSource={ds.cloneWithRows(this.props.task)}
+              renderRow={this.renderRow}
+              onEndReached={this.fetchMoreData}
+              onEndReachedThreshold={20}
+              enableEmptySections={true}
+              renderFooter={this.renderFooter}
+              showVerticalScrollIndicator={false}
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.props.refreshing}
+                  onRefresh={this._onRrefresh}
+                  tintColor="#ff6600"
+                ></RefreshControl>
+              }
+            />)
+          }
+        </Drawer>
       </View>);
   }
 }

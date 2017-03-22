@@ -7,16 +7,18 @@
 import { fromJS } from 'immutable';
 import {
   DEFAULT_ACTION,
-  SETTAB_ACTION,
+  SETCOND_ACTION,
   SETTASK_ACTION,
   TOGGLEOPEN_ACTION,
   SETCURRENT_ACTION,
   SETLOADINGTAIL_ACTION,
   SETREFRESHING_ACTION,
+  SETSELECTINDEX_ACTION,
+  SETTIMERANGE_ACTION,
+  SETSEARCH_ACTION,
 } from './constants';
 
 const initialState = fromJS({
-  current: '1',		//当前显示的Tab
   task: [],
   search: '',
   timeRange: '',
@@ -28,6 +30,11 @@ const initialState = fromJS({
     current: 1,
     limit: 15,    //每页数据数量
   },
+  condition: {
+    catpath: {},
+    common: [],
+  },
+  selectIndex: null,
 });
 
 function TodoTaskReducer(state = initialState, action) {
@@ -35,13 +42,15 @@ function TodoTaskReducer(state = initialState, action) {
   switch (action.type) {
     case DEFAULT_ACTION:
       return state;
-    case SETTAB_ACTION:
-      return state.set('current', action.current);
+    case SETCOND_ACTION:
+      return state.set('condition', action.condition);
+    case SETSELECTINDEX_ACTION:
+      return state.set('selectIndex', action.index);
     case SETTASK_ACTION:
       {
-        if(action.current == 1){
+        if(action.current == 1) {
           return state.set('task', action.task).setIn(['page', 'total'], action.total).setIn(['page', 'current'], action.current);
-        }else{
+        } else {
           return state.set('task', state.get('task').concat(action.task)).setIn(['page', 'total'], action.total).setIn(['page', 'current'], action.current);
         }
       }
@@ -53,6 +62,10 @@ function TodoTaskReducer(state = initialState, action) {
       return state.set('isLoadingTail', action.isLoadingTail);
     case SETREFRESHING_ACTION:
       return state.set('refreshing', action.refreshing);
+    case SETTIMERANGE_ACTION:
+      return state.set('timeRange', action.timeRange);
+    case SETSEARCH_ACTION:
+      return state.set('search', action.search).setIn([ 'page', 'current' ], 1).setIn(['page', 'limit'], 15);
     default:
       return state;
   }

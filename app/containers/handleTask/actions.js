@@ -5,6 +5,9 @@ import {
   SETOPINIONS_ACTION,
   SETOUTGOING_ACTION,
   SETFORM_ACTION,
+  SETCOMPLETE_ACTION,
+  SETRESULT_ACTION,
+  HANDLETASK_ACTION,
 } from './constants';
 
 export function defaultAction() {
@@ -53,6 +56,28 @@ export function setForm(form) {
   }
 }
 
+//处理流程
+export function handleTask(form) {
+  return {
+    type: HANDLETASK_ACTION,
+    form,
+  }
+}
+
+//设置流程结果
+export function setComplete(complete) {
+  return {
+    type: SETCOMPLETE_ACTION,
+    complete,
+  }
+}
+
+export function setResult(result) {
+  return {
+    type: SETRESULT_ACTION,
+    result,
+  }
+}
 
 
 

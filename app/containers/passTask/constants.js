@@ -1,3 +1,19 @@
 
 export const DEFAULT_ACTION = 'app/PassTask/DEFAULT_ACTION';
-export const SETTAB_ACTION = 'app/PassTask/SETTAB_ACTION';
+
+export const FETCHTASK_ACTION = 'app/PassTask/FETCHTASK_ACTION';
+export const SETTASK_ACTION = 'app/PassTask/SETTASK_ACTION';
+
+export const TOGGLEOPEN_ACTION = 'app/PassTask/TOGGLEOPEN_ACTION';
+export const SETCURRENT_ACTION = 'app/PassTask/SETCURRENT_ACTION';
+
+export const SETLOADINGTAIL_ACTION = 'app/PassTask/SETLOADINGTAIL_ACTION';
+export const SETREFRESHING_ACTION = 'app/PassTask/SETREFRESHING_ACTION';
+
+export const FETCHCOND_ACTION = 'app/PassTask/FETCHCOND_ACTION';
+export const SETCOND_ACTION = 'app/PassTask/SETCOND_ACTION';
+
+export const SETSELECTINDEX_ACTION = 'app/PassTask/SETSELECTINDEX_ACTION';
+export const SETTIMERANGE_ACTION = 'app/PassTask/SETTIMERANGE_ACTION';
+
+export const SETSEARCH_ACTION = 'app/PassTask/SETSEARCH_ACTION';

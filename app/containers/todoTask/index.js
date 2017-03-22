@@ -15,20 +15,19 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
+
 import { 
-  TabBar, 
-  SearchBar, 
-  Tabs, 
+  SearchBar,
   Badge, 
   Tag, 
-  Flex,
-  List, 
+  Flex, 
   Drawer, 
   Button,
   WhiteSpace,
   WingBlank,
-  Grid, 
-}from 'antd-mobile';
+  Grid,
+  ActivityIndicator as ActivityIndicator_ANTD,
+} from 'antd-mobile';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import {connect} from 'react-redux';
@@ -38,27 +37,28 @@ import formatter from '../../utils/formatter';
 
 import commonStyle from '../styles';
 
-import { fetchTask, toggleOpen, setPageNo, setLoadingTail, setRefreshing } from './actions';
+import { 
+  fetchTask,
+  fetchCondition,
+  toggleOpen,
+  setPageNo,
+  setLoadingTail,
+  setRefreshing,
+  setSelectIndex,
+  setTimeRange,
+  setSearch, } from './actions';
 import { setHidden } from '../main/actions';
 
-const TabPane = TabBar.TabPane;
-
 class TodoTask extends Component {
-  static drawer = (<Drawer ref='drawer'
-        style={{ left:0, top:0 }}
-        sidebar={(<Text>抽屉内容</Text>)}
-        drawerBackgroundColor='#33d'
-        position='left'
-        onOpenChange={this.onOpenChange}
-        drawerWidth={300}
-      />)
-
   componentDidMount() {
+    this.props.dispatch(fetchCondition());
     this.props.dispatch(fetchTask(this.queryParams(this.props.propSelected, this.props.page.current, this.props.search, this.props.timeRange)));
   }
 
   componentWillReceiveProps(nextProps) {
-    if(this.props.page.current !== nextProps.page.current) {
+    if(this.props.page.current !== nextProps.page.current || 
+       this.props.timeRange !== nextProps.timeRange ||
+       this.props.search !== nextProps.search) {
       this.props.dispatch(fetchTask(this.queryParams(nextProps.propSelected, nextProps.page.current, nextProps.search, nextProps.timeRange)));
     }
 
@@ -78,7 +78,7 @@ class TodoTask extends Component {
       search,
     };
 
-    if(timeRange !== '') {
+    if(timeRange !== null && timeRange !== '') {
       query.timeRange = timeRange;
     }
 
@@ -89,7 +89,6 @@ class TodoTask extends Component {
     let url = rowData.url;
     let params = url.split('/');
     const page = params[2].split('?')[0];
-    console.log('rowData:', rowData);
     this.props.router.toScence(page, rowData);
   }
 
@@ -148,7 +147,12 @@ class TodoTask extends Component {
   }
 
   showDrawer = () => {
+    this.props.dispatch(setSelectIndex(this.props.timeRange));
     this.refs.drawer.drawer.openDrawer();
+  }
+
+  closeDrawer = () => {
+    this.refs.drawer.drawer.closeDrawer();
   }
 
   onOpenChange = (open) => {
@@ -162,24 +166,20 @@ class TodoTask extends Component {
   }
 
   hasMore() {
-    console.log('page:' , this.props.page);
-
     if(this.props.page.total && this.props.page.current * this.props.page.limit <= this.props.page.total) {
-      
       return true;
     } else {
-
       return false;
     }
   }
 
   fetchMoreData = () => {
-    console.log('fetchMoreData: ');
-
     if(!this.hasMore() || this.props.isLoadingTail) {
       return;
     } else {
-      this.props.dispatch(setPageNo(this.props.page.current+1));
+      setTimeout(function (){
+        this.props.dispatch(setPageNo(this.props.page.current+1));
+      }.bind(this), 1000)
     }
   }
 
@@ -218,11 +218,13 @@ class TodoTask extends Component {
       onOpenChange: this.onOpenChange,
     };
 
-    var {height, width} = Dimensions.get('window');
+    var { height, width } = Dimensions.get('window');
 
-    const data = [{text:'全部'}, {text:'最近一周'}, {text:'最近一个月'}, {text: '最近7天'}, {text: '最近8天'}]
+    let component = this;
 
-    const condition = (<View style={{ 
+    let common = this.props.condition.common.length && this.props.condition.common[0] ? this.props.condition.common[0] : null;
+
+    const condition = common ? (<View style={{ 
                           flex: 1, 
                           backgroundColor: 'white',
                           flexDirection: 'column',
@@ -232,14 +234,22 @@ class TodoTask extends Component {
                             <WhiteSpace />
                             <WhiteSpace />
                             <WhiteSpace />
-                            <Text>接收时间：</Text>
-                            <View style={{ flexDirection: 'row', alignItems:'center', flexWrap:'wrap' }}>
-                              {
-                                data.map(function (el, index) {
-                                  return (<WingBlank key={index} size='md' style={{ marginTop:3, marginBottom:3 }}><Tag selected>{el.text}</Tag></WingBlank>)
-                                })
-                              }
-                            </View>
+                            <WingBlank>
+                              <Text>{common.text}:</Text>
+                              <View style={{ flexDirection: 'row', alignItems:'center', flexWrap:'wrap' }}>
+                                {
+                                  common.sub.map(function (el, index) {
+                                    return (<Tag key={index} style={{ marginRight: 5 }} selected={component.props.selectIndex === index} onChange={(bool) => {
+                                        if(bool) {
+                                          component.props.dispatch(setSelectIndex(index))
+                                        } else {
+                                          component.props.dispatch(setSelectIndex(null))
+                                        }
+                                      }}>{el.text}</Tag>)
+                                  })
+                                }
+                              </View>
+                            </WingBlank>
                           </View>
                           <View style={{ 
                             height:50,
@@ -247,10 +257,15 @@ class TodoTask extends Component {
                             justifyContent: 'space-around',
                             paddingBottom: 5,
                           }}>
-                            <Button size='md' style={{ flex:1 , marginLeft:3 , marginRight:3 }}>重置</Button>
-                            <Button size='md' type='primary' style={{ flex:1, marginLeft:3 , marginRight:3 }}>确定</Button>
+                            <Button onClick={() => {
+                              this.props.dispatch(setSelectIndex(null))
+                            }} size='md' style={{ flex:1 , marginLeft:10 , marginRight:5 }}>重置</Button>
+                            <Button onClick={() => {
+                              this.props.dispatch(setTimeRange(this.props.selectIndex));
+                              this.closeDrawer();
+                            }} size='md' type='primary' style={{ flex:1, marginLeft:5 , marginRight:10 }}>确定</Button>
                           </View>
-                       </View>);
+                       </View>) : null;
 
     return (
       <View style={{ flex: 1, backgroundColor: 'white' }}>
@@ -266,25 +281,28 @@ class TodoTask extends Component {
             <Icon name="ios-funnel" color='white' size={20}></Icon>
           </TouchableOpacity>
         </View>
-        <SearchBar placeholder="搜索" />
-          <ListView
-            automaticallyAdjustContentInsets={false}
-            dataSource={ds.cloneWithRows(this.props.task)}
-            renderRow={this.renderRow}
-            onEndReached={this.fetchMoreData}
-            onEndReachedThreshold={20}
-            enableEmptySections={true}
-            renderFooter={this.renderFooter}
-            showVerticalScrollIndicator={false}
-            refreshControl={
-              <RefreshControl
-                refreshing={false}
-                onRefresh={this._onRrefresh}
-                tintColor="#ff6600"
-                title="加载中..."
-              ></RefreshControl>
-            }
-          />
+        <SearchBar placeholder="搜索" onSubmit={(val) => {
+          this.props.dispatch(setSearch(val))
+        }}/>
+          {
+            this.props.refreshing && this.props.page.current === 1 ? (<ActivityIndicator_ANTD text="正在加载中..." size="large"></ActivityIndicator_ANTD>) : (<ListView
+              automaticallyAdjustContentInsets={false}
+              dataSource={ds.cloneWithRows(this.props.task)}
+              renderRow={this.renderRow}
+              onEndReached={this.fetchMoreData}
+              onEndReachedThreshold={20}
+              enableEmptySections={true}
+              renderFooter={this.renderFooter}
+              showVerticalScrollIndicator={false}
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.props.refreshing}
+                  onRefresh={this._onRrefresh}
+                  tintColor="#ff6600"
+                ></RefreshControl>
+              }
+            />)
+          }
         </Drawer>
       </View>);
   }
