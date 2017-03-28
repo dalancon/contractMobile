@@ -1,26 +1,46 @@
 import React, { Component } from 'react';
-import { Navigator } from 'react-native';
+import { Navigator, AsyncStorage, View } from 'react-native';
 import { connect } from 'react-redux';
 import Router from './configs/router';
-// import { skipLogin, asyncSkipLogin } from './actions/user';
 
 import LoginPage from './containers/login';
 import MainPage from './containers/main';
 
-let initialRoute = {
-    name: 'login-page',
-    page: LoginPage,
-}
+
 
 class Root extends Component {
-  constructor(props){
-      super(props);
-     // if(props.isLoggedIn){
-          // initialRoute = {
-          //     name: 'main-page',
-          //     page: MainPage
-          // }
-     // }
+
+  constructor(props, context) {
+    super(props, context); 
+
+    this.state = {
+      init: false
+    }
+  }
+
+  componentWillMount() {
+    AsyncStorage.getItem('oaAccount', (err, oaAccount) => {
+      let initialRoute = {
+        name: 'login-page',
+        page: LoginPage,
+      };
+
+      if(oaAccount) {
+        initialRoute = {
+          name: 'main-page',
+          page: MainPage,
+          props: {
+            oaAccount: oaAccount,
+            logined: false,
+          }
+        };
+      }
+
+      this.setState({
+        init: true,
+        initialRoute: initialRoute,
+      })
+    });
   }
 
   renderScene({page, name, id, index, props}, navigator){
@@ -46,21 +66,20 @@ class Root extends Component {
   }
 
   render() {
+    console.log('render:', this.state.initialRoute);
+    if(!this.state.init) {
+      return <View></View>;
+    }
+
     return (<Navigator 
-        ref={view => this.navigator=view}
-        initialRoute={initialRoute}
-        configureScene={this.configureScene.bind(this)}
-        renderScene={this.renderScene.bind(this)}
-      />);
+      ref={view => this.navigator=view}
+      initialRoute={this.state.initialRoute}
+      configureScene={this.configureScene.bind(this)}
+      renderScene={this.renderScene.bind(this)}
+    />);  
+
+    
   }
 }
-
-
-// function select(store){
-//   return {
-//     isLoggedIn: store.userStore.isLoggedIn
-//   }
-// }
-
 
 export default Root;

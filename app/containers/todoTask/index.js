@@ -6,7 +6,6 @@ import {
   View,
   ListView,
   ScrollView,
-  TouchableHighlight,
   TouchableOpacity,
   Image,
   Navigator,
@@ -27,6 +26,8 @@ import {
   WingBlank,
   Grid,
   ActivityIndicator as ActivityIndicator_ANTD,
+  Accordion,
+  List,
 } from 'antd-mobile';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -37,7 +38,8 @@ import formatter from '../../utils/formatter';
 
 import commonStyle from '../styles';
 
-import { 
+import {
+  defaultAction,
   fetchTask,
   fetchCondition,
   toggleOpen,
@@ -51,6 +53,7 @@ import { setHidden } from '../main/actions';
 
 class TodoTask extends Component {
   componentDidMount() {
+    this.props.dispatch(defaultAction());
     this.props.dispatch(fetchCondition());
     this.props.dispatch(fetchTask(this.queryParams(this.props.propSelected, this.props.page.current, this.props.search, this.props.timeRange)));
   }
@@ -118,7 +121,7 @@ class TodoTask extends Component {
     const poNo = param[2];
 
     return (
-      <TouchableHighlight onPress={() => { this.showDetails(rowData)}}>
+      <TouchableOpacity onPress={() => { this.showDetails(rowData)}}>
         <View style={[ commonStyle.taskContainer ]}>
           <View style={{ flex:1, paddingLeft:5, paddingRight:5 }}>
             <View style={{ flex:1, flexDirection:'row', justifyContent: 'space-between' }}>
@@ -142,7 +145,7 @@ class TodoTask extends Component {
             </View>
           </View>
         </View>
-      </TouchableHighlight>
+      </TouchableOpacity>
     );
   }
 
@@ -208,7 +211,7 @@ class TodoTask extends Component {
   }
 
   render() {
-    console.log('props:', this.props);
+    // console.log('props:', this.props);
 
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
@@ -284,6 +287,7 @@ class TodoTask extends Component {
         <SearchBar placeholder="搜索" onSubmit={(val) => {
           this.props.dispatch(setSearch(val))
         }}/>
+
           {
             this.props.refreshing && this.props.page.current === 1 ? (<ActivityIndicator_ANTD text="正在加载中..." size="large"></ActivityIndicator_ANTD>) : (<ListView
               automaticallyAdjustContentInsets={false}

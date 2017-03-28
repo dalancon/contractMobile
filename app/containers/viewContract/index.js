@@ -7,7 +7,6 @@ import {
   ScrollView,
   ListView,
   TouchableOpacity,
-  TouchableHighlight,
   Image,
   Navigator,
 } from 'react-native';
@@ -1300,22 +1299,19 @@ class ViewContract extends Component {
   
   renderRow = (rowData) => {
     return (
-      <TouchableHighlight onPress={() => { this.showDetails(rowData)}}>
-        <View style={{ flex:1, flexDirection:'row', marginTop:5, marginBottom:5, marginLeft:5, borderBottomWidth:1, borderBottomColor: '#DDD' }}>
+      <TouchableOpacity onPress={() => { this.showDetails(rowData)}}>
+        <View style={{ flex:1, flexDirection:'row', paddingBottom:6, paddingTop:6, marginLeft:5, borderBottomWidth:1, borderBottomColor: '#DDD' }}>
           <View style={{ flex:1, paddingLeft:5, paddingRight:5 }}>
             <View style={{ flex:1, flexDirection:'row', justifyContent: 'space-between' }}>
               <View>
-                <Text>合同名称:{rowData.description}</Text>
+                <Text style={{ fontSize:16, fontWeight:'700' }}>{rowData.description}</Text>
               </View>
               <View>
-                <Icon name="ios-arrow-forward"></Icon>
+                <Icon size={14} name="ios-arrow-forward"></Icon>
               </View>
             </View>
             <View >
               <Text>合同编号:{rowData.poNo}</Text>
-            </View>
-            <View>
-              <Text>所属部门:{rowData.departmentDesc}</Text>
             </View>
             <View style={{ flex:1, flexDirection:'row', justifyContent: 'space-between' }}>
               <View>
@@ -1327,7 +1323,7 @@ class ViewContract extends Component {
             </View>
           </View>
         </View>
-      </TouchableHighlight>
+      </TouchableOpacity>
     );
   }
 
@@ -1340,8 +1336,7 @@ class ViewContract extends Component {
           </View>
           <SearchBar placeholder="搜索" />
           <Tabs activeKey={this.state.current}
-              onChange={(key)=>{
-                this.setState({current:key})}}>
+              onChange={(key)=>{this.setState({current:key})}}>
             <Tabs.TabPane tab="三峡工程管理系统" key="1">
               <ScrollView
                 ref={(scrollView) => { _scrollView = scrollView; }}

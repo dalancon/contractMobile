@@ -1,5 +1,4 @@
-import { take, call, put, fork } from 'redux-saga/effects';
-import { takeEvery } from 'redux-saga';
+import { take, call, put, fork, takeLatest } from 'redux-saga/effects';
 import { completeTask, fetchOutUsers } from '../../apis/task';
 import { fetchTaskOpioions } from '../../apis/opinion';
 import {
@@ -17,15 +16,15 @@ import {
 } from './actions';
 
 export function* fetchOutgoingSaga() {
-  yield takeEvery(FETCHOUTGOING_ACTION, _fetchOutgoing);
+  yield takeLatest(FETCHOUTGOING_ACTION, _fetchOutgoing);
 }
 
 export function* fetchOpinionsSaga() {
-  yield takeEvery(FETCHOPINIONS_ACTION, _fetchOpinions);
+  yield takeLatest(FETCHOPINIONS_ACTION, _fetchOpinions);
 }
 
 export function* handleTaskSaga() {
-  yield takeEvery(HANDLETASK_ACTION, _handleTask);
+  yield takeLatest(HANDLETASK_ACTION, _handleTask);
 }
 
 function* _handleTask(action) {

@@ -1,5 +1,5 @@
-import { take, call, put, fork } from 'redux-saga/effects';
-import { takeEvery } from 'redux-saga';
+import { take, call, put, fork, takeLatest } from 'redux-saga/effects';
+
 import {
   FETCHPREVIEW_ACTION,
   FETCHSOURCE_ACTION,
@@ -15,11 +15,11 @@ import { preview } from '../../apis/common';
 import config from '../../apis/constants.js';
 
 export function* previewFileSaga() {
-  yield takeEvery(FETCHPREVIEW_ACTION, _previewFile);
+  yield takeLatest(FETCHPREVIEW_ACTION, _previewFile);
 }
 
 export function* fetchSourceSaga() {
-  yield takeEvery(FETCHSOURCE_ACTION, _fetchSource);
+  yield takeLatest(FETCHSOURCE_ACTION, _fetchSource);
 }
 
 function* _fetchSource(action){

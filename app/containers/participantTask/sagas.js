@@ -1,16 +1,16 @@
-import { take, call, put, select, takeEvery, cancel } from 'redux-saga/effects';
-import { FETCHCOND_ACTION, FETCHTASK_ACTION } from './constants';
+import { take, call, put, select, takeLatest, cancel } from 'redux-saga/effects';
 
+import { FETCHCOND_ACTION, FETCHTASK_ACTION } from './constants';
 import { setTask, setRefreshing, setCondition } from './actions';
 import { fetchTask } from '../../apis/task';
 import { fetchQueryCondition } from '../../apis/common';
 
 export function* fetchTaskSaga() {
-  yield takeEvery(FETCHTASK_ACTION, _fetchTask);
+  yield takeLatest(FETCHTASK_ACTION, _fetchTask);
 }
 
 export function* fetchCondSaga() {
-  yield takeEvery(FETCHCOND_ACTION, _fetchCond);
+  yield takeLatest(FETCHCOND_ACTION, _fetchCond);
 }
 
 function* _fetchCond(action) {

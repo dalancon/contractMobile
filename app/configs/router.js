@@ -25,11 +25,11 @@ class Router {
   }
 
   push(props, route) {
-      let routesList = this.navigator.getCurrentRoutes()
-      let nextIndex = routesList[routesList.length - 1].index + 1
-      route.props = props
-      route.index = nextIndex
-      this.navigator.push(route)
+    let routesList = this.navigator.getCurrentRoutes()
+    let nextIndex = routesList[routesList.length - 1].index + 1
+    route.props = props
+    route.index = nextIndex
+    this.navigator.push(route)
   }
 
   pop() {

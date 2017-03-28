@@ -41,7 +41,7 @@ function TodoTaskReducer(state = initialState, action) {
   // console.log(action);
   switch (action.type) {
     case DEFAULT_ACTION:
-      return state;
+      return initialState;
     case SETCOND_ACTION:
       return state.set('condition', action.condition);
     case SETSELECTINDEX_ACTION:

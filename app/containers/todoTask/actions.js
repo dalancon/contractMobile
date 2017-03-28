@@ -13,6 +13,12 @@ import {
   SETSEARCH_ACTION,
 } from './constants';
 
+export function defaultAction() {
+  return {
+    type: DEFAULT_ACTION,
+  }
+}
+
 // 查询任务
 export function fetchTask(queryParams) {
   return {

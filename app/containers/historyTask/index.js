@@ -6,7 +6,6 @@ import {
   View,
   ListView,
   ScrollView,
-  TouchableHighlight,
   TouchableOpacity,
   Image,
   Navigator,
@@ -117,7 +116,7 @@ class HistoryTask extends Component {
     const poNo = param[2];
 
     return (
-      <TouchableHighlight onPress={() => { this.showDetails(rowData)}}>
+      <TouchableOpacity onPress={() => { this.showDetails(rowData)}}>
         <View style={[ commonStyle.taskContainer ]}>
           <View style={{ flex:1, paddingLeft:5, paddingRight:5 }}>
             <View style={{ flex:1, flexDirection:'row', justifyContent: 'space-between' }}>
@@ -141,7 +140,7 @@ class HistoryTask extends Component {
             </View>
           </View>
         </View>
-      </TouchableHighlight>
+      </TouchableOpacity>
     );
   }
 

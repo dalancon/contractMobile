@@ -2,7 +2,13 @@
 import React, { PropTypes, Component } from 'react';
 import { createStructuredSelector } from 'reselect';
 import makeSelectLoginPage from './selectors';
-import { Button, InputItem, Toast } from 'antd-mobile';
+
+import { 
+  Button,
+  Toast,
+  InputItem,
+} from 'antd-mobile';
+
 import { createForm } from 'rc-form';
 import md5Hex from 'md5-hex';
 
@@ -10,9 +16,9 @@ import {
   Text,
   View,
   Platform,
-  TextInput,
   Image,
   AlertIOS,
+  AsyncStorage,
 } from 'react-native';
 
 import {connect} from 'react-redux';
@@ -20,7 +26,7 @@ import {connect} from 'react-redux';
 import ModalBox from 'react-native-modalbox';
 import Spinner from 'react-native-spinkit';
 
-import { loginAction, skipLogin } from './actions';
+import { loginAction, skipLogin, clearMessage, fetchUser } from './actions';
 
 import commonStyle from '../styles';
 import loginStyle from './styles';
@@ -28,32 +34,32 @@ import loginStyle from './styles';
 class LoginPage extends Component{
 
   componentWillReceiveProps(nextProps) {
-    console.log("LoginPage-componentWillReceiveProps:", nextProps);
     if(nextProps.success === true && this.props.success !== true){
-      this.toMain();
-      return false;
+      Toast.hide();
+      console.log('uid', nextProps.form.getFieldsValue().uid);
+      AsyncStorage.setItem('oaAccount',  nextProps.form.getFieldsValue().uid);
+      this.props.router.toMain({
+        logined: true
+      });
+    } else {
+      if(nextProps.message !== '') {
+        setTimeout(function (){
+          Toast.fail(nextProps.message, 1, () => {
+            this.props.dispatch(clearMessage());
+          });
+        }.bind(this), 1000)
+        
+      }
     }
-    if(nextProps.message && this.props.message !== nextProps.message) {
-      Toast.fail(nextProps.message, 1);
-    }
-  }
 
-  toMain() {
-    let {router} = this.props;
-    router.toMain();
-  }
-
-  shouldComponentUpdate(nextProps, nextState){
-    if(nextProps.isLoggedIn != this.props.isLoggedIn && nextProps.isLoggedIn === true){
-        this.refs.modal.close();
-        this.toMain();
-        return false;
-    }
-    return true;
+    if(nextProps.logining && !this.props.logining) {
+      Toast.loading('登录中...', 0);
+    } 
   }
 
   genertateOaSsoUrl(oaAccount) {
     const uid = oaAccount;
+    // const uid = 'ye_menglin';
     // 获取当前日期 yyyyMMdd
     let today = new Date();
     const year = today.getFullYear();
@@ -77,30 +83,29 @@ class LoginPage extends Component{
   }
 
   handleLogin = () => {
-    Toast.loading('登录中...', 1, () => {
-      const url = this.genertateOaSsoUrl(this.props.form.getFieldsValue().uid);
-      this.props.dispatch(loginAction(url));
-    });
+    const url = this.genertateOaSsoUrl(this.props.form.getFieldsValue().uid);
+    this.props.dispatch(loginAction(url));
   }
 
   render(){
     const { getFieldProps } = this.props.form;
 
     return (
-      <View style={{ flex:1}}>
+      <View style={{ flex:1 , backgroundColor:'#F5FCFF', opacity:1 }}>
         <View style={{
           flex:1,
           flexDirection: 'row',
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-          <Image source={require('../../public/imgs/sxlogo.png')}></Image>
+          <Image style={{ width: 60, height:60, backgroundColor:'transparent', borderRadius:30 }} source={require('../../public/imgs/logo.jpg')}></Image>
         </View>
         <View style={{ backgroundColor:'#FFF' , flex:1 }}>
           <InputItem
             {...getFieldProps('uid')}
             clear
             placeholder="输入OA账号"
+            autoCapitalize="none"
           ></InputItem>
           <InputItem
             clear

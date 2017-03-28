@@ -106,7 +106,7 @@ class ExaminePayment extends Component {
           </TouchableOpacity>
           <Text style={[commonStyle.headerTitle]} numberOfLines={1}>审批支付单</Text>
           <TouchableOpacity style={[commonStyle.headerRightIcon]} onPress={this._handle}>
-            <Icon name="ios-create-outline" color='white' size={20}></Icon>
+            <Icon name="md-create" color='white' size={20}></Icon>
           </TouchableOpacity>
         </View>
         <View style={{ flex: 1, backgroundColor: 'white' }}>
@@ -145,21 +145,26 @@ class ExaminePayment extends Component {
               }
             </Tabs.TabPane>
             <Tabs.TabPane tab="流转历史" key="3">
-              <WhiteSpace/>
-              <WingBlank>
-                <Steps size="small" current={this.props.history.length-2}>
-                  { 
-                    this.props.history.map(function (x, i) {
-                      let fontSize = 16;
-                      let minus = parseInt(x.taskName.length/8);
-                      fontSize = fontSize - minus;
-                      return (<Step key={i} 
-                        title={<Text style={{fontSize: fontSize}}>{x.taskName}</Text>} 
-                        description={<Text><Text>{x.comment}</Text><Text>{'\n'}{x.assignee}</Text><Text>{'\n'}{x.endTime !== null ? formatter.formatDate(x.endTime) : ''}</Text></Text>} />)
-                    })
-                  }
-                </Steps>
-              </WingBlank>
+              <ScrollView
+                ref={(scrollView) => { _scrollView = scrollView; }}
+                automaticallyAdjustContentInsets={false}
+                >
+                <WhiteSpace/>
+                <WingBlank>
+                  <Steps size="small" current={this.props.history.length-2}>
+                    { 
+                      this.props.history.map(function (x, i) {
+                        let fontSize = 16;
+                        let minus = parseInt(x.taskName.length/8);
+                        fontSize = fontSize - minus;
+                        return (<Step key={i} 
+                          title={<Text style={{fontSize: fontSize}}>{x.taskName}</Text>} 
+                          description={<Text><Text>{x.comment}</Text><Text>{'\n'}{x.assignee}</Text><Text>{'\n'}{x.endTime !== null ? formatter.formatDate(x.endTime) : ''}</Text></Text>} />)
+                      })
+                    }
+                  </Steps>
+                </WingBlank>
+              </ScrollView>
             </Tabs.TabPane>
           </Tabs>
         </View>

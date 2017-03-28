@@ -7,7 +7,6 @@ import {
   ScrollView,
   ListView,
   TouchableOpacity,
-  TouchableHighlight,
   Image,
   Navigator,
 } from 'react-native';
@@ -103,7 +102,18 @@ class HandleTask extends Component {
     });
   }
 
-  renderFlow() {
+  _reset() {
+    this.refs.scrollView.scrollTo({y: 0});
+  }
+
+  _onFocus(refName) {
+    setTimeout(()=> {
+      let scrollResponder = this.refs.scrollView.getScrollResponder();
+      scrollResponder.scrollResponderScrollNativeHandleToKeyboard(ReactNative.findNodeHandle(this.refs[refName]), 0, true);
+    }, 100);
+  }
+
+  renderFlow = () => {
     const data = this.props.outgoing.map((x) => { return {value: x.id, label: x.name}; });
 
     let users = this.findOutGoing() ? this.findOutGoing().users.map((u) => { return {value:u.id, label:u.userName}; }) : [];
@@ -114,57 +124,62 @@ class HandleTask extends Component {
 
     return (
       <View style={{ flex: 1, backgroundColor: 'white' }}>
-      <List renderHeader={() => '下一环节'}>
-        {data.map(i => (
-          <RadioItem key={i.value} checked={this.props.form.outGoingId === i.value} onChange={() => this.props.dispatch(setForm({ outGoingId: i.value , userId: ''}))}>
-            {i.label}
-          </RadioItem>
-        ))}
-      </List>
-      <List renderHeader={() => '人员'}>
-        <Picker disabled={!this.props.form.outGoingId} data={users} cols={1} value={[ this.props.form.userId ]} onChange={(val) => this.props.dispatch(setForm({ userId: val[0] })) }>
-          <List.Item arrow="horizontal">处理人</List.Item>
-        </Picker>
-      </List>
-      <List renderHeader={() => '意见'} renderFooter={() => (<View >
-          
-        </View>)}>
-        <TextareaItem
-          clear
-          rows={3}
-          count={100}
-          value={this.props.form.comment}
-          onChange={
-            (val) => this.props.dispatch(setForm({ comment: val }))
-          }
-        />
-        <List.Item>
-          <TouchableOpacity onPress={this.onPressComment}>
-              <Text style={{ color: '#108EE9'}}>常用意见</Text>
-          </TouchableOpacity>
-        </List.Item>
-      </List>
-      <WhiteSpace size="sm" />
-      <List.Item>
-        <Button type="primary" inline onClick={() => alert('提交', '确定提交么?', [
-          { text: '取消', onPress: () => console.log('cancel') },
-          { text: '确定', onPress: () => { 
-              if(this.validateForm()) {
-                Toast.loading('正在提交...', 1, () => {
-                  let form = {
-                    processInstanceId: this.props.processInstanceId,
-                    taskId: this.props.taskId,
-                    businessId: this.props.businessId,
-                  };
-                  this.props.dispatch(handleTask(Object.assign({}, form, this.props.form)));
-                }); 
+        <ScrollView ref="scrollView" style={{ flex: 1}}>
+          <List renderHeader={() => '下一环节'}>
+            {data.map(i => (
+              <RadioItem key={i.value} checked={this.props.form.outGoingId === i.value} onChange={() => this.props.dispatch(setForm({ outGoingId: i.value , userId: ''}))}>
+                {i.label}
+              </RadioItem>
+            ))}
+          </List>
+          <List renderHeader={() => '人员'}>
+            <Picker disabled={!this.props.form.outGoingId} data={users} cols={1} value={[ this.props.form.userId ]} onChange={(val) => this.props.dispatch(setForm({ userId: val[0] })) }>
+              <List.Item arrow="horizontal">处理人</List.Item>
+            </Picker>
+          </List>
+          <List renderHeader={() => '意见'} >
+            <TextareaItem
+              ref='textarea'
+              clear
+              rows={3}
+              count={100}
+              value={this.props.form.comment}
+              onFoucs={this._onFocus.bind(this, 'textarea')}
+              onBlur={this._reset.bind(this)}
+              onChange={
+                (val) => this.props.dispatch(setForm({ comment: val }))
               }
-            }, style: { fontWeight: 'bold' } },
-        ])}>提交申请单</Button>
-      </List.Item>
+            />
+            <List.Item>
+              <TouchableOpacity onPress={this.onPressComment}>
+                  <Text style={{ color: '#108EE9'}}>常用意见</Text>
+              </TouchableOpacity>
+            </List.Item>
+          </List>
+          <WhiteSpace size="sm" />
+          <List.Item>
+            <Button type="primary" inline onClick={() => alert('提交', '确定提交么?', [
+              { text: '取消', onPress: () => console.log('cancel') },
+              { text: '确定', onPress: () => { 
+                  if(this.validateForm()) {
+                    Toast.loading('正在提交...', 1, () => {
+                      let form = {
+                        processInstanceId: this.props.processInstanceId,
+                        taskId: this.props.taskId,
+                        businessId: this.props.businessId,
+                      };
+                      this.props.dispatch(handleTask(Object.assign({}, form, this.props.form)));
+                    }); 
+                  }
+                }, style: { fontWeight: 'bold' } },
+            ])}>提交申请单</Button>
+          </List.Item>
+        </ScrollView>
       </View>
     );
   }
+
+  
 
   renderResult() {
     if(this.props.result){

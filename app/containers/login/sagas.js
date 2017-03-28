@@ -1,5 +1,5 @@
-import { take, call, put, fork } from 'redux-saga/effects';
-import { takeEvery } from 'redux-saga';
+import { take, call, put, fork, takeLatest } from 'redux-saga/effects';
+
 import {
   LOGIN_ACTION,
   LOGINSUCCESS_ACTION,
@@ -11,20 +11,21 @@ import { login } from '../../apis/login';
 
 // Individual exports for testing
 export function* loginSaga() {
-  yield* takeEvery(LOGIN_ACTION, _login);
+  yield takeLatest(LOGIN_ACTION, _login);
 }
 
 function* _login(action) {
   try {
+
+    console.log('_login:', action);
+
     let result = yield Promise.all([
       login(action.url),
     ]);
 
     result = yield result.map((x) => x.json())[0];
 
-    console.log(result);
-
-    if (result) {
+    if(result) {
       yield put(loginSuccess());
     } else {
       yield put(loginFailed('登陆失败'));

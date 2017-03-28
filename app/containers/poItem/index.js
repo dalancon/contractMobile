@@ -7,7 +7,6 @@ import {
   ScrollView,
   ListView,
   TouchableOpacity,
-  TouchableHighlight,
   Image,
   Navigator,
 } from 'react-native';

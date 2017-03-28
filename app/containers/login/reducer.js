@@ -12,12 +12,15 @@ import {
   LOGINSUCCESS_ACTION,
   LOGINFAILED_ACTION,
   LOGINOUTSUCCESS_ACTION,
+  LOGINOUT_ACTION,
+  CLEARMESSAGE_ACTION,
 } from './constants';
 
 const initialState = fromJS({
-  success: false,
-  logining: false,
-  message: '',
+  success: false,     //登陆是否成功
+  logining: false,    //是否在登陆过程中
+  message: '',        //提示信息
+  oaAccount: '',      //登录人
 });
 
 function LoginReducer(state = initialState, action) {
@@ -32,8 +35,10 @@ function LoginReducer(state = initialState, action) {
       return fromJS(Object.assign({}, state.toJS(), { logining: false, success: true }));
     case LOGINFAILED_ACTION:
       return fromJS(Object.assign({}, state.toJS(), { logining: false, success: false, message: action.message }));
-    case LOGINOUTSUCCESS_ACTION:
+    case LOGINOUT_ACTION:
       return initialState;
+    case CLEARMESSAGE_ACTION:
+      return state.set('message', '');
     default:
       return state;
   }

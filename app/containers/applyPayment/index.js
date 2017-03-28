@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   Image,
   Navigator,
-
 } from 'react-native';
 
 import { 
@@ -419,7 +418,7 @@ class ApplyPayment extends Component {
       <View style={[commonStyle.wrapper]}>
         <View style={[commonStyle.header]}>
           <TouchableOpacity style={[ commonStyle.headerLeftIcon ]} onPress={this._back}>
-            <Icon name="ios-arrow-back" color='white' size={18}><Text style={{ color:'white', fontSize: 17 }}>返回</Text></Icon>
+            <Icon name="ios-arrow-back" color='white' size={18}><Text style={{ color:'white', fontSize: 18 }}>返回</Text></Icon>
           </TouchableOpacity>
           <Text style={[commonStyle.headerTitle]} numberOfLines={1}>申请支付单</Text>
           <TouchableOpacity style={[ commonStyle.headerRightIcon ]} onPress={this.showActionSheet}>
@@ -450,11 +449,11 @@ class ApplyPayment extends Component {
                 <List.Item arrow="horizontal">接收日期</List.Item>
               </DatePicker>
             </List>
-            <List renderHeader={() => (<View style={{ backgroundColor:'#eee'}}>
+            <List renderHeader={() => (<View style={{ backgroundColor:'#f5f5f9'}}>
               <WhiteSpace/>
                 <WingBlank  style={{ flexDirection:'row', justifyContent: 'space-between' }}>
-                  <View><Text>支付细项</Text></View>
-                  <View><TouchableOpacity onPress={() => this.props.router.toPoItem()}><Icon size={24} name="ios-add" /></TouchableOpacity></View>
+                  <View><Text style={{ color: '#888'}}>支付细项</Text></View>
+                  <View><TouchableOpacity onPress={() => this.props.router.toPoItem()} style={{ paddingLeft:5, paddingRight:5 }}><Icon size={22} color="#888" name="ios-add" /></TouchableOpacity></View>
                 </WingBlank>
               <WhiteSpace/>
             </View>)} >

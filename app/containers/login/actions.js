@@ -1,5 +1,10 @@
 import {
-  DEFAULT_ACTION, LOGIN_ACTION, LOGINSUCCESS_ACTION, LOGINFAILED_ACTION,
+  DEFAULT_ACTION,
+  LOGIN_ACTION,
+  LOGINSUCCESS_ACTION,
+  LOGINFAILED_ACTION,
+  LOGINOUT_ACTION,
+  CLEARMESSAGE_ACTION,
 } from './constants';
 
 
@@ -22,4 +27,17 @@ export function loginFailed(message) {
     message,
   };
 }
+
+export function loginOut() {
+  return {
+    type: LOGINOUT_ACTION,
+  };
+}
+
+export function clearMessage() {
+  return {
+    type: CLEARMESSAGE_ACTION,
+  }
+}
+
 

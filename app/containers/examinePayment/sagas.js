@@ -1,5 +1,5 @@
-import { take, call, put, fork } from 'redux-saga/effects';
-import { takeEvery } from 'redux-saga';
+import { take, call, put, fork, takeLatest } from 'redux-saga/effects';
+
 import { fetchExamineInfo } from '../../apis/invoice';
 import { fetchHistory, fetchOutUsers } from '../../apis/task';
 import { fetchAssociateFile } from '../../apis/common';
@@ -18,15 +18,15 @@ import {
 import { login } from '../../apis/login';
 
 export function* fetchInvoiceInfoSaga() {
-  yield takeEvery(FETCHINVOICEINFO_ACTION, _fetchInfo);
+  yield takeLatest(FETCHINVOICEINFO_ACTION, _fetchInfo);
 }
 
 export function* fetchTaskHistorySaga() {
-  yield takeEvery(FETCHTASKHISTORY_ACTION, _fetchHistory);
+  yield takeLatest(FETCHTASKHISTORY_ACTION, _fetchHistory);
 }
 
 export function* fetchAssociateFileSaga() {
-  yield takeEvery(FETCHASSOCIATEFILE_ACTION, _fetchAssociateFile);
+  yield takeLatest(FETCHASSOCIATEFILE_ACTION, _fetchAssociateFile);
 }
 
 function* _fetchAssociateFile(action) {

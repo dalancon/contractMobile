@@ -3,7 +3,6 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableHighlight,
   Navigator,
   StatusBar, 
   Image, } from 'react-native';
@@ -11,43 +10,68 @@ import {connect} from 'react-redux';
 import NavigatorBar from 'react-native-navbar';
 import { TabBar, SearchBar }from 'antd-mobile'; 
 import Icon from 'react-native-vector-icons/Ionicons';
+import md5Hex from 'md5-hex';
 
 import LoginPage from '../login';
 import makeSelectMainPage from './selectors';
 import commonStyle from '../styles';
 
-import { setTab, fetchUser } from './actions';
+import { defaultAction, setTab, fetchUser, loginAction } from './actions';
 
 import TodoTask from '../todoTask';
 import ExaminePayment from '../examinePayment';
 import ViewContract from '../viewContract';
-import Task from '../task';
 import My from '../my';
 
 class MainPage extends Component {
 
+  componentWillMount() {
+    this.props.dispatch(defaultAction());
+  }
+
   componentDidMount() {
-    this.props.dispatch(fetchUser());  
+    if(this.props.logined) {
+      this.props.dispatch(fetchUser()); 
+    } 
+
+    if(!this.props.logined && this.props.oaAccount){
+      this.props.dispatch(loginAction(this.genertateOaSsoUrl(this.props.oaAccount)))
+    } 
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if(!this.props.logined && nextProps.logined) {
+      this.props.dispatch(fetchUser()); 
+    }
+  }
+
+  genertateOaSsoUrl(oaAccount) {
+    const uid = oaAccount;
+    // 获取当前日期 yyyyMMdd
+    let today = new Date();
+    const year = today.getFullYear();
+    let month = today.getMonth() + 1;
+    if (month < 10) {
+      month = '0' + month;
+    }
+    let date = today.getDate();
+    if (date < 10) {
+      date = '0' + date;
+    }
+    today = '' + year + month + date;
+    const prefix = 'oa123qwe!';
+    const suffix = '###';
+    let pid = prefix + today + uid + suffix;
+    pid = md5Hex(pid);
+    let ruid = 'todo';
+    ruid = md5Hex(ruid);
+    const url = '/qdp/qdp/login/sso/oa?uid=' + uid + '&pid=' + pid + '&ruid=' + ruid;
+    return url;
   }
 
   toLogin(){
     let {router} = this.props;
     router.resetToLogin();
-  }
-
-  renderScene = (title) => {
-    switch (title) {
-      case 'Todo Scence':
-        return <TodoTask router={this.props.router} />;
-      case 'Contract Scence':
-        return <ViewContract router={this.props.router} />;
-      case 'Task Scence':
-        return <Task router={this.props.router} />;
-      default:
-        return (
-          <View style={{ backgroundColor: 'white', flex: 1 }}><Text>123</Text></View>
-        );
-    }
   }
 
   render() {
@@ -72,12 +96,11 @@ class MainPage extends Component {
               icon={require('../../public/imgs/ios7-calendar32.png')}
               selectedIcon={require('../../public/imgs/ios7-calendar32.png')}
               selected={this.props.current === 'todo'}
-              badge={2}
               onPress={() => {
                 this.props.dispatch(setTab('todo'));
               }}
             >
-              <TodoTask router={this.props.router} />
+              { this.props.logined ? (<TodoTask router={this.props.router} />) : (<View></View>)}
             </TabBar.Item>
             <TabBar.Item
               title="合同"
@@ -89,7 +112,7 @@ class MainPage extends Component {
                 this.props.dispatch(setTab('contract'));
               }}
             >
-              <ViewContract router={this.props.router} />
+              { this.props.logined ? (<ViewContract router={this.props.router} />) : (<View></View>) }
             </TabBar.Item>
             <TabBar.Item
               title="我的"
@@ -101,7 +124,7 @@ class MainPage extends Component {
                 this.props.dispatch(setTab('my'));
               }}
             >
-              <My router={this.props.router} />
+              { this.props.logined ? (<My router={this.props.router} />) : (<View></View>) }
             </TabBar.Item>
           </TabBar>
       </View> 

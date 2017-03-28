@@ -7,12 +7,12 @@ import {
   ScrollView,
   ListView,
   TouchableOpacity,
-  TouchableHighlight,
   Image,
   Navigator,
+  AsyncStorage,
 } from 'react-native';
 
-import { List, SearchBar, Tabs, Grid } from 'antd-mobile';
+import { List, SearchBar, Tabs, Grid, Modal } from 'antd-mobile';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import {connect} from 'react-redux';
@@ -21,6 +21,8 @@ import makeSelectMy from './selectors';
 import formatter from '../../utils/formatter';
 
 import commonStyle from '../styles';
+
+import { loginOut } from '../login/actions';
 
 class My extends Component {
   constructor(props){
@@ -64,7 +66,9 @@ class My extends Component {
     },{
       icon: 'ios-exit-outline',
       text: '退出'
-    }]
+    }];
+
+    const alert = Modal.alert;
 
     return (
       <View style={{ flex: 1, backgroundColor: 'white' }}>
@@ -76,12 +80,27 @@ class My extends Component {
             <Grid hasLine={true} data={data} columnNum={3} renderItem={(el , index) => {
               return (
                 <View style={{ flex:1, flexDirection:'column', justifyContent:'center', alignItems: 'center' }}>
-                  <TouchableHighlight onPress={ () => this._toScence(index)}>
+                  <TouchableOpacity onPress={ 
+                    () => {
+                      if(el.text !== '退出') {
+                        this._toScence(index); 
+                      } else {
+                        alert('退出', '确定退出么?', [
+                          { text: '取消', onPress: () => console.log('cancel') },
+                          { text: '确定', onPress: () => {
+                            AsyncStorage.removeItem('oaAccount', function (){
+                              this.props.dispatch(loginOut());
+                              this.props.router.toLogin();
+                            }.bind(this));
+                          }}])
+                      }
+                    }
+                  }>
                     <View style={{ alignItems: 'center' }}>
                       <Icon name={el.icon} size={24}></Icon>
                       <Text>{el.text}</Text>
                     </View>
-                  </TouchableHighlight>
+                  </TouchableOpacity>
                 </View>
               );
             }}/>

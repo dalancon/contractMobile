@@ -7,7 +7,6 @@ import {
   ScrollView,
   ListView,
   TouchableOpacity,
-  TouchableHighlight,
   Image,
   Navigator,
 } from 'react-native';
@@ -15,8 +14,6 @@ import {
 import { List, SearchBar, Tabs, ActionSheet } from 'antd-mobile';
 
 import Icon from 'react-native-vector-icons/Ionicons';
-
-import Icon2 from 'react-native-vector-icons/FontAwesome';
 
 import {connect} from 'react-redux';
 import NavigatorBar from 'react-native-navbar';
@@ -304,7 +301,7 @@ class ContractDetails extends Component {
 
   renderRow = (rowData) => {
     return (
-      <TouchableHighlight>
+      <TouchableOpacity>
         <View style={{ flex:1, flexDirection:'row', marginTop:5, marginBottom:5, marginLeft:5, borderBottomWidth:1, borderBottomColor: '#DDD' }}>
           <View style={{ flex:1, paddingLeft:5, paddingRight:5 }}>
             <View >
@@ -331,7 +328,7 @@ class ContractDetails extends Component {
             </View>
           </View>
         </View>
-      </TouchableHighlight>
+      </TouchableOpacity>
     );
   }
 
@@ -367,7 +364,7 @@ class ContractDetails extends Component {
             </TouchableOpacity>
             <Text style={[commonStyle.headerTitle]} numberOfLines={1}>合同明细</Text>
             <TouchableOpacity style={[ commonStyle.headerRightIcon ]} onPress={this.showActionSheet}>
-              <Icon2 name="pencil" color='white' size={20}></Icon2>
+              <Icon name="md-create" color='white' size={20}></Icon>
             </TouchableOpacity>
           </View>
           <View style={{ flex: 1, backgroundColor: 'white' }}>
