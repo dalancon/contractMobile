@@ -113,7 +113,7 @@ class HandleTask extends Component {
     setTimeout(()=> {
       scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
         findNodeHandle(this.refs[refName]),
-        100, 
+        80, 
         true);
     }, 100);
   }

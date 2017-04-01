@@ -80,49 +80,49 @@ class MainPage extends Component {
           backgroundColor="blue"
           barStyle="light-content"
         />
-          <TabBar
-            unselectedTintColor="#949494"
-            tintColor="#33A3F4"
-            barTintColor="white"
-            hidden={this.props.hidden}
+        <TabBar
+          unselectedTintColor="#949494"
+          tintColor="#33A3F4"
+          barTintColor="white"
+          hidden={this.props.hidden}
+        >
+          <TabBar.Item
+            title="待办"
+            key="todo"
+            icon={require('../../public/imgs/ios7-calendar32.png')}
+            selectedIcon={require('../../public/imgs/ios7-calendar32.png')}
+            selected={this.props.current === 'todo'}
+            onPress={() => {
+              this.props.dispatch(setTab('todo'));
+            }}
           >
-            <TabBar.Item
-              title="待办"
-              key="todo"
-              icon={require('../../public/imgs/ios7-calendar32.png')}
-              selectedIcon={require('../../public/imgs/ios7-calendar32.png')}
-              selected={this.props.current === 'todo'}
-              onPress={() => {
-                this.props.dispatch(setTab('todo'));
-              }}
-            >
-              { this.props.logined ? (<TodoTask router={this.props.router} />) : (<View></View>)}
-            </TabBar.Item>
-            <TabBar.Item
-              title="合同"
-              key="contract"
-              icon={require('../../public/imgs/ios7-paper32.png')}
-              selectedIcon={require('../../public/imgs/ios7-paper32.png')}
-              selected={this.props.current === 'contract'}
-              onPress={() => {
-                this.props.dispatch(setTab('contract'));
-              }}
-            >
-              { this.props.logined ? (<ViewContract router={this.props.router} />) : (<View></View>) }
-            </TabBar.Item>
-            <TabBar.Item
-              title="我的"
-              key="my"
-              icon={require('../../public/imgs/ios7-person32.png')}
-              selectedIcon={require('../../public/imgs/ios7-person32.png')}
-              selected={this.props.current === 'my'}
-              onPress={() => {
-                this.props.dispatch(setTab('my'));
-              }}
-            >
-              { this.props.logined ? (<My router={this.props.router} />) : (<View></View>) }
-            </TabBar.Item>
-          </TabBar>
+            { this.props.logined ? (<TodoTask router={this.props.router} />) : (<View></View>)}
+          </TabBar.Item>
+          <TabBar.Item
+            title="合同"
+            key="contract"
+            icon={require('../../public/imgs/ios7-paper32.png')}
+            selectedIcon={require('../../public/imgs/ios7-paper32.png')}
+            selected={this.props.current === 'contract'}
+            onPress={() => {
+              this.props.dispatch(setTab('contract'));
+            }}
+          >
+            { this.props.logined ? (<ViewContract router={this.props.router} />) : (<View></View>) }
+          </TabBar.Item>
+          <TabBar.Item
+            title="我的"
+            key="my"
+            icon={require('../../public/imgs/ios7-person32.png')}
+            selectedIcon={require('../../public/imgs/ios7-person32.png')}
+            selected={this.props.current === 'my'}
+            onPress={() => {
+              this.props.dispatch(setTab('my'));
+            }}
+          >
+            { this.props.logined ? (<My router={this.props.router} />) : (<View></View>) }
+          </TabBar.Item>
+        </TabBar>
       </View> 
     );
   }

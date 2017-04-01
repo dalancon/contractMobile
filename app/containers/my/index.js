@@ -10,6 +10,7 @@ import {
   Image,
   Navigator,
   AsyncStorage,
+  StatusBar,
 } from 'react-native';
 
 import { List, SearchBar, Tabs, Grid, Modal } from 'antd-mobile';
@@ -72,50 +73,52 @@ class My extends Component {
     const alert = Modal.alert;
 
     return (
-      <View style={{ flex: 1, backgroundColor: 'white' }}>
-        <View style={[commonStyle.wrapper]}>
-          <View style={[commonStyle.header]}>
-            <Text style={[commonStyle.headerTitle]} numberOfLines={1}>我的</Text>
-          </View>
-          <View style={{ flex: 1, backgroundColor: 'white' }}>
-            <Grid hasLine={true} data={data} columnNum={3} renderItem={(el , index) => {
-              return (
-                <View style={{ flex:1, flexDirection:'column', justifyContent:'center', alignItems: 'center' }}>
-                  <TouchableOpacity onPress={ 
-                    () => {
-                      if(el.text !== '退出') {
-                        if(index == 0){
-                          this.props.router.toPassTask();
-                        }else if(index == 1){
-                          this.props.router.toHistoryTask();
-                        }else if(index == 2) {
-                          this.props.router.toParticipantTask();
-                        }
-                        //this._toScence(index); 
-                      } else {
-                        alert('退出', '确定退出么?', [
-                          { text: '取消', onPress: () => console.log('cancel') },
-                          { text: '确定', onPress: () => {
-                            AsyncStorage.removeItem('oaAccount', function (){
-                              this.props.dispatch(loginOut());
-                              this.props.dispatch(loginOutMain());
-                              this.props.router.pop();
-                            }.bind(this));
-                          }}])
+      <View style={[commonStyle.wrapper]}>
+        <StatusBar
+          backgroundColor="blue"
+          barStyle="light-content"
+        />
+        <View style={[commonStyle.header]}>
+          <Text style={[commonStyle.headerTitle]} numberOfLines={1}>我的</Text>
+        </View>
+        <View style={{ flex: 1, backgroundColor: 'white' }}>
+          <Grid hasLine={true} data={data} columnNum={3} renderItem={(el , index) => {
+            return (
+              <View style={{ flex:1, flexDirection:'column', justifyContent:'center', alignItems: 'center' }}>
+                <TouchableOpacity onPress={ 
+                  () => {
+                    if(el.text !== '退出') {
+                      if(index == 0){
+                        this.props.router.toPassTask();
+                      }else if(index == 1){
+                        this.props.router.toHistoryTask();
+                      }else if(index == 2) {
+                        this.props.router.toParticipantTask();
                       }
+                      //this._toScence(index); 
+                    } else {
+                      alert('退出', '确定退出么?', [
+                        { text: '取消', onPress: () => console.log('cancel') },
+                        { text: '确定', onPress: () => {
+                          AsyncStorage.removeItem('oaAccount', function (){
+                            this.props.dispatch(loginOut());
+                            this.props.dispatch(loginOutMain());
+                            this.props.router.pop();
+                          }.bind(this));
+                        }}])
                     }
-                  }>
-                    <View style={{ alignItems: 'center' , paddingTop:5, paddingBottom:5, paddingRight:5, paddingLeft:5 }}>
-                      <Icon name={el.icon} size={32}></Icon>
-                      <Text>{el.text}</Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              );
-            }}/>
-          </View>
-        </View> 
-      </View>
+                  }
+                }>
+                  <View style={{ alignItems: 'center' , paddingTop:5, paddingBottom:5, paddingRight:5, paddingLeft:5 }}>
+                    <Icon name={el.icon} size={32}></Icon>
+                    <Text>{el.text}</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            );
+          }}/>
+        </View>
+      </View> 
     );
   }
 }

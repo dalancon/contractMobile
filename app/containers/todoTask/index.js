@@ -277,6 +277,10 @@ class TodoTask extends Component {
 
     return (
       <View style={[commonStyle.wrapper]}>
+        <StatusBar
+          backgroundColor="blue"
+          barStyle="light-content"
+        />
         <Drawer ref='drawer'
           sidebar={condition}
           drawerBackgroundColor='#FFF'

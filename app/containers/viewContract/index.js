@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Image,
   Navigator,
+  StatusBar,
 } from 'react-native';
 
 import { List, SearchBar, Tabs } from 'antd-mobile';
@@ -1330,6 +1331,10 @@ class ViewContract extends Component {
   render() {
     return (
       <View style={[commonStyle.wrapper]}>
+        <StatusBar
+          backgroundColor="blue"
+          barStyle="light-content"
+        />
         <View style={[commonStyle.header]}>
           <Text style={[commonStyle.headerTitle]} numberOfLines={1}>合同</Text>
         </View>
