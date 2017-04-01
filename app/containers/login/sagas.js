@@ -17,8 +17,6 @@ export function* loginSaga() {
 function* _login(action) {
   try {
 
-    console.log('_login:', action);
-
     let result = yield Promise.all([
       login(action.url),
     ]);

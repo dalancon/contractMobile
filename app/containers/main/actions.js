@@ -1,5 +1,12 @@
 import {
-  DEFAULT_ACTION, LOGIN_ACTION, LOGINSUCCESS_ACTION, SETTAB_ACTION, FETCHUSER_ACTION, SETUSER_ACTION, SETHIDDEN_ACTION,
+  DEFAULT_ACTION,
+  LOGIN_ACTION, 
+  LOGINSUCCESS_ACTION,
+  LOGINOUT_ACTION,
+  SETTAB_ACTION,
+  FETCHUSER_ACTION,
+  SETUSER_ACTION,
+  SETHIDDEN_ACTION,
 } from './constants';
 
 export function defaultAction() {
@@ -48,5 +55,11 @@ export function setHidden(hidden) {
   return {
     type: SETHIDDEN_ACTION,
     hidden,
+  }
+}
+
+export function loginOut() {
+  return {
+    type: LOGINOUT_ACTION,
   }
 }

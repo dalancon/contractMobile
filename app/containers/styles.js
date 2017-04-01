@@ -49,7 +49,8 @@ var styles = StyleSheet.create({
       paddingLeft: 2,
     },
     wrapper: {
-        flex: 1,
+      flex: 1,
+      backgroundColor: 'white',
     },
     bgColor: {
         backgroundColor: '#F5FCFF'

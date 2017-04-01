@@ -331,7 +331,7 @@ class ApplyPayment extends Component {
             right={[
               {
                 text: '取消',
-                onPress: () => console.log('取消'),
+                // onPress: () => console.log('取消'),
                 style: { backgroundColor: '#ddd', color: 'white' },
               },
               {
@@ -344,7 +344,7 @@ class ApplyPayment extends Component {
                 style: { backgroundColor: '#F4333C', color: 'white' },
               },
             ]}
-            onOpen={() => console.log('global open')}
+            // onOpen={() => console.log('global open')}
           >
             <Card full style={{ marginBottom:2 }}>
               <Card.Header
@@ -450,12 +450,12 @@ class ApplyPayment extends Component {
               </DatePicker>
             </List>
             <List renderHeader={() => (<View style={{ backgroundColor:'#f5f5f9'}}>
-              <WhiteSpace/>
-                <WingBlank  style={{ flexDirection:'row', justifyContent: 'space-between' }}>
+              <WhiteSpace size="small"/>
+                <WingBlank  style={{ flexDirection:'row', justifyContent: 'space-between', alignItems:'center' }}>
                   <View><Text style={{ color: '#888'}}>支付细项</Text></View>
-                  <View><TouchableOpacity onPress={() => this.props.router.toPoItem()} style={{ paddingLeft:5, paddingRight:5 }}><Icon size={22} color="#888" name="ios-add" /></TouchableOpacity></View>
+                  <View><TouchableOpacity onPress={() => this.props.router.toPoItem()} style={{ paddingLeft:5, paddingRight:5 }}><Icon size={34} color="#888" name="ios-add" /></TouchableOpacity></View>
                 </WingBlank>
-              <WhiteSpace/>
+              <WhiteSpace size="small"/>
             </View>)} >
               <WhiteSpace />
               {

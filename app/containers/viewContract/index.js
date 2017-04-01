@@ -1303,10 +1303,10 @@ class ViewContract extends Component {
         <View style={{ flex:1, flexDirection:'row', paddingBottom:6, paddingTop:6, marginLeft:5, borderBottomWidth:1, borderBottomColor: '#DDD' }}>
           <View style={{ flex:1, paddingLeft:5, paddingRight:5 }}>
             <View style={{ flex:1, flexDirection:'row', justifyContent: 'space-between' }}>
-              <View>
+              <View style={{ flex:1 }}>
                 <Text style={{ fontSize:16, fontWeight:'700' }}>{rowData.description}</Text>
               </View>
-              <View>
+              <View style={{ width:10 }}>
                 <Icon size={14} name="ios-arrow-forward"></Icon>
               </View>
             </View>
@@ -1329,32 +1329,24 @@ class ViewContract extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1, backgroundColor: 'white' }}>
-        <View style={[commonStyle.wrapper]}>
-          <View style={[commonStyle.header]}>
-            <Text style={[commonStyle.headerTitle]} numberOfLines={1}>合同</Text>
-          </View>
-          <SearchBar placeholder="搜索" />
-          <Tabs activeKey={this.state.current}
-              onChange={(key)=>{this.setState({current:key})}}>
-            <Tabs.TabPane tab="三峡工程管理系统" key="1">
-              <ScrollView
-                ref={(scrollView) => { _scrollView = scrollView; }}
-                automaticallyAdjustContentInsets={false}
-                >
-                 <ListView 
-                  dataSource={this.state.contract}
-                  renderRow={this.renderRow}
-                />
-              </ScrollView>
-            </Tabs.TabPane>
-            <Tabs.TabPane tab="金沙江工程管理系统" key="2">
+      <View style={[commonStyle.wrapper]}>
+        <View style={[commonStyle.header]}>
+          <Text style={[commonStyle.headerTitle]} numberOfLines={1}>合同</Text>
+        </View>
+        <SearchBar placeholder="搜索" />
+        <Tabs activeKey={this.state.current}
+            onChange={(key)=>{this.setState({ current:key })}}>
+          <Tabs.TabPane tab="三峡工程管理系统" key="1">
+            <ListView 
+              dataSource={this.state.contract}
+              renderRow={this.renderRow}
+            />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="金沙江工程管理系统" key="2">
 
-            </Tabs.TabPane>
-          </Tabs>
-        </View> 
-      </View>
-     
+          </Tabs.TabPane>
+        </Tabs>
+      </View>      
     );
   }
 }

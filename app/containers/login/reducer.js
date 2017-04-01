@@ -20,13 +20,12 @@ const initialState = fromJS({
   success: false,     //登陆是否成功
   logining: false,    //是否在登陆过程中
   message: '',        //提示信息
-  oaAccount: '',      //登录人
 });
 
 function LoginReducer(state = initialState, action) {
   switch (action.type) {
     case DEFAULT_ACTION:
-      return state;
+      return initialState;
     case SETSUBMIT_ACTION:
       return fromJS(Object.assign({}, state.toJS(), action.submit));
     case LOGIN_ACTION:

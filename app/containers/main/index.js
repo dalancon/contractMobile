@@ -25,18 +25,14 @@ import My from '../my';
 
 class MainPage extends Component {
 
-  componentWillMount() {
-    this.props.dispatch(defaultAction());
-  }
-
   componentDidMount() {
-    if(this.props.logined) {
-      this.props.dispatch(fetchUser()); 
-    } 
-
-    if(!this.props.logined && this.props.oaAccount){
+    if(!this.props.logined){
       this.props.dispatch(loginAction(this.genertateOaSsoUrl(this.props.oaAccount)))
-    } 
+    }
+
+    if(this.props.logined){
+      this.props.dispatch(fetchUser()); 
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -76,7 +72,7 @@ class MainPage extends Component {
 
   render() {
     let {user} = this.props;
-    console.log('main:', this.props);
+   //  console.log('main:', this.props);
 
     return (
       <View style={{ flex :1 }}>
@@ -129,39 +125,8 @@ class MainPage extends Component {
           </TabBar>
       </View> 
     );
-
   }
-
-  handlePress(){
-    console.log('handlePress');
-
-  }
-
-  handleAsyncPress(){
-    console.log('asyncPress');
-  }
-
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
-
 
 MainPage.propTypes = {
   dispatch: PropTypes.func.isRequired,
@@ -174,6 +139,5 @@ function mapDispatchToProps(dispatch) {
     dispatch,
   };
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainPage);

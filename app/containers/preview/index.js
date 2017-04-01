@@ -84,7 +84,7 @@ class Preview extends Component {
   }
   
   render() {
-    console.log('preview:', this.props);
+   //  console.log('preview:', this.props);
 
     const { remarkText }= this.props.file;
     const type = this.descideFileType(remarkText);

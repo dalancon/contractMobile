@@ -170,7 +170,6 @@ class PassTask extends Component {
 
   hasMore() {
     if(this.props.page.total && this.props.page.current * this.props.page.limit <= this.props.page.total) {
-      
       return true;
     } else {
 
@@ -211,8 +210,6 @@ class PassTask extends Component {
   }
 
   render() {
-    console.log('props:', this.props);
-
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
     const drawerProps = {
@@ -270,7 +267,7 @@ class PassTask extends Component {
                        </View>) : null;
 
     return (
-      <View style={{ flex: 1, backgroundColor: 'white' }}>
+      <View style={[commonStyle.wrapper]} >
         <Drawer ref='drawer'
           sidebar={condition}
           drawerBackgroundColor='#FFF'

@@ -302,29 +302,25 @@ class ContractDetails extends Component {
   renderRow = (rowData) => {
     return (
       <TouchableOpacity>
-        <View style={{ flex:1, flexDirection:'row', marginTop:5, marginBottom:5, marginLeft:5, borderBottomWidth:1, borderBottomColor: '#DDD' }}>
+        <View style={{ flex:1, flexDirection:'row', paddingTop:5, paddingBottom:5, marginLeft:5, borderBottomWidth:1, borderBottomColor: '#DDD' }}>
           <View style={{ flex:1, paddingLeft:5, paddingRight:5 }}>
             <View >
-              <Text>BOQ:{rowData.poItem}</Text>
+              <Text style={{ fontSize: 16 }}>BOQ:{rowData.poItem}</Text>
             </View>
             <View >
               <Text>报价单描述:{rowData.description}</Text>
             </View>
             <View>
-              <View>
-                <Text>合同数量:{rowData.ptdCommitmentQty}</Text>
-              </View>
-              <View>
-                <Text>已支付:{rowData.incurredQtyTotal}</Text>
-              </View>
+              <Text>合同数量:{rowData.ptdCommitmentQty}</Text>
             </View>
-            <View style={{ flex:1, flexDirection:'row', justifyContent: 'space-between' }}>
-              <View>
-                <Text>总金额:{formatter.formatMoney(rowData.ptdCommitmentFrate * rowData.ptdCommitmentQty)}</Text>
-              </View>
-              <View>
-                <Text>已支付:{formatter.formatMoney(rowData.incurredFcostsTotal)}</Text>
-              </View>
+            <View>
+              <Text>已支付数量:{rowData.incurredQtyTotal}</Text>
+            </View>
+            <View>
+              <Text>合同总金额:{formatter.formatMoney(rowData.ptdCommitmentFrate * rowData.ptdCommitmentQty)}</Text>
+            </View>
+            <View>
+              <Text>已支付金额:{formatter.formatMoney(rowData.incurredFcostsTotal)}</Text>
             </View>
           </View>
         </View>
@@ -356,48 +352,45 @@ class ContractDetails extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1, backgroundColor: 'white' }}>
-        <View style={[commonStyle.wrapper]}>
-          <View style={[commonStyle.header]}>
-            <TouchableOpacity style={[ commonStyle.headerLeftIcon ]} onPress={this._back}>
-              <Icon name="ios-arrow-back" color='white' size={18}><Text style={{ color:'white', fontSize: 18 }}>返回</Text></Icon>
-            </TouchableOpacity>
-            <Text style={[commonStyle.headerTitle]} numberOfLines={1}>合同明细</Text>
-            <TouchableOpacity style={[ commonStyle.headerRightIcon ]} onPress={this.showActionSheet}>
-              <Icon name="md-create" color='white' size={20}></Icon>
-            </TouchableOpacity>
-          </View>
-          <View style={{ flex: 1, backgroundColor: 'white' }}>
-            <Tabs tabBarPosition="bottom" defaultActiveKey="1" activeKey={this.state.current}
-              onChange={(key)=>{this.setState({current:key})}}>
-              <Tabs.TabPane tab="合同" key="1">
-                 <ScrollView
-                  ref={(scrollView) => { _scrollView = scrollView; }}
-                  automaticallyAdjustContentInsets={false}
-                >
-                  <List renderHeader={() => '合同基本信息'}>
-                    <List.Item extra={this.state.contractInfo.poNo}>合同编号</List.Item>
-                    <List.Item extra={this.state.contractInfo.description}>合同名称</List.Item>
-                    <List.Item wrap={true} extra={`${this.state.contractInfo.project}(${this.state.contractInfo.projectDesc})`}>所属工程</List.Item>
-                    <List.Item wrap={true} extra={`${this.state.contractInfo.department}(${this.state.contractInfo.departmentDesc})`}>所属部门</List.Item>
-                    <List.Item wrap={true} extra={`${this.state.contractInfo.company}(${this.state.contractInfo.comDesc})`}>承包商</List.Item>
-                  </List>
-                  <List renderHeader={() => '合同基本信息'}>
-                    <ListView 
-                      dataSource={this.state.poItem}
-                      renderRow={this.renderRow}
-                    />
-                  </List>
-                </ScrollView>
-              </Tabs.TabPane>
-              <Tabs.TabPane tab="支付历史" key="2">
-                
-              </Tabs.TabPane>
-            </Tabs>
-          </View>
-        </View> 
-      </View>
-     
+      <View style={[commonStyle.wrapper]}>
+        <View style={[commonStyle.header]}>
+          <TouchableOpacity style={[ commonStyle.headerLeftIcon ]} onPress={this._back}>
+            <Icon name="ios-arrow-back" color='white' size={18}><Text style={{ color:'white', fontSize: 18 }}>返回</Text></Icon>
+          </TouchableOpacity>
+          <Text style={[commonStyle.headerTitle]} numberOfLines={1}>合同明细</Text>
+          <TouchableOpacity style={[ commonStyle.headerRightIcon ]} onPress={this.showActionSheet}>
+            <Icon name="md-create" color='white' size={20}></Icon>
+          </TouchableOpacity>
+        </View>
+        <View style={{ flex: 1, backgroundColor: 'white' }}>
+          <Tabs tabBarPosition="bottom" defaultActiveKey="1" activeKey={this.state.current}
+            onChange={(key)=>{this.setState({current:key})}}>
+            <Tabs.TabPane tab="合同" key="1">
+               <ScrollView
+                ref={(scrollView) => { _scrollView = scrollView; }}
+                automaticallyAdjustContentInsets={false}
+              >
+                <List renderHeader={() => '合同基本信息'}>
+                  <List.Item extra={this.state.contractInfo.poNo}>合同编号</List.Item>
+                  <List.Item extra={this.state.contractInfo.description}>合同名称</List.Item>
+                  <List.Item wrap={true} extra={`${this.state.contractInfo.project}(${this.state.contractInfo.projectDesc})`}>所属工程</List.Item>
+                  <List.Item wrap={true} extra={`${this.state.contractInfo.department}(${this.state.contractInfo.departmentDesc})`}>所属部门</List.Item>
+                  <List.Item wrap={true} extra={`${this.state.contractInfo.company}(${this.state.contractInfo.comDesc})`}>承包商</List.Item>
+                </List>
+                <List renderHeader={() => '合同基本信息'}>
+                  <ListView 
+                    dataSource={this.state.poItem}
+                    renderRow={this.renderRow}
+                  />
+                </List>
+              </ScrollView>
+            </Tabs.TabPane>
+            <Tabs.TabPane tab="支付历史" key="2">
+              
+            </Tabs.TabPane>
+          </Tabs>
+        </View>
+      </View>      
     );
   }
 }

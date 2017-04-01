@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
   Image,
   Navigator,
+  Dimensions,
+  findNodeHandle,
 } from 'react-native';
 
 import { 
@@ -56,7 +58,7 @@ class HandleTask extends Component {
 
   _backToMain = () => {
     this.props.dispatch(defaultAction());
-    this.props.router.toMain();
+    this.props.router.navigator.popToRoute(this.props.router.navigator.getCurrentRoutes()[1]);
   }
 
   componentDidMount() {
@@ -77,17 +79,17 @@ class HandleTask extends Component {
           <WhiteSpace/>
             <WingBlank style={{ flexDirection:'row', justifyContent: 'space-between' }}>
               <View><Text style={{ fontSize:14 }}>常用意见</Text></View>
-
             </WingBlank>
           <WhiteSpace/>
         </View>)}
       >
         {
           data.map(i => (
-            <RadioItem key={i.value} checked={comment === i.label} onChange={() => { 
-                                                                      this.props.dispatch(setForm({ comment: i.label }));
-                                                                      Popup.hide();
-                                                                    }}>
+            <RadioItem key={i.value} checked={comment === i.label}
+              onChange={() => { 
+                this.props.dispatch(setForm({ comment: i.label }));
+                Popup.hide();
+              }}>
               {i.label}
             </RadioItem>
           ))
@@ -103,13 +105,16 @@ class HandleTask extends Component {
   }
 
   _reset() {
-    this.refs.scrollView.scrollTo({y: 0});
+    this.refs.scrollView.scrollTo({ y: 0 });
   }
 
   _onFocus(refName) {
+    let scrollResponder = this.refs.scrollView.getScrollResponder();      
     setTimeout(()=> {
-      let scrollResponder = this.refs.scrollView.getScrollResponder();
-      scrollResponder.scrollResponderScrollNativeHandleToKeyboard(ReactNative.findNodeHandle(this.refs[refName]), 0, true);
+      scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
+        findNodeHandle(this.refs[refName]),
+        100, 
+        true);
     }, 100);
   }
 
@@ -123,63 +128,58 @@ class HandleTask extends Component {
     const alert = Modal.alert;
 
     return (
-      <View style={{ flex: 1, backgroundColor: 'white' }}>
-        <ScrollView ref="scrollView" style={{ flex: 1}}>
-          <List renderHeader={() => '下一环节'}>
-            {data.map(i => (
-              <RadioItem key={i.value} checked={this.props.form.outGoingId === i.value} onChange={() => this.props.dispatch(setForm({ outGoingId: i.value , userId: ''}))}>
-                {i.label}
-              </RadioItem>
-            ))}
-          </List>
-          <List renderHeader={() => '人员'}>
-            <Picker disabled={!this.props.form.outGoingId} data={users} cols={1} value={[ this.props.form.userId ]} onChange={(val) => this.props.dispatch(setForm({ userId: val[0] })) }>
-              <List.Item arrow="horizontal">处理人</List.Item>
-            </Picker>
-          </List>
-          <List renderHeader={() => '意见'} >
-            <TextareaItem
-              ref='textarea'
-              clear
-              rows={3}
-              count={100}
-              value={this.props.form.comment}
-              onFoucs={this._onFocus.bind(this, 'textarea')}
-              onBlur={this._reset.bind(this)}
-              onChange={
-                (val) => this.props.dispatch(setForm({ comment: val }))
-              }
-            />
-            <List.Item>
-              <TouchableOpacity onPress={this.onPressComment}>
-                  <Text style={{ color: '#108EE9'}}>常用意见</Text>
-              </TouchableOpacity>
-            </List.Item>
-          </List>
-          <WhiteSpace size="sm" />
+      <ScrollView style={{ flex: 1, backgroundColor: 'white' }} ref="scrollView" >
+        <List ref="next" renderHeader={() => '下一环节'}>
+          {data.map(i => (
+            <RadioItem key={i.value} checked={this.props.form.outGoingId === i.value} onChange={() => this.props.dispatch(setForm({ outGoingId: i.value , userId: ''}))}>
+              {i.label}
+            </RadioItem>
+          ))}
+        </List>
+        <List renderHeader={() => '人员'}>
+          <Picker disabled={!this.props.form.outGoingId} data={users} cols={1} value={[ this.props.form.userId ]} onChange={(val) => this.props.dispatch(setForm({ userId: val[0] })) }>
+            <List.Item arrow="horizontal">处理人</List.Item>
+          </Picker>
+        </List>
+        <List ref='textarea' renderHeader={() => '意见'} >
+          <TextareaItem
+            clear
+            rows={3}
+            count={100}
+            value={this.props.form.comment}
+            onFocus={this._onFocus.bind(this, 'textarea')}
+            onBlur={this._reset.bind(this)}
+            onChange={
+              (val) => this.props.dispatch(setForm({ comment: val }))
+            }
+          />
           <List.Item>
-            <Button type="primary" inline onClick={() => alert('提交', '确定提交么?', [
-              { text: '取消', onPress: () => console.log('cancel') },
-              { text: '确定', onPress: () => { 
-                  if(this.validateForm()) {
-                    Toast.loading('正在提交...', 1, () => {
-                      let form = {
-                        processInstanceId: this.props.processInstanceId,
-                        taskId: this.props.taskId,
-                        businessId: this.props.businessId,
-                      };
-                      this.props.dispatch(handleTask(Object.assign({}, form, this.props.form)));
-                    }); 
-                  }
-                }, style: { fontWeight: 'bold' } },
-            ])}>提交申请单</Button>
+            <TouchableOpacity onPress={this.onPressComment}>
+                <Text style={{ color: '#108EE9'}}>常用意见</Text>
+            </TouchableOpacity>
           </List.Item>
-        </ScrollView>
-      </View>
+        </List>
+        <WhiteSpace size="sm" />
+        <View style={{ margin: 10 }}>
+          <Button type="primary" inline onClick={() => alert('提交', '确定提交么?', [
+            { text: '取消', onPress: () => console.log('cancel') },
+            { text: '确定', onPress: () => { 
+                if(this.validateForm()) {
+                  Toast.loading('正在提交...', 1, () => {
+                    let form = {
+                      processInstanceId: this.props.processInstanceId,
+                      taskId: this.props.taskId,
+                      businessId: this.props.businessId,
+                    };
+                    this.props.dispatch(handleTask(Object.assign({}, form, this.props.form)));
+                  }); 
+                }
+              }, style: { fontWeight: 'bold' } },
+          ])}>提交申请单</Button>
+          </View>
+      </ScrollView>
     );
   }
-
-  
 
   renderResult() {
     if(this.props.result){
@@ -204,39 +204,33 @@ class HandleTask extends Component {
   render() {
     if(this.props.complete){
       return (
-        <View style={{ flex: 1, backgroundColor: 'white' }}>
-          <View style={[commonStyle.wrapper]}>
-            <View style={[commonStyle.header]}>
-              <TouchableOpacity style={[ commonStyle.headerLeftIcon ]} onPress={this._backToMain}>
-                <Icon name="ios-arrow-back" color='white' size={18}><Text style={{ color:'white', fontSize: 18 }}>返回</Text></Icon>
-              </TouchableOpacity>
-              <Text style={[commonStyle.headerTitle]} numberOfLines={1}>处理结果</Text>
-            </View>
-            {
-              this.renderResult()
-            }
-          </View> 
-        </View>
+        <View style={[commonStyle.wrapper]}>
+          <View style={[commonStyle.header]}>
+            <TouchableOpacity style={[ commonStyle.headerLeftIcon ]} onPress={this._backToMain}>
+              <Icon name="ios-arrow-back" color='white' size={18}><Text style={{ color:'white', fontSize: 18 }}>返回</Text></Icon>
+            </TouchableOpacity>
+            <Text style={[commonStyle.headerTitle]} numberOfLines={1}>处理结果</Text>
+          </View>
+          {
+            this.renderResult()
+          }
+        </View> 
       );
     } else { 
       return (
-        <View style={{ flex: 1, backgroundColor: 'white' }}>
-          <View style={[commonStyle.wrapper]}>
-            <View style={[commonStyle.header]}>
-              <TouchableOpacity style={[ commonStyle.headerLeftIcon ]} onPress={this._back}>
-                <Icon name="ios-arrow-back" color='white' size={18}><Text style={{ color:'white', fontSize: 18 }}>返回</Text></Icon>
-              </TouchableOpacity>
-              <Text style={[commonStyle.headerTitle]} numberOfLines={1}>处理</Text>
-            </View>
-              {
-                this.renderFlow()
-              }
-          </View> 
-        </View>
+        <View style={[commonStyle.wrapper]}>
+          <View style={[commonStyle.header]}>
+            <TouchableOpacity style={[ commonStyle.headerLeftIcon ]} onPress={this._back}>
+              <Icon name="ios-arrow-back" color='white' size={18}><Text style={{ color:'white', fontSize: 18 }}>返回</Text></Icon>
+            </TouchableOpacity>
+            <Text style={[commonStyle.headerTitle]} numberOfLines={1}>处理</Text>
+          </View>
+            {
+              this.renderFlow()
+            }
+        </View> 
       );
     }
-
-    
   }
 }
 

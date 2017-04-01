@@ -31,13 +31,11 @@ export function* fetchAssociateFileSaga() {
 
 function* _fetchAssociateFile(action) {
   try {
-  	console.log('_fetchAssociateFile');
     let result = yield Promise.all([
       fetchAssociateFile(action.businessId),
     ]);
 
     result = yield result.map((x) => x.json())[0];
-    console.log('_fetchAssociateFile', result);
 
     yield put(setAssociateFile(result));
   } catch (err) {

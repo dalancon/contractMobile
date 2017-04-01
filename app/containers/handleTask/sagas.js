@@ -54,8 +54,7 @@ function* _fetchOpinions(action) {
     ]);
 
     result = yield result.map((x) => x.json())[0];
-    console.log(result);
-
+    
     yield put(setOpinions(result));
 
   } catch(err) {
@@ -70,7 +69,7 @@ function* _fetchOutgoing(action) {
     ]);
 
     result = yield result.map((x) => x.json())[0];
-    console.log(result);
+
     yield put(setOutgoing(result));
   } catch (err) {
     alert('_fetchOutgoing:error!');

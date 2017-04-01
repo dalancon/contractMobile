@@ -23,6 +23,7 @@ import formatter from '../../utils/formatter';
 import commonStyle from '../styles';
 
 import { loginOut } from '../login/actions';
+import { loginOut as loginOutMain } from '../main/actions';
 
 class My extends Component {
   constructor(props){
@@ -83,21 +84,29 @@ class My extends Component {
                   <TouchableOpacity onPress={ 
                     () => {
                       if(el.text !== '退出') {
-                        this._toScence(index); 
+                        if(index == 0){
+                          this.props.router.toPassTask();
+                        }else if(index == 1){
+                          this.props.router.toHistoryTask();
+                        }else if(index == 2) {
+                          this.props.router.toParticipantTask();
+                        }
+                        //this._toScence(index); 
                       } else {
                         alert('退出', '确定退出么?', [
                           { text: '取消', onPress: () => console.log('cancel') },
                           { text: '确定', onPress: () => {
                             AsyncStorage.removeItem('oaAccount', function (){
                               this.props.dispatch(loginOut());
-                              this.props.router.toLogin();
+                              this.props.dispatch(loginOutMain());
+                              this.props.router.pop();
                             }.bind(this));
                           }}])
                       }
                     }
                   }>
-                    <View style={{ alignItems: 'center' }}>
-                      <Icon name={el.icon} size={24}></Icon>
+                    <View style={{ alignItems: 'center' , paddingTop:5, paddingBottom:5, paddingRight:5, paddingLeft:5 }}>
+                      <Icon name={el.icon} size={32}></Icon>
                       <Text>{el.text}</Text>
                     </View>
                   </TouchableOpacity>

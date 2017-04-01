@@ -29,6 +29,7 @@ import {
   Accordion,
   List,
 } from 'antd-mobile';
+
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import {connect} from 'react-redux';
@@ -52,6 +53,7 @@ import {
 import { setHidden } from '../main/actions';
 
 class TodoTask extends Component {
+
   componentDidMount() {
     this.props.dispatch(defaultAction());
     this.props.dispatch(fetchCondition());
@@ -65,7 +67,10 @@ class TodoTask extends Component {
       this.props.dispatch(fetchTask(this.queryParams(nextProps.propSelected, nextProps.page.current, nextProps.search, nextProps.timeRange)));
     }
 
-    if(this.props.task !== nextProps.task || this.props.page.total !== nextProps.page.total) {
+    if(this.props.task.length !== nextProps.task.length || this.props.page.total !== nextProps.page.total) {
+      // console.log('task:', this.props.task, nextProps.task, this.props.task !== nextProps.task);
+      // console.log('total:', this.props.page.total, nextProps.page.total, this.props.page.total !== nextProps.page.total);
+
       if(nextProps.task.length < nextProps.page.total){
         this.props.dispatch(setLoadingTail(false));
       }else{
@@ -150,21 +155,22 @@ class TodoTask extends Component {
   }
 
   showDrawer = () => {
+    StatusBar.setBarStyle('dark-content', false);
     this.props.dispatch(setSelectIndex(this.props.timeRange));
     this.refs.drawer.drawer.openDrawer();
   }
 
   closeDrawer = () => {
     this.refs.drawer.drawer.closeDrawer();
+    StatusBar.setBarStyle('light-content', false);
   }
 
   onOpenChange = (open) => {
     if(open) {
       this.props.dispatch(setHidden(true));
-      StatusBar.setBarStyle('dark-content');
     }else{  
       this.props.dispatch(setHidden(false));    
-      StatusBar.setBarStyle('light-content');
+      StatusBar.setBarStyle('light-content', false);
     }
   }
 
@@ -211,10 +217,9 @@ class TodoTask extends Component {
   }
 
   render() {
-    // console.log('props:', this.props);
+    //  console.log(this.props);
 
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
     const drawerProps = {
       open: true,
       position: 'left',
@@ -242,9 +247,9 @@ class TodoTask extends Component {
                               <View style={{ flexDirection: 'row', alignItems:'center', flexWrap:'wrap' }}>
                                 {
                                   common.sub.map(function (el, index) {
-                                    return (<Tag key={index} style={{ marginRight: 5 }} selected={component.props.selectIndex === index} onChange={(bool) => {
+                                    return (<Tag key={index} style={{ marginRight: 5 }} selected={component.props.selectIndex === el.value} onChange={(bool) => {
                                         if(bool) {
-                                          component.props.dispatch(setSelectIndex(index))
+                                          component.props.dispatch(setSelectIndex(el.value))
                                         } else {
                                           component.props.dispatch(setSelectIndex(null))
                                         }
@@ -271,7 +276,7 @@ class TodoTask extends Component {
                        </View>) : null;
 
     return (
-      <View style={{ flex: 1, backgroundColor: 'white' }}>
+      <View style={[commonStyle.wrapper]}>
         <Drawer ref='drawer'
           sidebar={condition}
           drawerBackgroundColor='#FFF'
@@ -287,7 +292,34 @@ class TodoTask extends Component {
         <SearchBar placeholder="搜索" onSubmit={(val) => {
           this.props.dispatch(setSearch(val))
         }}/>
-
+          {
+            this.props.timeRange ? 
+              <View style={{ flexDirection: 'column' }}>
+                <WhiteSpace />
+                <WingBlank style={{ flexDirection: 'row', alignItems:'center', flexWrap:'wrap' }}>
+                  {
+                    common.sub.map(function (el, index) {
+                      if(component.props.timeRange === el.value){
+                        return (
+                          <Tag ref={el.value} key={index} style={{ borderColor:'#1f90e6' }} closable selected={true}
+                            onChange={(bool) => {
+                              component.refs[index].setState({
+                                selected: true
+                              });
+                              component.props.dispatch(setTimeRange(null));
+                            }}
+                            onClose={() => {
+                              component.props.dispatch(setTimeRange(null));
+                            }}
+                            ><Text style={{ color:'#1f90e6' }}>{common.text}:{el.text}</Text></Tag>
+                        )
+                      }
+                    })
+                  }   
+                </WingBlank>
+                <WhiteSpace/>
+              </View> : null
+          }
           {
             this.props.refreshing && this.props.page.current === 1 ? (<ActivityIndicator_ANTD text="正在加载中..." size="large"></ActivityIndicator_ANTD>) : (<ListView
               automaticallyAdjustContentInsets={false}

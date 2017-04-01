@@ -9,7 +9,6 @@ import { loginSuccess } from './actions';
 import { userInfo, login } from '../../apis/login';
 import { setUser } from './actions';
 
-
 export function* fetchUserSaga() {
   yield takeLatest(FETCHUSER_ACTION, _fetchUser);
 }
@@ -24,11 +23,7 @@ function* _login(action) {
       login(action.url),
     ]);
 
-    console.log('login:', result);
-
     result = yield result.map((x) => x.json())[0];
-
-    console.log('login:', result);
 
     if(result) {
       yield put(loginSuccess());
@@ -41,15 +36,11 @@ function* _login(action) {
 
 function* _fetchUser() {
   try {
-    console.log('_fetchUser');
-
     let result = yield Promise.all([
       userInfo(),
     ]);
 
     result = yield result.map((x) => x.json())[0];
-
-    console.log(result);
 
     yield put(setUser(result));
   } catch (err) {

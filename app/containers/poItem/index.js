@@ -171,26 +171,24 @@ class PoItem extends Component {
 
   renderRow = (rowData) => {
     return (
-      <View style={{ flex:1, flexDirection:'row',  marginLeft:5, paddingTop:5, paddingBottom:5, borderBottomWidth:1, borderBottomColor: '#DDD' }}>
-        <View style={{ flex:1, paddingLeft:5, paddingRight:5 }}>
-          <View style={{ flex:1, flexDirection:'row', justifyContent: 'space-between' }}>
-            <View>
-              <Text>BOQ:{rowData.poItem}</Text>
-            </View>
-            <View>
-              <Text style={{ fontSize:14 }}>{rowData.description}</Text>
-            </View>
+      <View style={{ flex:1, flexDirection:'column',  marginLeft:5, marginRight:5, paddingTop:5, paddingBottom:5, borderBottomWidth:1, borderBottomColor: '#DDD' }}>
+        <View style={{ paddingTop:2, paddingBottom:2, flex:1, flexDirection:'row', justifyContent: 'space-between', alignItems:'center' }}>
+          <View>
+            <Text style={{ fontSize:16 }}>BOQ:{rowData.poItem}</Text>
           </View>
-          <View style={{ flex:1, flexDirection:'row', justifyContent: 'space-between' }}>
-            <View> 
-              <Text>数量:{rowData.ptdCommitmentQty}</Text>  
-            </View>
-            <View>
-              <Text>已支付:{rowData.incurredQtyTotal}</Text>      
-            </View>
-            <View> 
-              <Tag selected={rowData.isAdd} small>添加</Tag>
-            </View>
+          <View>
+            <Text style={{ fontSize:16 }}>{rowData.description}</Text>
+          </View>
+        </View>
+        <View style={{ paddingTop:2, paddingBottom:2, flex:1, flexDirection:'row', justifyContent: 'space-between', alignItems:'center' }}>
+          <View> 
+            <Text style={{ fontSize:16 }}>数量:{rowData.ptdCommitmentQty}</Text>  
+          </View>
+          <View>
+            <Text style={{ fontSize:16 }}>已支付:{rowData.incurredQtyTotal}</Text>      
+          </View>
+          <View> 
+            <Tag selected={rowData.isAdd} >添加</Tag>
           </View>
         </View>
       </View>
@@ -209,15 +207,10 @@ class PoItem extends Component {
           </View>
           <View style={{ flex: 1, backgroundColor: 'white' }}>
             <SearchBar placeholder="搜索" />
-            <ScrollView
-              ref={(scrollView) => { _scrollView = scrollView; }}
-              automaticallyAdjustContentInsets={false}
-              >
-              <ListView 
-                dataSource={this.state.dataSource}
-                renderRow={this.renderRow}
-              />
-            </ScrollView>
+            <ListView 
+              dataSource={this.state.dataSource}
+              renderRow={this.renderRow}
+            />
           </View>
         </View> 
       </View>

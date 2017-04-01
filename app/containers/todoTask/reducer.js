@@ -38,7 +38,6 @@ const initialState = fromJS({
 });
 
 function TodoTaskReducer(state = initialState, action) {
-  // console.log(action);
   switch (action.type) {
     case DEFAULT_ACTION:
       return initialState;

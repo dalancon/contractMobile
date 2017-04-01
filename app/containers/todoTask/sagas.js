@@ -21,7 +21,7 @@ function* _fetchCond(action) {
 
     result = yield result.map((x) => x.json())[0];
 
-    console.log('_fetchCond:', result);
+    // console.log('_fetchCond:', result);
 
     yield put(setCondition(result));
 
@@ -38,11 +38,9 @@ function* _fetchTask(action) {
       fetchTask('todo', action.queryParams),
     ]);
 
-    console.log('_fetchTask', result);
-
     result = yield result.map((x) => x.json())[0];
 
-    console.log(result);
+    // console.log(result);
 
     yield [
       put(setTask(result.rows, result.total, result.pageNo)),

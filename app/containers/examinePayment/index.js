@@ -63,7 +63,7 @@ class ExaminePayment extends Component {
     const processInstanceId = this.props.processInstanceId;
     const activityId = /activityId=(\w+)/i.exec(url)[1];
 
-    console.log('_handle:', this.props, processInstanceId);
+    // console.log('_handle:', this.props, processInstanceId);
 
     this.props.router.toHandleTask({
       businessId: businessKey,
@@ -98,6 +98,8 @@ class ExaminePayment extends Component {
 
   render() {
     let { user } = this.props;
+    const Component = this;
+
     return (
       <View style={[commonStyle.wrapper]}>
         <View style={[commonStyle.header]}>
@@ -153,13 +155,22 @@ class ExaminePayment extends Component {
                 <WingBlank>
                   <Steps size="small" current={this.props.history.length-2}>
                     { 
-                      this.props.history.map(function (x, i) {
+                      this.props.history.map(function (x, i, a) {
                         let fontSize = 16;
-                        let minus = parseInt(x.taskName.length/8);
+                        let minus = parseInt(x.taskName.length / 8);
                         fontSize = fontSize - minus;
-                        return (<Step key={i} 
-                          title={<Text style={{fontSize: fontSize}}>{x.taskName}</Text>} 
-                          description={<Text><Text>{x.comment}</Text><Text>{'\n'}{x.assignee}</Text><Text>{'\n'}{x.endTime !== null ? formatter.formatDate(x.endTime) : ''}</Text></Text>} />)
+
+                        const comment = x.comment == null ? '-' : x.comment;
+                        const time = x.endTime !== null ? formatter.formatDate(x.endTime) : '';
+                        
+                        if(i < a.length-1) {
+                          return (<Step key={i}
+                            description={comment+'\n'+x.assignee+' '+time}
+                            title={<Text style={{fontSize: fontSize }}>{x.taskName}</Text>} />)
+                        }else{
+                          return (<Step key={i}
+                            title={<Text style={{fontSize: fontSize }}>{x.taskName}</Text>} />)
+                        }
                       })
                     }
                   </Steps>

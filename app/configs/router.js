@@ -40,7 +40,6 @@ class Router {
     this.push(props, {
       page: PassTask,
       name: 'contractDetails-page',
-      sceneConfig: customFloatFromRight,
     })
   }
 
@@ -48,7 +47,6 @@ class Router {
     this.push(props, {
       page: ParticipantTask,
       name: 'contractDetails-page',
-      sceneConfig: customFloatFromRight,
     })
   }
 
@@ -56,7 +54,6 @@ class Router {
     this.push(props, {
       page: HistoryTask,
       name: 'contractDetails-page',
-      sceneConfig: customFloatFromRight,
     })
   }
 
@@ -64,7 +61,6 @@ class Router {
     this.push(props, {
       page: TodoTask,
       name: 'contractDetails-page',
-      sceneConfig: customFloatFromRight,
     })
   }
 
@@ -72,7 +68,6 @@ class Router {
     this.push(props, {
       page: ContractDetails,
       name: 'contractDetails-page',
-      sceneConfig: customFloatFromRight,
     })
   }
 
@@ -80,7 +75,6 @@ class Router {
     this.push(props, {
       page: Preview,
       name: 'preview-page',
-      sceneConfig: customFloatFromRight,
     })
   }
 
@@ -88,7 +82,6 @@ class Router {
     this.push(props, {
       page: ExaminePayment,
       name: 'examineContract-page',
-      sceneConfig: customFloatFromRight
     })
   }
 
@@ -96,7 +89,6 @@ class Router {
     this.push(props, {
       page: ApplyPayment,
       name: 'applyContract-page',
-      sceneConfig: customFloatFromRight
     })
   }
 
@@ -104,7 +96,6 @@ class Router {
     this.push(props, {
       page: PoItem,
       name: 'poItem-page',
-      sceneConfig: customFloatFromRight
     })
   }
 
@@ -112,7 +103,6 @@ class Router {
     this.push(props, {
       page: LoginPage,
       name: 'login-page',
-      sceneConfig: customFloatFromRight
     })
   }
 
@@ -120,7 +110,7 @@ class Router {
     this.push(props, {
       page: MainPage,
       name: 'main-page',
-      sceneConfig: customFloatFromRight
+      sceneConfig: Navigator.SceneConfigs.FadeAndroid,
     })
   }
 
@@ -137,7 +127,6 @@ class Router {
     this.push(props, {
       page: HanleTask,
       name: 'handleTask-page',
-      sceneConfig: customFloatFromRight,
     });
   }
 
@@ -149,7 +138,6 @@ class Router {
     this.navigator.resetTo({
       name: 'login-page',
       page: LoginPage,
-      sceneConfig: customFloatFromRight,
     })
   }
 }

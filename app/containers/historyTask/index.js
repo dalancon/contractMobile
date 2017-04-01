@@ -168,8 +168,6 @@ class HistoryTask extends Component {
   }
 
   hasMore() {
-    console.log('page:' , this.props.page);
-
     if(this.props.page.total && this.props.page.current * this.props.page.limit <= this.props.page.total) {
       
       return true;
@@ -180,8 +178,6 @@ class HistoryTask extends Component {
   }
 
   fetchMoreData = () => {
-    console.log('fetchMoreData: ');
-
     if(!this.hasMore() || this.props.isLoadingTail) {
       return;
     } else {
@@ -214,10 +210,7 @@ class HistoryTask extends Component {
   }
 
   render() {
-    console.log('props:', this.props);
-
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
     const drawerProps = {
       open: true,
       position: 'left',
@@ -273,7 +266,7 @@ class HistoryTask extends Component {
                        </View>) : null;
 
     return (
-      <View style={{ flex: 1, backgroundColor: 'white' }}>
+      <View style={[commonStyle.wrapper]} >
         <Drawer ref='drawer'
           sidebar={condition}
           drawerBackgroundColor='#FFF'
