@@ -7,6 +7,7 @@ import {
   FETCHUSER_ACTION,
   SETUSER_ACTION,
   SETHIDDEN_ACTION,
+  SETNETSTATUS_ACTION,
 } from './constants';
 
 export function defaultAction() {
@@ -61,5 +62,12 @@ export function setHidden(hidden) {
 export function loginOut() {
   return {
     type: LOGINOUT_ACTION,
+  }
+}
+
+export function setNetStatus(status) {
+  return {
+    type: SETNETSTATUS_ACTION,
+    netStatus: status,
   }
 }

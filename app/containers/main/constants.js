@@ -9,3 +9,5 @@ export const SETHIDDEN_ACTION = 'app/MainPage/SETHIDDEN_ACTION';
 export const LOGIN_ACTION = 'app/MainPage/LOGIN_ACTION';
 export const LOGINSUCCESS_ACTION = 'app/MainPage/LOGINSUCCESS_ACTION';
 export const LOGINOUT_ACTION = 'app/MainPage/LOGINOUT_ACTION';
+
+export const SETNETSTATUS_ACTION = 'app/MainPage/SETNETSTATUS_ACTION';

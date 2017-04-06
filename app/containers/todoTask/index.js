@@ -13,6 +13,7 @@ import {
   StatusBar,
   ActivityIndicator,
   RefreshControl,
+  NetInfo,
 } from 'react-native';
 
 import { 
@@ -28,12 +29,14 @@ import {
   ActivityIndicator as ActivityIndicator_ANTD,
   Accordion,
   List,
+  NoticeBar,
 } from 'antd-mobile';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import {connect} from 'react-redux';
-import NavigatorBar from 'react-native-navbar';
+import Realm from 'realm';
+
 import makeSelectTodoTask from './selectors';
 import formatter from '../../utils/formatter';
 
@@ -205,7 +208,7 @@ class TodoTask extends Component {
   }
 
   _onRrefresh = () => {
-    if(this.props.refreshing) {
+    if(this.props.netStatus !== 'online' || this.props.refreshing) {
       return;
     } else {
       if(this.props.page.current == 1) {
@@ -216,8 +219,52 @@ class TodoTask extends Component {
     }
   }
 
+  _renderHeader = () => {
+    let component = this;
+
+    let common = this.props.condition.common.length && this.props.condition.common[0] ? this.props.condition.common[0] : null;
+
+    return (
+      <View>
+        <SearchBar placeholder="搜索" onSubmit={(val) => {
+          this.props.dispatch(setSearch(val))
+        }} />
+        {
+          this.props.timeRange ? 
+            <View style={{ flexDirection: 'column' }}>
+              <WhiteSpace />
+              <WingBlank style={{ flexDirection: 'row', alignItems:'center', flexWrap:'wrap' }}>
+                {
+                  common.sub.map(function (el, index) {
+                    if(component.props.timeRange === el.value){
+                      return (
+                        <Tag ref={el.value} key={index} style={{ borderColor:'#1f90e6' }} closable selected={true}            
+                          onChange={(bool) => {
+                            // component.refs[index].setState({
+                            //   selected: true
+                            // });
+                            component.props.dispatch(setTimeRange(null));
+                          }}
+
+                          onClose={() => {
+                            component.props.dispatch(setTimeRange(null));
+                          }}
+
+                          ><Text style={{ color:'#1f90e6' }}>{common.text}:{el.text}</Text></Tag>
+                      )
+                    }
+                  })
+                }   
+              </WingBlank>
+              <WhiteSpace/>
+            </View> : null
+          }
+      </View>
+    )
+  }
+
   render() {
-    //  console.log(this.props);
+    // console.log('todoTask:', this.props);
 
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     const drawerProps = {
@@ -275,6 +322,8 @@ class TodoTask extends Component {
                           </View>
                        </View>) : null;
 
+    const tips = (this.props.refreshing && this.props.page.current === 1) ? "正在加载,请稍后..." : "下拉刷新";
+
     return (
       <View style={[commonStyle.wrapper]}>
         <StatusBar
@@ -293,45 +342,23 @@ class TodoTask extends Component {
             <Icon name="ios-funnel" color='white' size={20}></Icon>
           </TouchableOpacity>
         </View>
-        <SearchBar placeholder="搜索" onSubmit={(val) => {
-          this.props.dispatch(setSearch(val))
-        }}/>
+        
           {
-            this.props.timeRange ? 
-              <View style={{ flexDirection: 'column' }}>
-                <WhiteSpace />
-                <WingBlank style={{ flexDirection: 'row', alignItems:'center', flexWrap:'wrap' }}>
-                  {
-                    common.sub.map(function (el, index) {
-                      if(component.props.timeRange === el.value){
-                        return (
-                          <Tag ref={el.value} key={index} style={{ borderColor:'#1f90e6' }} closable selected={true}
-                            onChange={(bool) => {
-                              component.refs[index].setState({
-                                selected: true
-                              });
-                              component.props.dispatch(setTimeRange(null));
-                            }}
-                            onClose={() => {
-                              component.props.dispatch(setTimeRange(null));
-                            }}
-                            ><Text style={{ color:'#1f90e6' }}>{common.text}:{el.text}</Text></Tag>
-                        )
-                      }
-                    })
-                  }   
-                </WingBlank>
-                <WhiteSpace/>
-              </View> : null
+            this.props.netStatus !== 'online' ? (<NoticeBar mode="link" onClick={() => this.props.router.toCheckNetStatus({
+              router: this.props.router
+            })}>
+              网络不给力，请检查网络设置
+            </NoticeBar>) : null
           }
           {
-            this.props.refreshing && this.props.page.current === 1 ? (<ActivityIndicator_ANTD text="正在加载中..." size="large"></ActivityIndicator_ANTD>) : (<ListView
+            <ListView
               automaticallyAdjustContentInsets={false}
               dataSource={ds.cloneWithRows(this.props.task)}
               renderRow={this.renderRow}
               onEndReached={this.fetchMoreData}
               onEndReachedThreshold={20}
               enableEmptySections={true}
+              renderHeader={this._renderHeader}
               renderFooter={this.renderFooter}
               showVerticalScrollIndicator={false}
               refreshControl={
@@ -339,9 +366,10 @@ class TodoTask extends Component {
                   refreshing={this.props.refreshing}
                   onRefresh={this._onRrefresh}
                   tintColor="#ff6600"
+                  title={tips}
                 ></RefreshControl>
               }
-            />)
+            />
           }
         </Drawer>
       </View>);

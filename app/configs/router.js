@@ -13,6 +13,7 @@ import PassTask from '../containers/passTask';
 import HistoryTask from '../containers/historyTask';
 import TodoTask from '../containers/todoTask';
 import Preview from '../containers/preview';
+import CheckNetStatus from '../components/checkNetStatus';
 
 // Config
 const sceneConfig = require('./sceneConfig')
@@ -34,6 +35,13 @@ class Router {
 
   pop() {
     this.navigator.pop()
+  }
+
+  toCheckNetStatus(props) {
+    this.push(props, {
+      page: CheckNetStatus,
+      name: 'checkNetStatus-page',
+    })
   }
 
   toPassTask(props) {

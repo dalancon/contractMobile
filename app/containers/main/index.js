@@ -5,7 +5,8 @@ import {
   View,
   Navigator,
   StatusBar, 
-  Image, } from 'react-native';
+  Image,
+  NetInfo, } from 'react-native';
 import {connect} from 'react-redux';
 import NavigatorBar from 'react-native-navbar';
 import { TabBar, SearchBar }from 'antd-mobile'; 
@@ -16,7 +17,7 @@ import LoginPage from '../login';
 import makeSelectMainPage from './selectors';
 import commonStyle from '../styles';
 
-import { defaultAction, setTab, fetchUser, loginAction } from './actions';
+import { defaultAction, setTab, fetchUser, loginAction, setNetStatus } from './actions';
 
 import TodoTask from '../todoTask';
 import ExaminePayment from '../examinePayment';
@@ -33,6 +34,33 @@ class MainPage extends Component {
     if(this.props.logined){
       this.props.dispatch(fetchUser()); 
     }
+
+    // NetInfo.isConnected.fetch().then(isConnected => {
+    //   console.log('First, is ' + (isConnected ? 'online' : 'offline'));
+    // });
+
+    
+
+    NetInfo.isConnected.addEventListener(
+      'change',
+      this.handleFirstConnectivityChange
+    );
+
+    // NetInfo.isConnected.fetch().done(isConnected => {
+    //   // console.log('First, is ' + (isConnected ? 'online' : 'offline'));
+    //   alert(isConnected);
+    // });
+
+    // NetInfo.fetch().done(
+    //   (connectionInfo) => {
+    //     alert(connectionInfo); 
+    //   }
+    // );
+  }
+
+  handleFirstConnectivityChange = (isConnected) => {
+    let netStatus = isConnected ? 'online' : 'offline';
+    this.props.dispatch(setNetStatus(netStatus));
   }
 
   componentWillReceiveProps(nextProps) {
@@ -72,7 +100,7 @@ class MainPage extends Component {
 
   render() {
     let {user} = this.props;
-   //  console.log('main:', this.props);
+    // console.log('main:', this.props);
 
     return (
       <View style={{ flex :1 }}>
@@ -96,7 +124,7 @@ class MainPage extends Component {
               this.props.dispatch(setTab('todo'));
             }}
           >
-            { this.props.logined ? (<TodoTask router={this.props.router} />) : (<View></View>)}
+            <TodoTask { ...this.props } router={this.props.router} />
           </TabBar.Item>
           <TabBar.Item
             title="合同"
@@ -108,7 +136,7 @@ class MainPage extends Component {
               this.props.dispatch(setTab('contract'));
             }}
           >
-            { this.props.logined ? (<ViewContract router={this.props.router} />) : (<View></View>) }
+            <ViewContract { ...this.props } router={this.props.router} />
           </TabBar.Item>
           <TabBar.Item
             title="我的"
@@ -120,7 +148,7 @@ class MainPage extends Component {
               this.props.dispatch(setTab('my'));
             }}
           >
-            { this.props.logined ? (<My router={this.props.router} />) : (<View></View>) }
+            <My { ...this.props } router={this.props.router} />
           </TabBar.Item>
         </TabBar>
       </View> 

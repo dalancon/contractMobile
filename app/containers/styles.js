@@ -35,6 +35,7 @@ var styles = StyleSheet.create({
       paddingBottom: 2,
       paddingRight: 2,
       paddingLeft: 2,
+      backgroundColor:'#108ee9',
     },
     headerLeftIcon: {
       zIndex:1,
@@ -47,6 +48,7 @@ var styles = StyleSheet.create({
       paddingBottom: 2,
       paddingRight: 2,
       paddingLeft: 2,
+      backgroundColor:'#108ee9'
     },
     wrapper: {
       flex: 1,
