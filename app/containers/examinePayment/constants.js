@@ -10,3 +10,7 @@ export const SETTASKHISTORY_ACTION = 'app/ExaminePayment/SETTASKHISTORY_ACTION';
 
 export const FETCHASSOCIATEFILE_ACTION = 'app/ExaminePayment/FETCHASSOCIATEFILE_ACTION';
 export const SETASSOCIATEFILE_ACTION = 'app/ExaminePayment/SETASSOCIATEFILE_ACTION';
+
+export const FETCHPREVIEW_ACTION = 'app/ExaminePayment/FETCHPREVIEW_ACTION';
+export const SETPREVIEW_ACTION = 'app/ExaminePayment/SETPREVIEW_ACTION';
+export const HIDEPREVIEW_ACTION = 'app/ExaminePayment/HIDEPREVIEW_ACTION';

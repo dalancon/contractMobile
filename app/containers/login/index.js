@@ -6,6 +6,9 @@ import {
   Button,
   Toast,
   InputItem,
+  Popup,
+  NoticeBar,
+  WhiteSpace,
 } from 'antd-mobile';
 
 import { createForm } from 'rc-form';
@@ -23,12 +26,13 @@ import {
   StatusBar,
   Dimensions,
   findNodeHandle,
+  NetInfo,
 } from 'react-native';
 
 import { connect } from 'react-redux';
 import ModalBox from 'react-native-modalbox';
 import Spinner from 'react-native-spinkit';
-import { loginAction, skipLogin, clearMessage, fetchUser } from './actions';
+import { loginAction, skipLogin, clearMessage, fetchUser, setNetStatus } from './actions';
 
 import commonStyle from '../styles';
 import loginStyle from './styles';
@@ -42,13 +46,19 @@ class LoginPage extends Component{
     }
   }
 
+  componentDidMount() {
+    NetInfo.isConnected.addEventListener(
+      'change',
+      this.handleFirstConnectivityChange
+    );
+  }
+
   componentWillMount() {
     AsyncStorage.getItem('oaAccount', (err, oaAccount) => {
       let initialRoute = {
         name: 'login-page',
         page: LoginPage,
       };
-
       setTimeout(function () {
         this.setState({
           init: true
@@ -58,10 +68,9 @@ class LoginPage extends Component{
       if(oaAccount) {
         this.props.router.toMain({
           logined: false,
-          oaAccount: oaAccount
+          oaAccount: oaAccount,
         })
       }
-
     });
   }
 
@@ -89,6 +98,11 @@ class LoginPage extends Component{
     } 
   }
 
+  handleFirstConnectivityChange = (isConnected) => {
+    let netStatus = isConnected ? 'online' : 'offline';
+    this.props.dispatch(setNetStatus(netStatus));
+  }
+
   genertateOaSsoUrl(oaAccount) {
     const uid = oaAccount;
     // 获取当前日期 yyyyMMdd
@@ -114,9 +128,16 @@ class LoginPage extends Component{
   }
 
   handleLogin = () => {
-    Keyboard.dismiss();
-    const url = this.genertateOaSsoUrl(this.props.form.getFieldsValue().uid);
-    this.props.dispatch(loginAction(url));
+    if(this.props.netStatus === 'online') {
+      Keyboard.dismiss();
+      const url = this.genertateOaSsoUrl(this.props.form.getFieldsValue().uid);
+      this.props.dispatch(loginAction(url));
+    }else{
+      Popup.show(<NoticeBar style={{ paddingTop:10 }} mode="link" >网络不给力，请检查网络设置</NoticeBar>);
+      setTimeout(function () {
+        Popup.hide()
+      }, 1500);
+    }
   }
 
   _reset() {
@@ -134,6 +155,8 @@ class LoginPage extends Component{
   }
 
   render(){
+    //console.log('main:', this.props);
+    
     const { getFieldProps } = this.props.form;
     var cell_w = Dimensions.get('window').width;
 
@@ -142,52 +165,46 @@ class LoginPage extends Component{
     }
 
     return (
-      // <View style={{ flex:1 , backgroundColor:'#F5FCFF', opacity:1 }}>
-       
-      //   <View style={{ flex:1 }}>
-          <ScrollView
-            ref="scrollView"
-            style={{ backgroundColor: 'yellow',backgroundColor:'#F5FCFF', opacity:1, }}
-            scrollEnabled={false}
-            automaticallyAdjustContentInsets={true}>
-            <StatusBar
-              backgroundColor="blue"
-              barStyle="dark-content"
-            />
-            <View style={{
-              flex:1,
-              flexDirection: 'column',
-              justifyContent: 'space-around',
-              alignItems: 'center',
-            }}>
-              <Image style={{ margin:40, width: 60, height:60, backgroundColor:'transparent', borderRadius:30 }} source={require('../../public/imgs/logo.jpg')}></Image>
-              <View ref='uid' style={{ width:cell_w, backgroundColor:'#FFF' , height:100 }}>
-                <InputItem
-                  {...getFieldProps('uid')}
-                  clear
-                  placeholder="输入OA账号"
-                  autoCapitalize="none"
-                  onFocus={this._onFocus.bind(this, 'uid')}
-                  onBlur={this._reset.bind(this)}
-                ></InputItem>
-                <InputItem
-                  clear
-                  placeholder="密码"
-                  type="password"
-                ></InputItem>
-              </View>
-              <View style={{ width:cell_w, padding: 10 }}>
-                <Button className="btn" type="primary" onClick={this.handleLogin}>登陆</Button>
-                <View style={{ margin: 10, flex:1, flexDirection: 'row', justifyContent: 'space-between'}}>
-                  <Text>忘记密码</Text>
-                  <Text>新用户申请</Text>
-                </View>
-              </View>
-            </View>          
-          </ScrollView>
-      //   </View>
-      //   <View style={{ flex:1 }}></View>
-      // </View>
+      <ScrollView
+        ref="scrollView"
+        style={{ backgroundColor: 'yellow',backgroundColor:'#F5FCFF', opacity:1, }}
+        scrollEnabled={false}
+        automaticallyAdjustContentInsets={true}>
+        <StatusBar
+          backgroundColor="blue"
+          barStyle="dark-content"
+        />
+        <View style={{
+          flex:1,
+          flexDirection: 'column',
+          justifyContent: 'space-around',
+          alignItems: 'center',
+        }}>
+          <Image style={{ margin:40, width: 60, height:60, backgroundColor:'transparent', borderRadius:30 }} source={require('../../public/imgs/logo.jpg')}></Image>
+          <View ref='uid' style={{ width:cell_w, backgroundColor:'#FFF' , height:100 }}>
+            <InputItem
+              {...getFieldProps('uid')}
+              clear
+              placeholder="输入OA账号"
+              autoCapitalize="none"
+              onFocus={this._onFocus.bind(this, 'uid')}
+              onBlur={this._reset.bind(this)}
+            ></InputItem>
+            <InputItem
+              clear
+              placeholder="密码"
+              type="password"
+            ></InputItem>
+          </View>
+          <View style={{ width:cell_w, padding: 10 }}>
+            <Button className="btn" type="primary" onClick={this.handleLogin}>登陆</Button>
+            <View style={{ margin: 10, flex:1, flexDirection: 'row', justifyContent: 'space-between'}}>
+              <Text>忘记密码</Text>
+              <Text>新用户申请</Text>
+            </View>
+          </View>
+        </View>          
+      </ScrollView>
     );
   }
 }

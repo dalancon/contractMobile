@@ -9,11 +9,14 @@ import {
   FETCHINVOICEINFO_ACTION,
   FETCHTASKHISTORY_ACTION,
   FETCHASSOCIATEFILE_ACTION,
+  FETCHPREVIEW_ACTION,
   SETTAB_ACTION,
   SETINVOICEINFO_ACTION,
   SETTASKOPINION_ACTION,
   SETTASKHISTORY_ACTION,
   SETASSOCIATEFILE_ACTION,
+  SETPREVIEW_ACTION,
+  HIDEPREVIEW_ACTION,
 } from './constants';
 
 export function defaultAction() {
@@ -37,12 +40,13 @@ export function examining(status) {
 }
 
 // 获取支付单信息
-export function fetchInvoiceInfo(systemCode, poNo, invoiceNo) {
+export function fetchInvoiceInfo(systemCode, poNo, invoiceNo, businessKey) {
   return {
     type: FETCHINVOICEINFO_ACTION,
     systemCode,
     poNo,
     invoiceNo,
+    businessKey,
   };
 }
 
@@ -81,6 +85,27 @@ export function setAssociateFile(associateFile) {
   return {
     type: SETASSOCIATEFILE_ACTION,
     associateFile,
+  };
+}
+
+// 获取预览信息
+export function fetchPreview(file) {
+  return {
+    type: FETCHPREVIEW_ACTION,
+    file,
+  };
+}
+
+export function setPreview(preview) {
+  return {
+    type: SETPREVIEW_ACTION,
+    preview,
+  };
+}
+
+export function hidePreview() {
+  return {
+    type: HIDEPREVIEW_ACTION,
   };
 }
 

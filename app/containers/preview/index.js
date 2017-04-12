@@ -7,11 +7,17 @@ import {
   View,
   WebView,
   ScrollView,
+  Dimensions,
+  Image,
 } from 'react-native';
+
 import Icon from 'react-native-vector-icons/Ionicons';
+import ImageViewer from 'ImageViewer';
+import OpenFile from 'react-native-doc-viewer';
+
 import config from '../../apis/constants';
 
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import makeSelectPreview from './selectors';
 
 import commonStyle from '../styles';
@@ -80,11 +86,38 @@ class Preview extends Component {
           }}
         >
         </WebView>)
+    }else if(type === 'picture') {
+      const cell_w = Dimensions.get('window').width;
+      const cell_h = Dimensions.get('window').height;
+      console.log(`${config.baseUrl}/qdp/qdp/${this.props.preview}`);
+      return (
+        <View style={{
+            flex: 1,
+          }}>
+          <ImageViewer 
+            shown={true}
+            imageUrls={[`${config.baseUrl}/qdp/qdp/${this.props.preview}`]}
+            onClose={this._back}
+            index={0} />
+        </View> 
+      )
+    } else if(type === 'office') {
+      OpenFile.openDoc([{
+        url: `${config.baseUrl}/qdp/qdp/${this.props.preview}`,
+        fileName: this.props.preview,
+      }], (error, url) => {
+        if(error) {
+          console.error(error);
+        } else {
+          console.log(url);
+        }
+      });
+      return;
     }
   }
   
   render() {
-   //  console.log('preview:', this.props);
+    console.log('preview:', this.props);
 
     const { remarkText }= this.props.file;
     const type = this.descideFileType(remarkText);

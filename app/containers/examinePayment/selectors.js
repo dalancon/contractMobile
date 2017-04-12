@@ -3,7 +3,8 @@ import { createSelector } from 'reselect';
 /**
  * Direct selector to the examineContarc state domain
  */
-const selectExaminePaymentDomain = () => state => state.get('examinePayment')
+const selectExaminePaymentDomain = () => state => state.get('examinePayment');
+const selectLoginPageDomain = () => state => state.get('loginPage');
 
 
 /**
@@ -16,8 +17,9 @@ const selectExaminePaymentDomain = () => state => state.get('examinePayment')
  */
 
 const selectExaminePayment = () => createSelector(
-  selectExaminePaymentDomain(),
-  (substate) => substate.toJS()
+   selectExaminePaymentDomain(),
+   selectLoginPageDomain(),
+   (substate, loginState) => Object.assign({}, substate.toJS(), loginState.toJS())
 );
 
 export default selectExaminePayment;

@@ -1,9 +1,11 @@
 import { createSelector } from 'reselect';
 
+
 /**
  * Direct selector to the mainPage state domain
  */
-const selectMainPageDomain = () => state => state.get('mainPage')
+const selectMainPageDomain = () => state => state.get('mainPage');
+const selectLoginPageDomain = () => state => state.get('loginPage');
 
 
 /**
@@ -17,7 +19,8 @@ const selectMainPageDomain = () => state => state.get('mainPage')
 
 const selectMainPage = () => createSelector(
   selectMainPageDomain(),
-  (substate) => substate.toJS()
+  selectLoginPageDomain(),
+  (substate, loginState) => Object.assign({}, substate.toJS(), loginState.toJS())
 );
 
 export default selectMainPage;

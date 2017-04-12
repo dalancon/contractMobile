@@ -8,6 +8,7 @@ import participantTaskSagas from '../containers/participantTask/sagas';
 import passTaskSagas from '../containers/passTask/sagas';
 import examineSagas from '../containers/examinePayment/sagas';
 import previewSagas from '../containers/preview/sagas';
+import previewDocSagas from '../containers/previewDoc/sagas';
 import handleTaskSagas from '../containers/handleTask/sagas';
 
 export default function* rootSaga() {
@@ -19,6 +20,7 @@ export default function* rootSaga() {
   	...passTaskSagas,
   	...examineSagas,
   	...previewSagas,
+    ...previewDocSagas,
   	...handleTaskSagas);
 
   return yield sagas.map((x) => fork(x));

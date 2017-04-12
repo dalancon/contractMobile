@@ -17,7 +17,7 @@ import LoginPage from '../login';
 import makeSelectMainPage from './selectors';
 import commonStyle from '../styles';
 
-import { defaultAction, setTab, fetchUser, loginAction, setNetStatus } from './actions';
+import { defaultAction, setTab, fetchUser, loginAction } from './actions';
 
 import TodoTask from '../todoTask';
 import ExaminePayment from '../examinePayment';
@@ -35,33 +35,16 @@ class MainPage extends Component {
       this.props.dispatch(fetchUser()); 
     }
 
-    // NetInfo.isConnected.fetch().then(isConnected => {
-    //   console.log('First, is ' + (isConnected ? 'online' : 'offline'));
-    // });
-
-    
-
-    NetInfo.isConnected.addEventListener(
-      'change',
-      this.handleFirstConnectivityChange
-    );
-
-    // NetInfo.isConnected.fetch().done(isConnected => {
-    //   // console.log('First, is ' + (isConnected ? 'online' : 'offline'));
-    //   alert(isConnected);
-    // });
-
-    // NetInfo.fetch().done(
-    //   (connectionInfo) => {
-    //     alert(connectionInfo); 
-    //   }
+    // NetInfo.isConnected.addEventListener(
+    //   'change',
+    //   this.handleFirstConnectivityChange
     // );
   }
 
-  handleFirstConnectivityChange = (isConnected) => {
-    let netStatus = isConnected ? 'online' : 'offline';
-    this.props.dispatch(setNetStatus(netStatus));
-  }
+  // handleFirstConnectivityChange = (isConnected) => {
+  //   let netStatus = isConnected ? 'online' : 'offline';
+  //   this.props.dispatch(setNetStatus(netStatus));
+  // }
 
   componentWillReceiveProps(nextProps) {
     if(!this.props.logined && nextProps.logined) {

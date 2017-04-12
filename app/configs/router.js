@@ -13,6 +13,7 @@ import PassTask from '../containers/passTask';
 import HistoryTask from '../containers/historyTask';
 import TodoTask from '../containers/todoTask';
 import Preview from '../containers/preview';
+import PreviewDoc from '../containers/previewDoc';
 import CheckNetStatus from '../components/checkNetStatus';
 
 // Config
@@ -82,6 +83,13 @@ class Router {
   toPreview(props) {
     this.push(props, {
       page: Preview,
+      name: 'preview-page',
+    })
+  }
+
+  toPreviewDoc(props) {
+    this.push(props, {
+      page: PreviewDoc,
       name: 'preview-page',
     })
   }

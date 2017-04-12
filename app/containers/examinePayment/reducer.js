@@ -11,6 +11,8 @@ import {
   SETINVOICEINFO_ACTION,
   SETTASKHISTORY_ACTION,
   SETASSOCIATEFILE_ACTION,
+  SETPREVIEW_ACTION,
+  HIDEPREVIEW_ACTION,
 } from './constants';
 
 const initialState = fromJS({
@@ -18,6 +20,8 @@ const initialState = fromJS({
   invoice: {},
   associateFile: [],
   history: [],
+  preview: '',
+  showPreview: false,
 });
 
 function ExamineReducer(state = initialState, action) {
@@ -33,6 +37,10 @@ function ExamineReducer(state = initialState, action) {
       return state.set('history', action.history);
     case SETASSOCIATEFILE_ACTION:
       return state.set('associateFile', action.associateFile);
+    case SETPREVIEW_ACTION:
+      return state.set('preview', action.preview).set('showPreview', true);
+    case HIDEPREVIEW_ACTION:
+      return state.set('preview', '').set('showPreview', false);
     default:
       return state;
   }

@@ -5,6 +5,7 @@ import {
   LOGINFAILED_ACTION,
   LOGINOUT_ACTION,
   CLEARMESSAGE_ACTION,
+  SETNETSTATUS_ACTION,
 } from './constants';
 
 
@@ -37,6 +38,13 @@ export function loginOut() {
 export function clearMessage() {
   return {
     type: CLEARMESSAGE_ACTION,
+  }
+}
+
+export function setNetStatus(status) {
+  return {
+    type: SETNETSTATUS_ACTION,
+    netStatus: status,
   }
 }
 

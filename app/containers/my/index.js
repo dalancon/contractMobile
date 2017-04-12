@@ -20,6 +20,7 @@ import {connect} from 'react-redux';
 import NavigatorBar from 'react-native-navbar';
 import makeSelectMy from './selectors';
 import formatter from '../../utils/formatter';
+import database from '../../database';
 
 import commonStyle from '../styles';
 

@@ -28,7 +28,7 @@ const initialState = fromJS({
   refreshing: false,    // 是否正在刷新中
   page: {
     current: 1,
-    limit: 15,    //每页数据数量
+    limit: 100,    //每页数据数量
   },
   condition: {
     catpath: {},

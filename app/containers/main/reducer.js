@@ -21,7 +21,7 @@ const initialState = fromJS({
   hidden: false,    //是否隐藏TABBAR
   history: [],
   logined: false,
-  netStatus: 'offline',  //网络状态
+  //netStatus: 'offline',  //网络状态
 });
 
 function MainReducer(state = initialState, action) {
@@ -38,8 +38,8 @@ function MainReducer(state = initialState, action) {
       return state.set('logined', true);
     case LOGINOUT_ACTION:
       return state.set('logined', false).set('loginUser', null).set('current', 'todo').delete('oaAccount');
-    case SETNETSTATUS_ACTION:
-      return state.set('netStatus', action.netStatus);
+    // case SETNETSTATUS_ACTION:
+    //   return state.set('netStatus', action.netStatus);
     default:
       return state;
   }

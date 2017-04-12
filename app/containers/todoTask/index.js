@@ -35,12 +35,13 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import {connect} from 'react-redux';
-import Realm from 'realm';
 
 import makeSelectTodoTask from './selectors';
 import formatter from '../../utils/formatter';
 
 import commonStyle from '../styles';
+
+import database from '../../database';
 
 import {
   defaultAction,
@@ -58,27 +59,39 @@ import { setHidden } from '../main/actions';
 class TodoTask extends Component {
 
   componentDidMount() {
+    let timeStamp = new Date();
+
+    database.write(() => {
+      database.create('TimeStamp', { timeStamp }, true);
+    });
+
     this.props.dispatch(defaultAction());
     this.props.dispatch(fetchCondition());
     this.props.dispatch(fetchTask(this.queryParams(this.props.propSelected, this.props.page.current, this.props.search, this.props.timeRange)));
   }
 
   componentWillReceiveProps(nextProps) {
-    if(this.props.page.current !== nextProps.page.current || 
-       this.props.timeRange !== nextProps.timeRange ||
-       this.props.search !== nextProps.search) {
+    // if(this.props.page.current !== nextProps.page.current || 
+    //    this.props.timeRange !== nextProps.timeRange ||
+    //    this.props.search !== nextProps.search) {
+    //   this.props.dispatch(fetchTask(this.queryParams(nextProps.propSelected, nextProps.page.current, nextProps.search, nextProps.timeRange)));
+    // }
+
+    if(this.props.page.current !== nextProps.page.current) {
       this.props.dispatch(fetchTask(this.queryParams(nextProps.propSelected, nextProps.page.current, nextProps.search, nextProps.timeRange)));
     }
 
     if(this.props.task.length !== nextProps.task.length || this.props.page.total !== nextProps.page.total) {
-      // console.log('task:', this.props.task, nextProps.task, this.props.task !== nextProps.task);
-      // console.log('total:', this.props.page.total, nextProps.page.total, this.props.page.total !== nextProps.page.total);
-
       if(nextProps.task.length < nextProps.page.total){
         this.props.dispatch(setLoadingTail(false));
       }else{
         this.props.dispatch(setLoadingTail(true));
       }
+    }
+
+    //如果有网进行数据更新
+    if(nextProps.netStatus === 'online' && this.props.task !== nextProps.task) {
+      this.updateDatabase(nextProps.task);
     }
   }
 
@@ -86,21 +99,34 @@ class TodoTask extends Component {
     const query = {
       offset: (current - 1) * this.props.page.limit,
       limit: this.props.page.limit,
-      search,
+      //search,
     };
 
-    if(timeRange !== null && timeRange !== '') {
-      query.timeRange = timeRange;
-    }
+    // if(timeRange !== null && timeRange !== '') {
+    //   query.timeRange = timeRange;
+    // }
 
     return query;
   }
 
+  toScence(scenceName, props) {
+    switch(scenceName) {
+      case 'examinePayment':
+        this.props.router.toExamine(props);
+        return;
+      default:
+        return;
+    }
+  }
+
   showDetails = (rowData) => {
-    let url = rowData.url;
-    let params = url.split('/');
-    const page = params[2].split('?')[0];
-    this.props.router.toScence(page, rowData);
+    if(this.props.netStatus === 'online' || rowData.visited) {
+      let url = rowData.url;
+      let params = url.split('/');
+      const page = params[2].split('?')[0];
+      // console.log('rowData:', rowData);
+      this.toScence(page, rowData);
+    }
   }
 
   renderBadge = (rowData) => {
@@ -127,6 +153,11 @@ class TodoTask extends Component {
   renderRow = (rowData) => {
     const param = rowData.businessKey.split('||');
     const poNo = param[2];
+    let fontColor = 'black';
+
+    if(rowData.visited) {
+      fontColor = '#999';
+    }
 
     return (
       <TouchableOpacity onPress={() => { this.showDetails(rowData)}}>
@@ -134,12 +165,7 @@ class TodoTask extends Component {
           <View style={{ flex:1, paddingLeft:5, paddingRight:5 }}>
             <View style={{ flex:1, flexDirection:'row', justifyContent: 'space-between' }}>
               <View>
-                {  
-                  rowData.new ?
-                  (<Badge dot>
-                    <Text style={[commonStyle.taskHeader]}>{poNo}</Text>
-                  </Badge>) : (<Text style={[commonStyle.taskHeader]}>{poNo}</Text>)
-                }
+                <Text style={[commonStyle.taskHeader, { color: fontColor }]}>{poNo}</Text>
               </View>
               <View>
                 <Text style={[ commonStyle.taskSubHeader ]}>{formatter.formatTime(rowData.createTime)} <Icon name="ios-arrow-forward"></Icon></Text>
@@ -158,9 +184,11 @@ class TodoTask extends Component {
   }
 
   showDrawer = () => {
-    StatusBar.setBarStyle('dark-content', false);
-    this.props.dispatch(setSelectIndex(this.props.timeRange));
-    this.refs.drawer.drawer.openDrawer();
+    if(this.props.netStatus === 'online') {
+      StatusBar.setBarStyle('dark-content', false);
+      this.props.dispatch(setSelectIndex(this.props.timeRange));
+      this.refs.drawer.drawer.openDrawer();
+    }
   }
 
   closeDrawer = () => {
@@ -196,26 +224,29 @@ class TodoTask extends Component {
   }
 
   renderFooter = () => {
-    if(!this.hasMore()) {
+    //if(!this.hasMore()) {
       return (
         <View style={{ flex:1, justifyContent:'center', alignItems:'center', paddingTop:5 }}>
           <Text style={{color:'grey'}}>没有更多了</Text>
         </View>
       )
-    } else {
-      return (<ActivityIndicator size="small"></ActivityIndicator>)
-    }
+    // } else {
+    //   return (<ActivityIndicator size="small"></ActivityIndicator>)
+    // }
   }
 
   _onRrefresh = () => {
     if(this.props.netStatus !== 'online' || this.props.refreshing) {
       return;
     } else {
-      if(this.props.page.current == 1) {
+      //if(this.props.page.current == 1) {
+        //let timeStamp = database.objects('TimeStamp')[0];
+        //debugger;
+        //console.log(timeStamp);
         this.props.dispatch(fetchTask(this.queryParams(this.props.propSelected, this.props.page.current, this.props.search, this.props.timeRange)));
-      }else{
-        this.props.dispatch(setPageNo(1));
-      } 
+      // }else{
+      //   this.props.dispatch(setPageNo(1));
+      // } 
     }
   }
 
@@ -263,10 +294,49 @@ class TodoTask extends Component {
     )
   }
 
-  render() {
-    // console.log('todoTask:', this.props);
+  updateDatabase = (task) => {
+    database.write(() => {
+      let todoTask = database.objects('TodoTask');
 
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+      //更新查询的项目
+      task.forEach(function(x) {
+        database.create('TodoTask', x, true);
+      });
+
+      //删除多余的项目
+      let deleteTask = [];
+
+      for(let i = 0 ; i < todoTask.length; i++) {
+        if(!task.some((x) => x.businessKey === todoTask[i].businessKey)) {
+          deleteTask.push(todoTask[i]);
+        }
+      }
+
+      deleteTask.forEach(function (y) {
+        database.delete(y);
+      })
+
+    });
+  }
+
+  getTime(timeRange) {
+    let time = new Date();
+    let now = new Date();
+
+    if(timeRange === '0') {
+      time = time.setDate(now.getDate() - 7);
+    } else if(timeRange === '1') {
+      time = time.setDate(1);
+    } else if(timeRange === '2') {
+      time = time.setMonth(now.getMonth() - 3);
+    }
+
+    return time;
+  }
+
+  render() {
+    const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+
     const drawerProps = {
       open: true,
       position: 'left',
@@ -277,7 +347,20 @@ class TodoTask extends Component {
 
     let component = this;
 
+    let todoTask = database.objects('TodoTask').sorted('createTime', true);
+
+    if(this.props.search) {
+      todoTask = todoTask.filtered(`businessKey CONTAINS "${this.props.search}"`);
+    }
+
+    if(this.props.timeRange) {
+      let time = this.getTime(this.props.timeRange);
+      todoTask = todoTask.filtered(`createTime >= ${time}`);
+    }
+
     let common = this.props.condition.common.length && this.props.condition.common[0] ? this.props.condition.common[0] : null;
+
+    let length = todoTask.filtered('visited = false').length;
 
     const condition = common ? (<View style={{ 
                           flex: 1, 
@@ -337,12 +420,11 @@ class TodoTask extends Component {
           onOpenChange={this.onOpenChange}
         >
         <View style={[commonStyle.header]}>
-          <Text style={[commonStyle.headerTitle]}>待办事项</Text>
+          <Text style={[commonStyle.headerTitle]}>待办事项{ length ? '('+length+')' : '' }</Text>
           <TouchableOpacity style={[ commonStyle.headerRightIcon ]} onPress={this.showDrawer}>
             <Icon name="ios-funnel" color='white' size={20}></Icon>
           </TouchableOpacity>
         </View>
-        
           {
             this.props.netStatus !== 'online' ? (<NoticeBar mode="link" onClick={() => this.props.router.toCheckNetStatus({
               router: this.props.router
@@ -353,9 +435,9 @@ class TodoTask extends Component {
           {
             <ListView
               automaticallyAdjustContentInsets={false}
-              dataSource={ds.cloneWithRows(this.props.task)}
+              dataSource={ds.cloneWithRows(todoTask)}
               renderRow={this.renderRow}
-              onEndReached={this.fetchMoreData}
+            //onEndReached={this.fetchMoreData}
               onEndReachedThreshold={20}
               enableEmptySections={true}
               renderHeader={this._renderHeader}
